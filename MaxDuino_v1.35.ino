@@ -46,6 +46,10 @@
  *                V1.8.3 PCD8544 library changed to use less memory. Bitmaps added and Menu system reduced to a more basic level. 
  *                Bug fixes of the Percentage counter and timer when using motor control/
  *
+ *                V1.8u1 (kernel@kernelcrash.com)  
+ *                Mods to V1.8 TZXDuino to enable UEF playback. Only supports gunzip'd
+ *                UEF files though (that still end in .uef). Plays back UEF's as square
+ *                wave not sine waves.
  */ 
  //               MAXDUINO is a reworking from casduino and tzxduino to support both at the same time on Arduino Nano. 
  //               Original idea from Rafael Molina Chasserot, testing and help from Davide Barlotti, @ManuFerHi, @BCH, Alfredo Retrocant,
@@ -61,6 +65,7 @@
  //               V1.34 alias "EEPROM version". Now blocks can be directly read/written from EEPROM.
  //                     Also logo can be copied to eeprom using #define option. After that, you can select option
  //                     for loading logo directly from EEPROM.. this saves 512 bytes in the sketch.
+ //               V1.35 Uncompressed UEF support for Acorn computers, code imported from v1.8u1
  
 #include <SdFat.h>
 #include <TimerOne.h>
