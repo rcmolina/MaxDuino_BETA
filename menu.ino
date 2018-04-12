@@ -50,7 +50,7 @@ void menuMode()
         printtextF(PSTR("Motor Ctrl ?"),lineaxy);
         break;
         case 2:
-        printtextF(PSTR("TSXspeedup ?"),lineaxy);
+        printtextF(PSTR("TSX-UEF-Turbo ?"),lineaxy);
         break;
         case 3:
         printtextF(PSTR("Skip BLK:2A ?"),lineaxy);
@@ -204,17 +204,17 @@ void menuMode()
           lastbtn=true;
           while(digitalRead(btnStop)==HIGH || lastbtn) {
             if(updateScreen) {
-              printtextF(PSTR("TSXspeedup"),0);
-              if(TSXspeedup==0) printtextF(PSTR("off *"),lineaxy);
+              printtextF(PSTR("SpeedUp"),0);
+              if(SpeedUp==0) printtextF(PSTR("off *"),lineaxy);
               else  printtextF(PSTR("ON *"),lineaxy);
           /*    switch(subItem) {
                 case 0:
                   printtextF(PSTR("off"),1);
-                  if(TSXspeedup==0) printtextF(PSTR("off *"),1);
+                  if(SpeedUp==0) printtextF(PSTR("off *"),1);
                 break;
                 case 1:
                   printtextF(PSTR("ON"),1);
-                  if(TSXspeedup==1) printtextF(PSTR("ON *"),1);
+                  if(SpeedUp==1) printtextF(PSTR("ON *"),1);
                 break;                
               } */
               updateScreen=false;
@@ -231,13 +231,13 @@ void menuMode()
               updateScreen=true;
             } */
             if(digitalRead(btnPlay)==LOW && !lastbtn) {
-              TSXspeedup = !TSXspeedup;
+              SpeedUp = !SpeedUp;
           /*    switch(subItem) {
                 case 0:
-                  TSXspeedup=0;
+                  SpeedUp=0;
                 break;
                 case 1:
-                  TSXspeedup=1;
+                  SpeedUp=1;
                 break;
               } */
               lastbtn=true;
@@ -329,7 +329,7 @@ void menuMode()
    *  bit 3: 3850
    *  bit 4: n/a
    *  bit 5: BLK_2A control
-   *  bit 6: TSXspeedup
+   *  bit 6: TSX-UEF speedup
    *  bit 7: Motor control
    */
   byte settings=0;
@@ -350,7 +350,7 @@ void menuMode()
   }
 
   if(mselectMask) settings |=128;
-  if(TSXspeedup) settings |=64;
+  if(SpeedUp) settings |=64;
   #ifndef Use_UEF
   if(skip2A) settings |=32;
   #endif
@@ -371,9 +371,9 @@ void menuMode()
     mselectMask=0;
   }
   if(bitRead(settings,6)) {
-    TSXspeedup=1;
+    SpeedUp=1;
   } else {
-    TSXspeedup=0;
+    SpeedUp=0;
   }
   #ifndef Use_UEF
   if(bitRead(settings,5)) {
