@@ -1086,7 +1086,7 @@ void printtext(char* text, int l) {  //Print text to screen.
     if(mselectMask==1) sendStr(" M:ON");
     else sendStr("m:off");    
     setXY(11,3); 
-    if (SpeedUp == 1) sendStr(" S^ON");
+    if (TSXspeedup == 1) sendStr(" S^ON");
     else sendStr("s^off");
     #endif
   }

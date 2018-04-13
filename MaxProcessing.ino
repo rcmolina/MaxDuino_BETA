@@ -598,7 +598,7 @@ void TZXProcess() {
       } else {
         chunkID = IDCHUNKEOF;
       }
-      if (!(SpeedUp)) {
+      if (!(uefTurboMode)) {
          zeroPulse = UEFZEROPULSE;
          onePulse = UEFONEPULSE;
       } else {
@@ -631,14 +631,13 @@ void TZXProcess() {
         case ID0110:
           if(currentBlockTask==READPARAM){
             if(r=ReadWord(bytesRead)==2) {
-              if (!(SpeedUp)) {     
+              if (!(uefTurboMode)) {     
                  pilotPulses = UEFPILOTPULSES;
                  pilotLength = UEFPILOTLENGTH;
               } else {
                 // turbo mode    
                  pilotPulses = UEFTURBOPILOTPULSES;
-                 pilotLength = UEFTURBOPILOTLENGTH;
-                
+                 pilotLength = UEFTURBOPILOTLENGTH;                
               }
             }
             currentBlockTask = PILOT;
@@ -1070,7 +1069,7 @@ void TZXProcess() {
               if(r=ReadWord(bytesRead)==2) {  // Pause after block in ms
                 pauseLength = outWord;
               }
-              if (SpeedUp == 0){
+              if (TSXspeedup == 0){
                   if(r=ReadWord(bytesRead)==2) {  // T-states each pilot pulse
                     pilotLength = TickToUs(outWord);
                   }
