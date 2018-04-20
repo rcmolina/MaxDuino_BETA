@@ -148,7 +148,7 @@ void checkForEXT (char *filename) {
 void UniPlay(char *filename){
   Timer1.stop();                              //Stop timer interrupt
   if(!entry.open(filename,O_READ)) {
-    printtextF(PSTR("Error Opening File"),0);
+  //  printtextF(PSTR("Error Opening File"),0);
   }
   block=0;                                    // Initial block when starting
 //  currpct = 100;
@@ -598,13 +598,16 @@ void TZXProcess() {
       } else {
         chunkID = IDCHUNKEOF;
       }
-      if (!(uefTurboMode)) {
+//      if (!(uefTurboMode)) {
+  /*    if ( BAUDRATE == 1200) {
          zeroPulse = UEFZEROPULSE;
          onePulse = UEFONEPULSE;
       } else {
          zeroPulse = UEFTURBOZEROPULSE;
          onePulse = UEFTURBOONEPULSE;  
-      }
+      } */
+         zeroPulse = 332; // TURBOBAUD1500
+         onePulse = 166;  // TURBOBAUD1500    
       lastByte=0;
       
       //reset data block values
@@ -631,19 +634,24 @@ void TZXProcess() {
         case ID0110:
           if(currentBlockTask==READPARAM){
             if(r=ReadWord(bytesRead)==2) {
-              if (!(uefTurboMode)) {     
+//              if (!(uefTurboMode)) {
+/*              if (BAUDRATE == 1200) {                     
                  pilotPulses = UEFPILOTPULSES;
                  pilotLength = UEFPILOTLENGTH;
               } else {
                 // turbo mode    
                  pilotPulses = UEFTURBOPILOTPULSES;
                  pilotLength = UEFTURBOPILOTLENGTH;                
-              }
+              } */
+                 pilotPulses = outWord<<2;
+                 pilotLength = 156;                         
             }
             currentBlockTask = PILOT;
-          } else {
+          } 
+          else {
             UEFCarrierToneBlock();
           }
+       //   UEFCarrierToneBlock();
           //bytesRead+=bytesToRead;
           //currentTask = GETCHUNKID;
           break;
