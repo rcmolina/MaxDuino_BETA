@@ -2,7 +2,7 @@
 
 http://www.va-de-retro.com/foros/viewtopic.php?t=5541
 
-* V1.35t Acorn speed for loading now 1500 baud. 
+* V1.35t Acorn speed for loading now 1500 baud, 20% faster (standard is 1200).
 * V1.35 Uncompressed UEF support for Acorn computers.
 * V1.34 alias "EEPROM version". Now blocks can be directly read/written from EEPROM.Also logo can be copied to eeprom using #define option.
 	After that, you can select option for loading logo directly from EEPROM.. this saves 512 bytes in the sketch.
