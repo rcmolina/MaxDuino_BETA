@@ -1,7 +1,16 @@
 #define outputPin           9
-#define WRITE_LOW           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
-#define WRITE_HIGH          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
-// pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+
+#ifndef polarity 
+  #define WRITE_LOW           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
+  #define WRITE_HIGH          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
+  // pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+#endif
+
+#ifdef polarity 
+  #define WRITE_HIGH           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
+  #define WRITE_LOW          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
+  // pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+#endif
 
 #define SHORT_SILENCE       122
 #define LONG_SILENCE        SHORT_SILENCE*2

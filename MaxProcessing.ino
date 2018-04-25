@@ -1932,7 +1932,13 @@ void wave2() {
       else  WRITE_HIGH;      
       if(pauseFlipBit==true) {
         newTime = 1500;                     //Set 1.5ms initial pause block
-        pinState = LOW;                     //Set next pinstate LOW
+        #ifndef polarity
+          pinState = LOW;                     //Set next pinstate LOW
+        #endif
+        #ifdef polarity
+          pinState = HIGH;                     //Set next pinstate LOW
+        #endif
+        
         //wbuffer[pos][workingBuffer] = highByte(workingPeriod - 1);
         //wbuffer[pos+1][workingBuffer] = lowByte(workingPeriod - 1);
         //wbuffer[pos][workingBuffer] = workingPeriod - 1;  //reduce pause by 1ms as we've already pause for 1.5ms
