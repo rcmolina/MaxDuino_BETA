@@ -179,7 +179,7 @@ char fileName[filenameLength + 1];    //Current filename
 char sfileName[13];                   //Short filename variable
 char prevSubDir[3][subdirLength];    // Subir a la EPROM ¿?
 int DirFilePos[3];                   //File Positios in Directory to be restored
-int subdir = 0;
+byte subdir = 0;
 unsigned long filesize;             // filesize used for dimensioning AY files
 const byte chipSelect = 10;          //Sd card chip select pin
 
