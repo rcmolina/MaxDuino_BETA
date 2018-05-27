@@ -99,9 +99,9 @@ byte lineaxy=2;
 #endif
 
 //***********  OPTIONAL USE TO SAVE SPACE  ***********************//
-//#define Use_MENU 1  //comment to remove menu and save space
-//#define Use_UEF 1
-//#define Use_CAS 1
+#define Use_MENU 1  //comment to remove menu and save space
+#define Use_UEF 1
+#define Use_CAS 1
 //***************************************************************//
 
 //#define LOAD_MEM_LOGO 1
@@ -585,6 +585,7 @@ void loop(void) {
            break;          
         default: 
            //sprintf(fileName,"%s",prevSubDir[0]);
+           subdir = 0;
            sd.chdir("/",true);
        }
        //Return to prev Dir of the SD card.
