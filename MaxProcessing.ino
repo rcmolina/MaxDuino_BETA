@@ -83,7 +83,7 @@ void checkForEXT (char *filename) {
   }
 #endif 
 
-#ifdef Use_CAS 
+//#ifdef Use_CAS 
   if(checkForCAS(filename)) {                 //Check for CAS File.  As these have no header we can skip straight to playing data
     //printtextF(PSTR("CAS Playing"),0);
     casduino = 1;
@@ -117,7 +117,7 @@ void checkForEXT (char *filename) {
     Timer1.restart();
 */
   }
-#endif     
+//#endif     
 }
 
 /*
@@ -212,7 +212,7 @@ void UniPlay(char *filename) {
 }
 */
 
-#ifdef Use_CAS
+//#ifdef Use_CAS
 bool checkForCAS(char *filename) {
   //Check for CAS file extensions as these have no header
   byte len = strlen(filename);
@@ -221,7 +221,7 @@ bool checkForCAS(char *filename) {
   }
   return false;
 }
-#endif
+//#endif
 
 bool checkForTap(char *filename) {
   //Check for TAP file extensions as these have no header
@@ -2255,7 +2255,7 @@ int readfile(byte bytes, unsigned long p)
   return i;
 }
 
-#ifdef Use_CAS
+//#ifdef Use_CAS
 void clearBuffer()
 {
   for(int i=0;i<buffsize+1;i++)
@@ -2264,7 +2264,7 @@ void clearBuffer()
     wbuffer[i][1]=2;
   }
 }
-#endif
+//#endif
 
 void clearBuffer2()
 {

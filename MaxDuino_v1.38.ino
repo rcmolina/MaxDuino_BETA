@@ -98,9 +98,11 @@ byte lineaxy=1;
 byte lineaxy=2;
 #endif
 
-#define Use_MENU 1  //comment to remove menu and save space
-#define Use_UEF 1
-#define Use_CAS 1
+//***********  OPTIONAL USE TO SAVE SPACE  ***********************//
+//#define Use_MENU 1  //comment to remove menu and save space
+//#define Use_UEF 1
+//#define Use_CAS 1
+//***************************************************************//
 
 //#define LOAD_MEM_LOGO 1
 #define LOAD_EEPROM_LOGO 1
@@ -245,7 +247,7 @@ void setup() {
   
     Wire.begin();
     init_OLED();
-    delay(1300);              // Show logo
+    delay(1500);              // Show logo
     reset_display();           // Clear logo and load saved mode
 
   #endif
