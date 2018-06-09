@@ -106,7 +106,7 @@ word currentPeriod=1;
 //#define ID15                0x15    //Direct recording block -- TBD - curious to load OTLA files using direct recording (22KHz)
 //#define ID18                0x18    //CSW recording block
 //#define ID19                0x19    //Generalized data block
-#define ID20                0x20    //Pause (silence) ot 'Stop the tape' command
+#define ID20                0x20    //Pause (silence) or 'Stop the tape' command
 #define ID21                0x21    //Group start
 #define ID22                0x22    //Group end
 #define ID23                0x23    //Jump to block
@@ -115,7 +115,7 @@ word currentPeriod=1;
 #define ID26                0x26    //Call sequence
 #define ID27                0x27    //Return from sequence
 #define ID28                0x28    //Select block
-#define ID2A                0x2A    //Stop the tape is in 48K mode
+#define ID2A                0x2A    //Stop the tape if in 48K mode
 #define ID2B                0x2B    //Set signal level
 #define ID30                0x30    //Text description
 #define ID31                0x31    //Message block
@@ -208,7 +208,7 @@ byte usedBitsInLastByte=8;
 word loopCount=0;
 byte seqPulses=0;
 word temppause=0;
-byte initialpause0=0;
+byte forcePause0=0;
 unsigned long loopStart=0;
 volatile byte currentChar=0;
 volatile byte currentByte=0;

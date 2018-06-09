@@ -225,7 +225,7 @@ void TZXProcess() {
           break;
 #endif
 
-#ifdef Use_hqUEF
+#if defined(Use_UEF) && defined(Use_hqUEF)
         case ID0111:
           if(currentBlockTask==READPARAM){
             if(r=ReadWord(bytesRead)==2) {             
@@ -262,7 +262,8 @@ void TZXProcess() {
           break;
 #endif
 
-#ifdef Use_UEF          
+
+#if defined(Use_UEF) && defined(Use_c112)         
         case ID0112:
           if(currentBlockTask==READPARAM){
             if(r=ReadWord(bytesRead)==2) {
@@ -283,13 +284,14 @@ void TZXProcess() {
           break;
 #endif
 
-#ifdef Use_hqUEF
+
+#if defined(Use_UEF) && defined(Use_hqUEF) && defined(Use_c116)
         case ID0116:
           if(currentBlockTask==READPARAM){
             if(r=ReadDword(bytesRead)==4) {
               memcpy(&outFloat,&outLong,4);
-            //  outWord = (int)(outFloat+.9)*1000;
-                outWord = int(outFloat+.9) <<10;
+              //outWord = (int)(outFloat+.9)*1000;
+              outWord = int(outFloat+.9) <<10;
               if (outWord>0) {
                 //Serial.print(F("delay="));
                 //Serial.println(outWord,DEC);
@@ -562,11 +564,11 @@ void TZXProcess() {
           //process ID20 - Pause Block
           if(r=ReadWord(bytesRead)==2) {
             if(outWord>0) {
-              initialpause0=0;
+              forcePause0=0;          // pause0 FALSE
               temppause = outWord;
        //       currentID = IDPAUSE;
-            } else {
-              initialpause0=1;
+            } else {                    // If Pause duration is 0 ms then Stop The Tape
+              forcePause0=1;          // pause0 TRUE
         //      currentTask = GETID;
             }
             currentID = IDPAUSE;         
@@ -609,7 +611,7 @@ void TZXProcess() {
           bytesRead+=4;
           if (skip2A) currentTask = GETID;
           else {
-            initialpause0 = 1;
+            forcePause0 = 1;
             currentID = IDPAUSE;
           }        
         break;
@@ -950,7 +952,7 @@ void TZXProcess() {
             }
             bitSet(currentPeriod, 15);
           } else {
-              if (initialpause0) {
+              if (forcePause0) { // Stop the Tape
                 if(!count==0) {
                   currentPeriod = 32769;
                   count += -1;
@@ -958,7 +960,7 @@ void TZXProcess() {
                   pauseOn=1;
                   currentTask = GETID;
                   printtextF(PSTR("PAUSED*"),0);
-                  initialpause0=0;
+                  forcePause0=0;
                 }
               } else { 
                 currentTask = GETID;
