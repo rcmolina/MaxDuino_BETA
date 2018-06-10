@@ -238,8 +238,6 @@ PROGMEM const char UEFFile[9] = {'U','E','F',' ','F','i','l','e','!'};
 // For 1550 baud zero is 322us, one is 161us
 // For 1600 baud zero is 313us, one is 156us
 
-#define TURBOBAUD1500
-
 // STANDARD 1200 baud UEF
 #ifdef STDBAUD1200
 #define UEFPILOTPULSES          outWord<<2;

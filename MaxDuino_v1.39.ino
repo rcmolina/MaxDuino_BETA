@@ -77,9 +77,8 @@
 #include <SdFat.h>
 #include <TimerOne.h>
 #include <EEPROM.h>
-#include "MaxDuino.h"
 #include "userconfig.h"
-
+#include "MaxDuino.h"
 
 #ifdef LCDSCREEN16x2
   #include <Wire.h> 
