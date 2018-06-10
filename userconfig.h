@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //         UEF file instructions: UEF files are compressed and can not be executed directly in MAXDUINO,       //
 /*         for that you have to decompress these files manually.                                               */
-/*         linux / mac os: gunzip -c game.uef> game.uef.tmp && mv game.uef.tmp game.tmp                        */
+/*         linux / mac os: gunzip -c game.uef> game.uef.tmp && mv game.uef.tmp game.uef                        */
 /*         windows: add .gz, then decompress with winrar                                                       */
 //**************************************************************************************************************//
 //*** If Use_MENU commented to remove Menu, then vars need setting preference cause no EEPROM for read/write ***//
