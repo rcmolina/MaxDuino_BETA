@@ -61,11 +61,11 @@ byte lineaxy=2;
 //#define RECORD_EEPROM_LOGO 1
 #define LOAD_EEPROM_LOGO 1
 
-//#define LOGOARDUITAPE 1           // original logo from arduitape
-//#define LOGOMAXDUINO 1            // new logo made by Spirax
-#define LOGOMAXDUINO2 1             // new logo2 made by rcmolina
-//#define LOGOMAXDUINO3 1           // new logo3 made by rcmolina
-//#define LOGOMAXDUINO4 1           // new logo4 made by rcmolina
-//#define SUGARLESS_1 1             //YoxxxoY
-//#define SUGARLESS_2 1             //YoxxxoY
+//#define LOGOARDUITAPE 1           // original arduitape logo
+//#define LOGOMAXDUINO 1            // new logo created by Spirax
+#define LOGOMAXDUINO2 1             // new logo2 created by rcmolina
+//#define LOGOMAXDUINO3 1           // new logo3 created by rcmolina
+//#define LOGOMAXDUINO4 1           // new logo4 created by rcmolina
+//#define SUGARLESS_1 1             // new logo cretaed bt YoxxxoY
+//#define SUGARLESS_2 1             // new logo created by YoxxxoY
 
