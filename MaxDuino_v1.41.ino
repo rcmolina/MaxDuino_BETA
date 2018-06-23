@@ -191,8 +191,8 @@ byte blockID[maxblock];
 void setup() {
   
   #ifdef LCDSCREEN16x2
-    //lcd.init();                     //Initialise LCD (16x2 type)
-    lcd.begin();                     //Initialise LCD (16x2 type)    
+    lcd.init();                     //Initialise LCD (16x2 type)
+    //lcd.begin();                     //Initialise LCD (16x2 type)    
     lcd.backlight();
     lcd.clear();
     #ifdef SPLASH_SCREEN
