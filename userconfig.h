@@ -51,8 +51,8 @@ byte lineaxy=2;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//#define SPLASH_SCREEN     // Displays the logo and welcome text at the initialization and remains until a button is pressed.
-#define TIMEOUT_RESET   60  // Timeout for reset tzxduino (without pause or play activated), comment to not reset.
+//#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
+#define TIMEOUT_RESET   60 // Timeout for reset tzxduino (without pause or play activated), comment to not reset.
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EEPROM LOGO. How to move to EEPROM, saving memory:
 // Phase 1: Uncomment RECORD_EEPROM_LOGO define , this copies logo from memory to EEPROM. Compile the sketh.
