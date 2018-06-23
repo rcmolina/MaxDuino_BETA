@@ -173,18 +173,36 @@ int maxFile = 0;                    //Total number of files in directory
 byte isDir = 0;                     //Is the current file a directory
 unsigned long timeDiff = 0;         //button debounce
 
+#if (SPLASH_SCREEN && TIMEOUT_RESET)
+    unsigned long timeDiff_reset = 0;
+    byte timeout_reset = TIMEOUT_RESET;
+#endif
+
 byte UP = 0;                      //Next File, down button pressed
 char PlayBytes[subdirLength];
 
 unsigned long blockOffset[maxblock];
 byte blockID[maxblock];
 
+#if (SPLASH_SCREEN && TIMEOUT_RESET)
+    void(* resetFunc) (void) = 0;//declare reset function at adress 0
+#endif
+
 void setup() {
   
   #ifdef LCDSCREEN16x2
-    lcd.init();                     //Initialise LCD (16x2 type)
+    //lcd.init();                     //Initialise LCD (16x2 type)
+    lcd.begin();                     //Initialise LCD (16x2 type)    
     lcd.backlight();
     lcd.clear();
+    #ifdef SPLASH_SCREEN
+      #if (SPLASH_SCREEN)
+          lcd.setCursor(0,0);
+          lcd.print(F("Welcome to")); // Set the text at the initilization for LCD Screen (Line 1)
+          lcd.setCursor(0,1); 
+          lcd.print(F("Maxduino")); // Set the text at the initilization for LCD Screen (Line 2)
+      #endif
+    #endif    
 //    lcd.createChar(0, SpecialChar);
   #endif
   
@@ -214,9 +232,12 @@ void setup() {
   
     Wire.begin();
     init_OLED();
-    delay(1500);              // Show logo
-    reset_display();           // Clear logo and load saved mode
-
+    //delay(1500);              // Show logo
+    //reset_display();           // Clear logo and load saved mode
+    #if (!SPLASH_SCREEN)
+        delay(1500);              // Show logo
+        reset_display();           // Clear logo and load saved mode
+    #endif
   #endif
 
   #ifdef P8544 
@@ -225,21 +246,7 @@ void setup() {
     //lcd.clear();
     P8544_splash(); 
   #endif
-  
-  pinMode(chipSelect, OUTPUT);      //Setup SD card chipselect pin
-//  if (!sd.begin(chipSelect,SPI_FULL_SPEED)) {
-    while (!sd.begin(chipSelect,SPI_FULL_SPEED)) {      
-    //Start SD card and check it's working
-    printtextF(PSTR("No SD Card"),0);
-    //lcd_clearline(0);
-    //lcd.print(F("No SD Card"));
-//    return;
-//    delay(250);
-  } 
-  
-  sd.chdir();                       //set SD to root directory
-  UniSetup();                       //Setup TZX specific options
-  
+ 
   //General Pin settings
   //Setup buttons with internal pullup
    
@@ -266,7 +273,35 @@ void setup() {
   //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
 //  digitalWrite(btnRoot, HIGH); 
   PORTD |= _BV(7);
-   
+
+  #ifdef SPLASH_SCREEN
+      while (digitalRead(btnPlay) == HIGH & 
+             digitalRead(btnStop) == HIGH &
+             digitalRead(btnUp)   == HIGH &
+             digitalRead(btnDown) == HIGH &
+             digitalRead(btnRoot) == HIGH)
+      {
+        delay(100);              // Show logo (OLED) or text (LCD) and remains until a button is pressed.
+      }   
+      #ifdef OLED1306    
+          reset_display();           // Clear logo and load saved mode
+      #endif
+  #endif
+  
+  pinMode(chipSelect, OUTPUT);      //Setup SD card chipselect pin
+//  if (!sd.begin(chipSelect,SPI_FULL_SPEED)) {
+    while (!sd.begin(chipSelect,SPI_FULL_SPEED)) {      
+    //Start SD card and check it's working
+    printtextF(PSTR("No SD Card"),0);
+    //lcd_clearline(0);
+    //lcd.print(F("No SD Card"));
+//    return;
+//    delay(250);
+  } 
+  
+  sd.chdir();                       //set SD to root directory
+  UniSetup();                       //Setup TZX specific options
+    
  //printtext(VERSION,0);
   //lcd_clearline(0);
   //lcd.print(F(VERSION));
@@ -321,6 +356,28 @@ void loop(void) {
     }
   }
   motorState=digitalRead(btnMotor);
+  #ifdef SPLASH_SCREEN
+    #if (SPLASH_SCREEN && TIMEOUT_RESET)
+        if (millis() - timeDiff_reset > 1000) //check timeout reset every second
+        {
+          timeDiff_reset = millis(); // get current millisecond count
+          if (!pauseOn and start==0)
+          {
+            timeout_reset--;
+            if (timeout_reset==0)
+            {
+              timeout_reset = TIMEOUT_RESET;
+              resetFunc();
+            }
+          }
+          else
+          {
+            timeout_reset = TIMEOUT_RESET;
+          }
+        }
+    #endif
+  #endif
+    
   if (millis() - timeDiff > 50) {   // check switch every 50ms 
      timeDiff = millis();           // get current millisecond count
       
@@ -474,6 +531,11 @@ void loop(void) {
      }
 
      if(digitalRead(btnRoot)==LOW && start==0){
+       #ifdef SPLASH_SCREEN
+         #if (SPLASH_SCREEN && TIMEOUT_RESET)
+              timeout_reset = TIMEOUT_RESET;
+         #endif
+       #endif
        //Return to root of the SD card.
        //printtextF(PSTR(VERSION),0);
        //lcd_clearline(0);
@@ -529,7 +591,12 @@ void loop(void) {
        }
 */       
      }
-     if(digitalRead(btnStop)==LOW && start==0 && subdir >0) {  
+     if(digitalRead(btnStop)==LOW && start==0 && subdir >0) { 
+       #ifdef SPLASH_SCREEN
+         #if (SPLASH_SCREEN && TIMEOUT_RESET)
+              timeout_reset = TIMEOUT_RESET;
+         #endif
+       #endif       
        fileName[0]='\0';
        subdir--;
        prevSubDir[subdir][0]='\0';     
@@ -628,6 +695,11 @@ void loop(void) {
      }
          
      if(digitalRead(btnUp)==LOW && start==0) {
+       #ifdef SPLASH_SCREEN
+         #if (SPLASH_SCREEN && TIMEOUT_RESET)
+              timeout_reset = TIMEOUT_RESET;
+         #endif
+       #endif
        //Move up a file in the directory
        scrollTime=millis()+scrollWait;
        scrollPos=0;
@@ -667,6 +739,11 @@ void loop(void) {
      }
      
      if(digitalRead(btnDown)==LOW && start==0 ) {
+       #ifdef SPLASH_SCREEN
+         #if (SPLASH_SCREEN && TIMEOUT_RESET)
+              timeout_reset = TIMEOUT_RESET;
+         #endif
+       #endif
        //Move down a file in the directory
        scrollTime=millis()+scrollWait;
        scrollPos=0;
