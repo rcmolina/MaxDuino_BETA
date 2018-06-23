@@ -75,7 +75,7 @@
  //                     Code better organized, and new userconfig.h with help for easier configuration -Alfredo Crespo
  //               V1.40 LCD sketch savings, tsx control/polarity/UEF turbo mode can be changed while paused with menu button. 
  //                     Reworked acorn chunk 116 floating point conversion to integer.
- //               V1.41 New logos from project Sugarless (@spark2k06/@yoxxxoy)
+ //               V1.41 New logos from project Sugarless (@spark2k06/@yoxxxoy). New SPLASH_SCREEN configuration (@spark2k06).
  //
 #include <SdFat.h>
 #include <TimerOne.h>
