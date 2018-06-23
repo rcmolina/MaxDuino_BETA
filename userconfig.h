@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                          Add // at the beginning of lines to comment and remove selected option                        */
 //*******************************************  OPTIONAL USE TO SAVE SPACE  ***********************************************//
-#define Use_MENU 1                         // removing menu saves space
-#define Use_CAS 1                         // .cas files playback on MSX / Dragon / CoCo Tandy computers
-#define Use_UEF 1                         // .uef files playback on BBC Micro / Electron / Atom computers
-    //#define Use_c112 1                  // integer gap chunk for .uef
-    #define Use_hqUEF 1                   // .hq.uef files playback on BBC Micro / Electron / Atom computers
-        //#define Use_c116 1              // floating point gap chunk for .hq.uef
+#define Use_MENU                           // removing menu saves space
+#define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
+#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
+    //#define Use_c112                    // integer gap chunk for .uef
+    #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
+        //#define Use_c116                // floating point gap chunk for .hq.uef
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //         UEF file instructions: UEF files are compressed and can not be executed directly in MAXDUINO,                 //
 /*         for that you have to decompress these files manually.                                                         */
@@ -30,19 +30,19 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 /*                                   Configure your screen settings here                                                  */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Set defines for various types of screen, currently only 16x2 I2C LCD is supported
-//#define SERIALSCREEN  1           // For testing and debugging
+//#define SERIALSCREEN              // For testing and debugging
 
 #define LCD_I2C_ADDR    0x3f        // Set the i2c address of your 1602LCD usually 0x27 or 0x3f*/
-//#define LCDSCREEN16x2   1         // Set if you are using a 1602 LCD screen
+//#define LCDSCREEN16x2             // Set if you are using a 1602 LCD screen
 
-#define OLED1306   1                // Set if you are using OLED 1306 display
-//#define P8544   1                 // Set if you are Display Nokia 5110 display
+#define OLED1306                    // Set if you are using OLED 1306 display
+//#define P8544                     // Set if you are Display Nokia 5110 display
 
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss
 //#define  cntrMSS                  // if not defined use sss format, if defined m:ss
 
-#define XY  1                       // use original settings for Oled line 0,1 and status for menu
-//#define XY2 1                     // use double size font wihtout status line for menu
+#define XY                         // use original settings for Oled line 0,1 and status for menu
+//#define XY2                      // use double size font wihtout status line for menu
 #ifdef XY
 byte lineaxy=1;
 #endif
@@ -61,14 +61,14 @@ byte lineaxy=2;
 
 //#define LOAD_MEM_LOGO 1  // legacy, logo is not in EEPROM then wasting memory.
 #define BLOCK_EEPROM_START 512
-//#define RECORD_EEPROM_LOGO 1
-#define LOAD_EEPROM_LOGO 1
+//#define RECORD_EEPROM_LOGO 
+#define LOAD_EEPROM_LOGO 
 
-//#define LOGOARDUITAPE 1           // original arduitape logo
-//#define LOGOMAXDUINO 1            // new logo created by Spirax
-#define LOGOMAXDUINO2 1             // new logo2 created by rcmolina
-//#define LOGOMAXDUINO3 1           // new logo3 created by rcmolina
-//#define LOGOMAXDUINO4 1           // new logo4 created by rcmolina
-//#define SUGARLESS_1 1             // new logo cretaed bt YoxxxoY
-//#define SUGARLESS_2 1             // new logo created by YoxxxoY
+//#define LOGOARDUITAPE            // original arduitape logo
+//#define LOGOMAXDUINO             // new logo created by Spirax
+#define LOGOMAXDUINO2              // new logo2 created by rcmolina
+//#define LOGOMAXDUINO3            // new logo3 created by rcmolina
+//#define LOGOMAXDUINO4            // new logo4 created by rcmolina
+//#define SUGARLESS_1              // new logo cretaed bt YoxxxoY
+//#define SUGARLESS_2              // new logo created by YoxxxoY
 

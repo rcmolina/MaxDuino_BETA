@@ -195,14 +195,12 @@ void setup() {
     //lcd.begin();                     //Initialise LCD (16x2 type)    
     lcd.backlight();
     lcd.clear();
-    #ifdef SPLASH_SCREEN
-      #if (SPLASH_SCREEN)
-          lcd.setCursor(0,0);
-          lcd.print(F("Welcome to")); // Set the text at the initilization for LCD Screen (Line 1)
-          lcd.setCursor(0,1); 
-          lcd.print(F("Maxduino")); // Set the text at the initilization for LCD Screen (Line 2)
-      #endif
-    #endif    
+    #if (SPLASH_SCREEN)
+        lcd.setCursor(0,0);
+        lcd.print(F("Welcome to")); // Set the text at the initilization for LCD Screen (Line 1)
+        lcd.setCursor(0,1); 
+        lcd.print(F("Maxduino")); // Set the text at the initilization for LCD Screen (Line 2)
+    #endif   
 //    lcd.createChar(0, SpecialChar);
   #endif
   
@@ -356,26 +354,24 @@ void loop(void) {
     }
   }
   motorState=digitalRead(btnMotor);
-  #ifdef SPLASH_SCREEN
-    #if (SPLASH_SCREEN && TIMEOUT_RESET)
-        if (millis() - timeDiff_reset > 1000) //check timeout reset every second
+  #if (SPLASH_SCREEN && TIMEOUT_RESET)
+      if (millis() - timeDiff_reset > 1000) //check timeout reset every second
+      {
+        timeDiff_reset = millis(); // get current millisecond count
+        if (!pauseOn and start==0)
         {
-          timeDiff_reset = millis(); // get current millisecond count
-          if (!pauseOn and start==0)
-          {
-            timeout_reset--;
-            if (timeout_reset==0)
-            {
-              timeout_reset = TIMEOUT_RESET;
-              resetFunc();
-            }
-          }
-          else
+          timeout_reset--;
+          if (timeout_reset==0)
           {
             timeout_reset = TIMEOUT_RESET;
+            resetFunc();
           }
         }
-    #endif
+        else
+        {
+          timeout_reset = TIMEOUT_RESET;
+        }
+      }
   #endif
     
   if (millis() - timeDiff > 50) {   // check switch every 50ms 
@@ -531,10 +527,8 @@ void loop(void) {
      }
 
      if(digitalRead(btnRoot)==LOW && start==0){
-       #ifdef SPLASH_SCREEN
-         #if (SPLASH_SCREEN && TIMEOUT_RESET)
-              timeout_reset = TIMEOUT_RESET;
-         #endif
+       #if (SPLASH_SCREEN && TIMEOUT_RESET)
+            timeout_reset = TIMEOUT_RESET;
        #endif
        //Return to root of the SD card.
        //printtextF(PSTR(VERSION),0);
@@ -592,11 +586,9 @@ void loop(void) {
 */       
      }
      if(digitalRead(btnStop)==LOW && start==0 && subdir >0) { 
-       #ifdef SPLASH_SCREEN
-         #if (SPLASH_SCREEN && TIMEOUT_RESET)
-              timeout_reset = TIMEOUT_RESET;
-         #endif
-       #endif       
+       #if (SPLASH_SCREEN && TIMEOUT_RESET)
+            timeout_reset = TIMEOUT_RESET;
+       #endif     
        fileName[0]='\0';
        subdir--;
        prevSubDir[subdir][0]='\0';     
@@ -695,10 +687,8 @@ void loop(void) {
      }
          
      if(digitalRead(btnUp)==LOW && start==0) {
-       #ifdef SPLASH_SCREEN
-         #if (SPLASH_SCREEN && TIMEOUT_RESET)
-              timeout_reset = TIMEOUT_RESET;
-         #endif
+       #if (SPLASH_SCREEN && TIMEOUT_RESET)
+            timeout_reset = TIMEOUT_RESET;
        #endif
        //Move up a file in the directory
        scrollTime=millis()+scrollWait;
@@ -739,10 +729,8 @@ void loop(void) {
      }
      
      if(digitalRead(btnDown)==LOW && start==0 ) {
-       #ifdef SPLASH_SCREEN
-         #if (SPLASH_SCREEN && TIMEOUT_RESET)
-              timeout_reset = TIMEOUT_RESET;
-         #endif
+       #if (SPLASH_SCREEN && TIMEOUT_RESET)
+            timeout_reset = TIMEOUT_RESET;
        #endif
        //Move down a file in the directory
        scrollTime=millis()+scrollWait;
