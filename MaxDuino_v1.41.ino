@@ -186,6 +186,10 @@ byte blockID[maxblock];
 
 #if (SPLASH_SCREEN && TIMEOUT_RESET)
     void(* resetFunc) (void) = 0;//declare reset function at adress 0
+    /*void resetFunc() // Restarts program from beginning but does not reset the peripherals and registers
+    {
+    asm volatile ("  jmp 0");
+    }*/
 #endif
 
 void setup() {
@@ -358,7 +362,7 @@ void loop(void) {
       if (millis() - timeDiff_reset > 1000) //check timeout reset every second
       {
         timeDiff_reset = millis(); // get current millisecond count
-        if (!pauseOn and start==0)
+        if (start==0)
         {
           timeout_reset--;
           if (timeout_reset==0)
@@ -370,7 +374,7 @@ void loop(void) {
         else
         {
           timeout_reset = TIMEOUT_RESET;
-        }
+        }    
       }
   #endif
     
