@@ -2,7 +2,7 @@
 /*                          Add // at the beginning of lines to comment and remove selected option                        */
 //*******************************************  OPTIONAL USE TO SAVE SPACE  ***********************************************//
 #define Use_MENU                           // removing menu saves space
-//#define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
+#define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
 #define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
     //#define Use_c112                    // integer gap chunk for .uef
     #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
@@ -51,7 +51,7 @@ byte lineaxy=2;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
+//#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
 #define TIMEOUT_RESET   60 // Timeout for reset tzxduino (without pause or play activated), comment to not reset.
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EEPROM LOGO. How to move to EEPROM, saving memory:
