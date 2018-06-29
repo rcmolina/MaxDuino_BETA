@@ -1,4 +1,4 @@
-#define VERSION "v1.41 MaxDuino"
+#define VERSION "v1.42 MaxDuino"
 // ---------------------------------------------------------------------------------
 // DO NOT USE CLASS-10 CARDS on this project - they're too fast to operate using SPI
 // ---------------------------------------------------------------------------------
