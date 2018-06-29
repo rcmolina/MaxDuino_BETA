@@ -77,7 +77,8 @@
  //                     Reworked acorn chunk 116 floating point conversion to integer.
  //               V1.41 New logos from project Sugarless (@spark2k06/@yoxxxoy). New SPLASH_SCREEN configuration (@spark2k06).
  //                     Better .tsx start/stopbits support: Now working with SVI-3x8 machines!
- //               V1.42 Bugs solved: Rewinding block not showing first digit correctly. LCD printing when block ID not recognized again in hex 
+ //               V1.42 Bugs solved: Rewinding block not showing first digit correctly (@acf76es). 
+ //                     LCD printing when block ID not recognized again in hex 
  //
 #include <SdFat.h>
 #include <TimerOne.h>
