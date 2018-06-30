@@ -1000,10 +1000,12 @@ void TZXProcess() {
             lcd.print("ID? ");
             lcd.setCursor(4,0);
             //lcd.print(String(currentID, HEX));
-            lcd.print(currentID);
+            utoa(currentID,PlayBytes,16);
+            lcd.print(PlayBytes);
             lcd.setCursor(0,1);
             //lcd.print(String(bytesRead,HEX) + " - L: " + String(loopCount, DEC));
-            lcd.print(bytesRead) ; // lcd.print(" - L: "); lcd.print(loopCount);
+            utoa(bytesRead,PlayBytes,16);
+            lcd.print(PlayBytes) ;  lcd.print(" - L: "); lcd.print(loopCount);
           #endif
 
           #ifdef OLED1306
