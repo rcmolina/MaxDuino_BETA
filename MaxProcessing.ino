@@ -735,7 +735,7 @@ void TZXProcess() {
                     onePulse = TickToUs(outWord);
                   }
               } else {
-                  //Fixed speedup baudrate, reduced pilot duration
+                  //Begin of TSX_SPEEDUP: Fixed speedup baudrate, reduced pilot duration
                   pilotPulses = BAUDRATE/1200*5000;
                   bytesRead += 8;
                   switch(BAUDRATE){
