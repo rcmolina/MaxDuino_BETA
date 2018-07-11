@@ -527,7 +527,13 @@ static void init_OLED(void)
     sendcommand(0xD5);            //SETDISPLAYCLOCKDIV
     sendcommand(0x80);            // the suggested ratio 0x80
     sendcommand(0xA8);            //SSD1306_SETMULTIPLEX
-    sendcommand(0x1f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
+
+    #ifdef OLED1106_1.3
+      sendcommand(0x3f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
+    #else
+      sendcommand(0x1f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
+    #endif
+    
     sendcommand(0xD3);            //SETDISPLAYOFFSET
     sendcommand(0x0);             //no offset
     sendcommand(0x40 | 0x0);      //SETSTARTLINE
