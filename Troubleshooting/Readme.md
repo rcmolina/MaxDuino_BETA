@@ -1,1 +1,1 @@
-Backup of all previuos versions to help to identify fron which the fault is on.
+Backup of all previuous versions to help to identify from which one the fault comes from.
