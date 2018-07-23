@@ -78,7 +78,8 @@
  //               V1.41 New logos from project Sugarless (@spark2k06/@yoxxxoy). New SPLASH_SCREEN configuration (@spark2k06).
  //                     Better .tsx start/stopbits support: Now working with SVI-3x8 machines!
  //               V1.42 Bugs solved: Rewinding block not showing first digit correctly (@acf76es). 
- //                     LCD printing when block ID not recognized again in hex 
+ //                     LCD printing when block ID not recognized again in hex. First support of 1,3" oled SH1106 but using 128x32 
+ //                     and not 128x64
  //
 #include <SdFat.h>
 #include <TimerOne.h>

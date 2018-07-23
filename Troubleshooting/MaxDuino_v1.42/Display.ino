@@ -529,7 +529,7 @@ static void init_OLED(void)
     sendcommand(0xA8);            //SSD1306_SETMULTIPLEX
 
     #ifdef OLED1106_1.3
-      sendcommand(0x3f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
+      sendcommand(0x1f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
     #else
       sendcommand(0x1f); //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f
     #endif
