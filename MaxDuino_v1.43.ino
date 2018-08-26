@@ -691,11 +691,14 @@ void loop(void) {
 */
        if (block > 0) block--;
        else block = 99; 
+/*    
        EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
        EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
        currentTask=PROCESSID; 
        
-       SetPlayBlock();       
+       SetPlayBlock();
+*/
+       GetAndPlayBlock();       
        debounce(btnUp);         
 /*       while(digitalRead(btnUp)==LOW) {
          //prevent button repeats by waiting until the button is released.
@@ -720,12 +723,14 @@ void loop(void) {
           oldMaxBlock = block;
           block = oldMinBlock + (oldMaxBlock - oldMinBlock)/2;
         }
-               
+/*               
        EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
        EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
        currentTask=PROCESSID; 
        
-       SetPlayBlock();       
+       SetPlayBlock();
+*/
+       GetAndPlayBlock();    
        debounce(btnUp);         
 /*       while(digitalRead(btnUp)==LOW) {
          //prevent button repeats by waiting until the button is released.
@@ -783,11 +788,14 @@ void loop(void) {
 */
        if (block < 99) block++;
        else block = 0;
+/*
        EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
        EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
        currentTask=PROCESSID;
        
-       SetPlayBlock(); 
+       SetPlayBlock();
+*/
+       GetAndPlayBlock();    
        debounce(btnDown);                  
 /*       while(digitalRead(btnDown)==LOW) {
          //prevent button repeats by waiting until the button is released.
@@ -811,12 +819,14 @@ void loop(void) {
           oldMinBlock = block;
           block = oldMinBlock + 1+ (oldMaxBlock - oldMinBlock)/2;
         } 
-      
+/*      
        EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
        EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
        currentTask=PROCESSID;
        
-       SetPlayBlock(); 
+       SetPlayBlock();
+*/
+       GetAndPlayBlock();    
        debounce(btnDown);                  
 /*       while(digitalRead(btnDown)==LOW) {
          //prevent button repeats by waiting until the button is released.
@@ -1470,5 +1480,14 @@ void SetPlayBlock()
        EndOfFile=false;
        digitalWrite(outputPin, pinState);
 */   
+}
+
+void GetAndPlayBlock()
+{
+   EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
+   EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
+   currentTask=PROCESSID; 
+   
+   SetPlayBlock(); 
 }
 
