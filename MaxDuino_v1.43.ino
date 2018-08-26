@@ -689,6 +689,8 @@ void loop(void) {
        bytesRead=0;                       // for both tap and tzx, no header for tap
        currentTask=GETFILEHEADER;         //First task (default): search for tzx header
 */
+       oldMinBlock = 0;
+       oldMaxBlock = 99;
        if (block > 0) block--;
        else block = 99; 
 /*    
@@ -719,7 +721,7 @@ void loop(void) {
        currentTask=GETFILEHEADER;         //First task (default): search for tzx header
 */
 
-        if (block >0) {
+        if (block >oldMinBlock) {
           oldMaxBlock = block;
           block = oldMinBlock + (oldMaxBlock - oldMinBlock)/2;
         }
@@ -786,6 +788,8 @@ void loop(void) {
        bytesRead=0;                       // for both tap and tzx, no header for tap
        currentTask=GETFILEHEADER;         //First task (default): search for tzx header
 */
+       oldMinBlock = 0;
+       oldMaxBlock = 99;
        if (block < 99) block++;
        else block = 0;
 /*
@@ -927,6 +931,8 @@ void debounce(int boton){
 
 void upFile() {    
   //move up a file in the directory
+  oldMinFile = 1;
+  oldMaxFile = maxFile;
   currentFile--;
   if(currentFile<1) {
     getMaxFile();
@@ -938,6 +944,8 @@ void upFile() {
 
 void downFile() {    
   //move down a file in the directory
+  oldMinFile = 1;
+  oldMaxFile = maxFile;
   currentFile++;
   if(currentFile>maxFile) { currentFile=1; }
   REWIND=0;  
@@ -947,7 +955,7 @@ void downFile() {
 void upHalfSearchFile() {    
   //move up to half-pos between oldMinFile and currentFile
 
-  if (currentFile >1) {
+  if (currentFile >oldMinFile) {
     oldMaxFile = currentFile;
     currentFile = oldMinFile + (oldMaxFile - oldMinFile)/2;
     
