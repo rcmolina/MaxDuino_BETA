@@ -528,7 +528,7 @@ void loop(void) {
      }
 
 
-     if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1){
+     if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1 && digitalRead(btnStop)==LOW ){
        // change tsx speed control/zx polarity/uefTurboMode
        TSXCONTROLzxpolarityUEFTURBO = !TSXCONTROLzxpolarityUEFTURBO;
        #ifdef OLED1306 
@@ -677,7 +677,9 @@ void loop(void) {
 */
      }     
 
-     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1) {
+
+//// up sequential search for block
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot) ) {
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -701,7 +703,38 @@ void loop(void) {
        }
  */      
      }
-         
+
+/// up half-interval search for block
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {
+
+/*
+       bytesRead=11;                     // for tzx skip header(10) + GETID(11)
+       currentTask=PROCESSID;
+*/
+/*
+       bytesRead=0;                       // for both tap and tzx, no header for tap
+       currentTask=GETFILEHEADER;         //First task (default): search for tzx header
+*/
+
+        if (block >0) {
+          oldMaxBlock = block;
+          block = oldMinBlock + (oldMaxBlock - oldMinBlock)/2;
+        }
+               
+       EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
+       EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
+       currentTask=PROCESSID; 
+       
+       SetPlayBlock();       
+       debounce(btnUp);         
+/*       while(digitalRead(btnUp)==LOW) {
+         //prevent button repeats by waiting until the button is released.
+         delay(50); 
+       }
+ */      
+     }
+
+//// up sequential search on dir  
      if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot) ) {
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
@@ -718,7 +751,8 @@ void loop(void) {
        }
 */
      }
-//// up half-interval search
+     
+//// up half-interval search on dir
      if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot)==LOW) {
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
@@ -736,7 +770,8 @@ void loop(void) {
 */
      }
 
-     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1) {
+//// down sequential search for block
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)) {
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -760,7 +795,37 @@ void loop(void) {
        }
 */
      }
-     
+
+//// down half-interval search for block
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {
+
+/*
+       bytesRead=11;                     // for tzx skip header(10) + GETID(11)
+       currentTask=PROCESSID;
+*/
+/*
+       bytesRead=0;                       // for both tap and tzx, no header for tap
+       currentTask=GETFILEHEADER;         //First task (default): search for tzx header
+*/
+        if (block <oldMaxBlock) {
+          oldMinBlock = block;
+          block = oldMinBlock + 1+ (oldMaxBlock - oldMinBlock)/2;
+        } 
+      
+       EEPROM.get(BLOCK_EEPROM_START+5*block, bytesRead);
+       EEPROM.get(BLOCK_EEPROM_START+4+5*block, currentID);
+       currentTask=PROCESSID;
+       
+       SetPlayBlock(); 
+       debounce(btnDown);                  
+/*       while(digitalRead(btnDown)==LOW) {
+         //prevent button repeats by waiting until the button is released.
+         delay(50);
+       }
+*/
+     }
+
+//// down sequential search on dir     
      if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)) {
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
@@ -778,7 +843,7 @@ void loop(void) {
 */
      }
      
-//// up half-interval search
+//// down half-interval search on dir
      if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)==LOW ) {
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;

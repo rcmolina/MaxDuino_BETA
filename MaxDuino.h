@@ -216,6 +216,8 @@ volatile byte currentChar=0;
 volatile byte currentByte=0;
 
 byte block = 0;
+byte oldMinBlock = 0;
+byte oldMaxBlock = 99;
 
 
 PROGMEM const char UEFFile[9] = {'U','E','F',' ','F','i','l','e','!'};
