@@ -82,7 +82,7 @@
  //                     LCD printing when block ID not recognized again in hex. First support of 1,3" oled SH1106 but using 128x32 
  //                     and not 128x64
  //               V1.43 Implemented half-interval (logarithmic) search for dirs and block selection. Now root button used as pivot.
- //                     Menu funcions now activated with ROOT + STOP, new half-interval search with ROOT + FF/REW. (Frank Schröder)
+ //                     Menu funcions now activated with ROOT + STOP, new half-interval search with ROOT + UP/DOWN. (Frank Schröder)
  //             
 #include <SdFat.h>
 #include <TimerOne.h>
