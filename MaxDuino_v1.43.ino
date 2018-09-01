@@ -193,6 +193,8 @@ char PlayBytes[subdirLength];
 unsigned long blockOffset[maxblock];
 byte blockID[maxblock];
 
+byte lastbtn=true;
+
 #if (SPLASH_SCREEN && TIMEOUT_RESET)
     void(* resetFunc) (void) = 0;//declare reset function at adress 0
     /*void resetFunc() // Restarts program from beginning but does not reset the peripherals and registers
@@ -344,7 +346,6 @@ void setup() {
 }
 
 void loop(void) {
-  
   if(start==1)
   {
     //TZXLoop only runs if a file is playing, and keeps the buffer full.
@@ -544,6 +545,30 @@ void loop(void) {
 
      }
 
+     checkLastButton();
+     if(digitalRead(btnRoot)==LOW && start==0 && !lastbtn) {
+     //if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){
+      #ifdef LCDSCREEN16x2
+        lcd.setCursor(0,0);
+        lcd.print(BAUDRATE);
+        lcd.print(' ');
+        if(mselectMask==1) lcd.print(F(" M:ON"));
+        else lcd.print(F("m:off"));
+        lcd.print(' ');
+        if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
+        else lcd.print(F("%^off")); 
+      #else 
+        printtextF(PSTR("Help"),0);                                      
+      #endif
+       while(digitalRead(btnRoot)==LOW && !lastbtn) {
+         //prevent button repeats by waiting until the button is released.
+         //delay(50);
+         lastbtn = 1;
+         checkLastButton();           
+       }
+      printtext(PlayBytes,0);
+     }
+
      if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
@@ -556,7 +581,8 @@ void loop(void) {
         #ifdef Use_MENU
            menuMode();
            //setBaud();
-           printtextF(PSTR(VERSION),0);
+           //printtextF(PSTR(VERSION),0);
+           printtext(PlayBytes,0);
            //lcd_clearline(1);
           #ifdef LCDSCREEN16x2
             printtextF(PSTR(""),1);

@@ -29,7 +29,7 @@ void menuMode()
  *  
  *  Save settings to eeprom on exit. 
  */
- byte lastbtn=true;
+// byte lastbtn=true;
 
  void menuMode()
  { 
@@ -426,5 +426,7 @@ void menuMode()
 void checkLastButton()
 {
   if(digitalRead(btnDown) && digitalRead(btnUp) && digitalRead(btnPlay) && digitalRead(btnStop)) lastbtn=false; 
+        //    setXY(0,0);
+        //  sendChar(lastbtn+'0');
 }
 
