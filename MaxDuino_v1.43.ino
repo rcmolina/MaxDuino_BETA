@@ -558,7 +558,8 @@ void loop(void) {
         if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
         else lcd.print(F("%^off")); 
       #else 
-        printtextF(PSTR("Help"),0);                                      
+        //printtextF(PSTR("Help"),0);
+        printtextF(PSTR(VERSION),0);                                      
       #endif
        while(digitalRead(btnRoot)==LOW && !lastbtn) {
          //prevent button repeats by waiting until the button is released.
