@@ -614,8 +614,8 @@ void loop(void) {
      #endif
      
      #if defined(LCDSCREEN16x2) && defined(SHOW_BLOCKPOS_LCD)
-       if(digitalRead(btnRoot)==LOW && start==1 && !lastbtn) {                                          // show min-max block
-       //if(digitalRead(btnRoot)==LOW && start==1 && digitalRead(btnStop)==LOW ){
+       if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1 && !lastbtn) {                                          // show min-max block
+       //if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1 && digitalRead(btnStop)==LOW ){
 /*  
         lcd.setCursor(0,0);
         lcd.print(BAUDRATE);

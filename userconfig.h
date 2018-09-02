@@ -44,7 +44,7 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss
 //#define  cntrMSS                  // if not defined use sss format, if defined m:ss
 
-//#define SHOW_DIRPOS
+#define SHOW_DIRPOS
     //#define SHOW_STATUS_LCD
     //#define SHOW_DIRNAMES
     
