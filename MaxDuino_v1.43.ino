@@ -594,7 +594,7 @@ void loop(void) {
        }
      #endif
      
-     #ifdef LCDSCREEN16x2
+     #if defined(LCDSCREEN16x2) && defined(SHOW_BLOCKPOS_LCD)
        if(digitalRead(btnRoot)==LOW && start==1 && !lastbtn) {                                          // show min-max block
        //if(digitalRead(btnRoot)==LOW && start==1 && digitalRead(btnStop)==LOW ){
 /*  

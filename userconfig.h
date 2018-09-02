@@ -56,6 +56,8 @@ byte lineaxy=2;
 //#define SHOW_DIRPOS
     //#define SHOW_STATUS_LCD
 
+#define SHOW_BLOCKPOS_LCD
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
 #define TIMEOUT_RESET   60 // Timeout for reset tzxduino (without pause or play activated), comment to not reset.
