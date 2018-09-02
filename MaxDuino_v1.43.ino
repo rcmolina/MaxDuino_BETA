@@ -179,6 +179,9 @@ int currentFile = 1;                //Current position in directory
 int maxFile = 0;                    //Total number of files in directory
 int oldMinFile = 1;
 int oldMaxFile = 0;
+#define fnameLength  5
+char oldMinFileName[fnameLength];
+char oldMaxFileName[fnameLength];
 byte isDir = 0;                     //Is the current file a directory
 unsigned long timeDiff = 0;         //button debounce
 
@@ -331,6 +334,9 @@ void setup() {
        
   getMaxFile();                     //get the total number of files in the directory
   seekFile(currentFile);            //move to the first file in the directory
+  #ifdef SHOW_DIRNAMES
+    str4cpy(oldMinFileName,fileName);
+  #endif
   #ifdef Use_MENU
     loadEEPROM();
   #endif  
@@ -550,7 +556,7 @@ void loop(void) {
        if(digitalRead(btnRoot)==LOW && start==0 && !lastbtn) {                                          // show min-max dir
        //if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){ 
          //printtextF(PSTR(VERSION),0);
-        #if defined(LCDSCREEN16x2) && !defined(SHOW_STATUS_LCD)
+        #if defined(LCDSCREEN16x2) && !defined(SHOW_STATUS_LCD) && !defined(SHOW_DIRNAMES)
            char len=0;
            lcd.setCursor(0,0); 
     
@@ -571,7 +577,14 @@ void loop(void) {
            if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
            else lcd.print(F("%^off"));         
         #endif 
-        #ifdef OLED1306)
+        #if defined(LCDSCREEN16x2) && defined(SHOW_DIRNAMES)
+          lcd.setCursor(0,0);
+          lcd.print(oldMinFileName);lcd.print(' ');lcd.print('<');
+          str4cpy(input,fileName);
+          lcd.print((char *)input);lcd.print('<');lcd.print(' ');
+          lcd.print(oldMaxFileName);                  
+        #endif                
+        #if defined(OLED1306) && !defined(SHOW_DIRNAMES)
           char len=0;
           setXY(0,0);
           //sendStr(itoa(oldMinFile,input,10));sendChar('<');
@@ -583,7 +596,13 @@ void loop(void) {
           //const char len=strlen(itoa(oldMinFile,input,10)) + 1 + strlen(itoa(currentFile,input,10)) + 1 + strlen(itoa(oldMaxFile,input,10));
           for(char x=len;x<16;x++) sendChar(' ');                       
         #endif
-        
+        #if defined(OLED1306) && defined(SHOW_DIRNAMES)
+          setXY(0,0);
+          sendStr(oldMinFileName);sendChar(' ');sendChar('<');
+          str4cpy(input,fileName);
+          sendStr(input);sendChar('<');sendChar(' ');
+          sendStr(oldMaxFileName);
+        #endif        
          while(digitalRead(btnRoot)==LOW && !lastbtn) {
            //prevent button repeats by waiting until the button is released.
            //delay(50);
@@ -723,6 +742,9 @@ void loop(void) {
        getMaxFile();
        //currentFile=1;
        currentFile=DirFilePos[subdir];
+       #ifdef LCDSCREEN16x2
+          oldMinFile =1;   // Check and activate when new space for OLED
+       #endif
        
 /*          PlayBytes[0]='\0'; itoa(currentFile,PlayBytes,10); 
           printtext(PlayBytes,0);
@@ -1034,6 +1056,9 @@ void upHalfSearchFile() {
 
   if (currentFile >oldMinFile) {
     oldMaxFile = currentFile;
+    #ifdef SHOW_DIRNAMES
+      str4cpy(oldMaxFileName,fileName);
+    #endif
     currentFile = oldMinFile + (oldMaxFile - oldMinFile)/2;
     
     REWIND=1;   
@@ -1046,6 +1071,9 @@ void downHalfSearchFile() {
 
   if (currentFile <oldMaxFile) {
     oldMinFile = currentFile;
+    #ifdef SHOW_DIRNAMES
+      str4cpy(oldMinFileName,fileName);
+    #endif
     currentFile = oldMinFile + 1+ (oldMaxFile - oldMinFile)/2;
   
     REWIND=1;  
@@ -1203,6 +1231,9 @@ void changeDir() {
   }
   getMaxFile();
   currentFile=1;
+  #ifdef LCDSCREEN16x2
+    oldMinFile=1;  // Cheack and activate when new space for OLED
+  #endif
   seekFile(currentFile);
 }
 
@@ -1592,5 +1623,16 @@ void GetAndPlayBlock()
    currentTask=PROCESSID; 
    
    SetPlayBlock(); 
+}
+
+void str4cpy (char *dest, char *src)
+{
+  char x =0;
+  while (*(src+x)) {
+       dest[x] = src[x];
+       x++;
+  }
+  for(x; x<4; x++) dest[x]=' ';
+  dest[4]=0; 
 }
 

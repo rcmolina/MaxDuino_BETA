@@ -44,6 +44,11 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss
 //#define  cntrMSS                  // if not defined use sss format, if defined m:ss
 
+//#define SHOW_DIRPOS
+    //#define SHOW_STATUS_LCD
+    //#define SHOW_DIRNAMES
+    
+#define SHOW_BLOCKPOS_LCD
 #define XY                         // use original settings for Oled line 0,1 and status for menu
 //#define XY2                      // use double size font wihtout status line for menu
 #ifdef XY
@@ -52,11 +57,6 @@ byte lineaxy=1;
 #ifdef XY2
 byte lineaxy=2;
 #endif
-
-//#define SHOW_DIRPOS
-    //#define SHOW_STATUS_LCD
-
-#define SHOW_BLOCKPOS_LCD
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
