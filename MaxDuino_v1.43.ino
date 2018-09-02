@@ -742,9 +742,7 @@ void loop(void) {
        getMaxFile();
        //currentFile=1;
        currentFile=DirFilePos[subdir];
-       #ifdef LCDSCREEN16x2
-          oldMinFile =1;   // Check and activate when new space for OLED
-       #endif
+       oldMinFile =1;   // Check and activate when new space for OLED
        
 /*          PlayBytes[0]='\0'; itoa(currentFile,PlayBytes,10); 
           printtext(PlayBytes,0);
@@ -1197,7 +1195,7 @@ void getMaxFile() {
     maxFile++;
   }
   oldMaxFile = maxFile;
-  entry.cwd()->rewind();
+  //entry.cwd()->rewind();
 }
 
 
@@ -1231,9 +1229,7 @@ void changeDir() {
   }
   getMaxFile();
   currentFile=1;
-  #ifdef LCDSCREEN16x2
-    oldMinFile=1;  // Cheack and activate when new space for OLED
-  #endif
+  oldMinFile=1;  // Cheack and activate when new space for OLED
   seekFile(currentFile);
 }
 
