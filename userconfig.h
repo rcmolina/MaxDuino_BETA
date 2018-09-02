@@ -53,6 +53,9 @@ byte lineaxy=1;
 byte lineaxy=2;
 #endif
 
+//#define SHOW_DIRPOS
+    //#define SHOW_STATUS_LCD
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
 #define TIMEOUT_RESET   60 // Timeout for reset tzxduino (without pause or play activated), comment to not reset.
@@ -74,4 +77,3 @@ byte lineaxy=2;
 //#define LOGOMAXDUINO4            // new logo4 created by rcmolina
 //#define SUGARLESS_1              // new logo cretaed bt YoxxxoY
 //#define SUGARLESS_2              // new logo created by YoxxxoY
-

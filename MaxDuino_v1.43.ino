@@ -531,7 +531,7 @@ void loop(void) {
      }
 
 
-     if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1 && digitalRead(btnStop)==LOW ){
+     if(digitalRead(btnRoot)==LOW && start==1 && pauseOn==1 && digitalRead(btnStop)==LOW ){             // change polarity
        // change tsx speed control/zx polarity/uefTurboMode
        TSXCONTROLzxpolarityUEFTURBO = !TSXCONTROLzxpolarityUEFTURBO;
        #ifdef OLED1306 
@@ -546,9 +546,58 @@ void loop(void) {
      }
 
      checkLastButton();
-     if(digitalRead(btnRoot)==LOW && start==0 && !lastbtn) {
-     //if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){
-      #ifdef LCDSCREEN16x2
+     #ifdef SHOW_DIRPOS
+       if(digitalRead(btnRoot)==LOW && start==0 && !lastbtn) {                                          // show min-max dir
+       //if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){ 
+         //printtextF(PSTR(VERSION),0);
+        #if defined(LCDSCREEN16x2) && !defined(SHOW_STATUS_LCD)
+           char len=0;
+           lcd.setCursor(0,0); 
+    
+           lcd.print(itoa(oldMinFile,input,10)); lcd.print('<'); len += strlen(input) + 1;
+           lcd.print(itoa(currentFile,input,10)); lcd.print('<'); len += strlen(input) + 1;
+           lcd.print(itoa(oldMaxFile,input,10)); len += strlen(input); 
+           //lcd.print(oldMinFile);lcd.print('<');lcd.print(currentFile);lcd.print('<');lcd.print(oldMaxFile);
+           //const char len=strlen(itoa(oldMinFile,input,10)) + 1 + strlen(itoa(currentFile,input,10)) + 1 + strlen(itoa(oldMaxFile,input,10));
+           for(char x=len;x<16;x++) lcd.print(' '); 
+        #endif
+        #if defined(LCDSCREEN16x2) && defined(SHOW_STATUS_LCD)        
+           lcd.setCursor(0,0);
+           lcd.print(BAUDRATE);
+           lcd.print(' ');
+           if(mselectMask==1) lcd.print(F(" M:ON"));
+           else lcd.print(F("m:off"));
+           lcd.print(' ');
+           if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
+           else lcd.print(F("%^off"));         
+        #endif 
+        #ifdef OLED1306)
+          char len=0;
+          setXY(0,0);
+          //sendStr(itoa(oldMinFile,input,10));sendChar('<');
+          itoa(oldMinFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;
+          //sendStr(itoa(currentFile,input,10));sendChar('<');
+          itoa(currentFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;       
+          //sendStr(itoa(oldMaxFile,input,10));
+          itoa(oldMaxFile,input,10); sendStr(input);  len += strlen(input);                      
+          //const char len=strlen(itoa(oldMinFile,input,10)) + 1 + strlen(itoa(currentFile,input,10)) + 1 + strlen(itoa(oldMaxFile,input,10));
+          for(char x=len;x<16;x++) sendChar(' ');                       
+        #endif
+        
+         while(digitalRead(btnRoot)==LOW && !lastbtn) {
+           //prevent button repeats by waiting until the button is released.
+           //delay(50);
+           lastbtn = 1;
+           checkLastButton();           
+         }        
+         printtext(PlayBytes,0);
+       }
+     #endif
+     
+     #ifdef LCDSCREEN16x2
+       if(digitalRead(btnRoot)==LOW && start==1 && !lastbtn) {                                          // show min-max block
+       //if(digitalRead(btnRoot)==LOW && start==1 && digitalRead(btnStop)==LOW ){
+/*  
         lcd.setCursor(0,0);
         lcd.print(BAUDRATE);
         lcd.print(' ');
@@ -556,21 +605,28 @@ void loop(void) {
         else lcd.print(F("m:off"));
         lcd.print(' ');
         if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
-        else lcd.print(F("%^off")); 
-      #else 
-        //printtextF(PSTR("Help"),0);
-        printtextF(PSTR(VERSION),0);                                      
-      #endif
-       while(digitalRead(btnRoot)==LOW && !lastbtn) {
+        else lcd.print(F("%^off"));                                     ^
+*/
+        lcd.setCursor(11,0);
+         if (TSXCONTROLzxpolarityUEFTURBO == 1) lcd.print(F(" %^ON"));
+        else lcd.print(F("%^off"));  
+               
+        while(digitalRead(btnRoot)==LOW && start==1 && !lastbtn) {
          //prevent button repeats by waiting until the button is released.
          //delay(50);
          lastbtn = 1;
          checkLastButton();           
+        }
+        //printtextF(PSTR("Help"),0);       
+        //printtext(PlayBytes,0);
+        lcd.setCursor(11,0);
+        lcd.print(' ');
+        lcd.print(' ');
+        lcd.print(PlayBytes);        
        }
-      printtext(PlayBytes,0);
-     }
-
-     if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){
+      #endif
+      
+     if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){                   // go menu
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
@@ -619,7 +675,7 @@ void loop(void) {
 */       
      }
      
-     if(digitalRead(btnStop)==LOW && start==1) {
+     if(digitalRead(btnStop)==LOW && start==1 && digitalRead(btnRoot)) {                                                        // stop
        stopFile();
 
        debounce(btnStop);
@@ -630,7 +686,7 @@ void loop(void) {
        }
 */       
      }
-     if(digitalRead(btnStop)==LOW && start==0 && subdir >0) { 
+     if(digitalRead(btnStop)==LOW && start==0 && subdir >0) {                                         // back subdir
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif     
@@ -707,8 +763,7 @@ void loop(void) {
      }     
 
 
-//// up sequential search for block
-     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot) ) {
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot) ) {             //  up block sequential search
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -738,8 +793,7 @@ void loop(void) {
  */      
      }
 
-/// up half-interval search for block
-     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {         // up block half-interval search
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -770,8 +824,7 @@ void loop(void) {
  */      
      }
 
-//// up sequential search on dir  
-     if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot) ) {
+     if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot) ) {                         // up dir sequential search
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
@@ -788,8 +841,7 @@ void loop(void) {
 */
      }
      
-//// up half-interval search on dir
-     if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot)==LOW) {
+     if(digitalRead(btnUp)==LOW && start==0 && digitalRead(btnRoot)==LOW) {                     // up dir half-interval search
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
@@ -806,8 +858,7 @@ void loop(void) {
 */
      }
 
-//// down sequential search for block
-     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)) {
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)) {            // down block sequential search
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -837,8 +888,7 @@ void loop(void) {
 */
      }
 
-//// down half-interval search for block
-     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)==LOW) {     // down block half-interval search
 
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -867,9 +917,8 @@ void loop(void) {
        }
 */
      }
-
-//// down sequential search on dir     
-     if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)) {
+   
+     if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)) {                    // down dir sequential search
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
@@ -886,8 +935,7 @@ void loop(void) {
 */
      }
      
-//// down half-interval search on dir
-     if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)==LOW ) {
+     if(digitalRead(btnDown)==LOW && start==0 && digitalRead(btnRoot)==LOW ) {              // down dir half-interval search
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
