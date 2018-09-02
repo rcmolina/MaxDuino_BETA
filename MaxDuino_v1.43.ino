@@ -588,11 +588,16 @@ void loop(void) {
           char len=0;
           setXY(0,0);
           //sendStr(itoa(oldMinFile,input,10));sendChar('<');
-          itoa(oldMinFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;
+          //itoa(oldMinFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;
+          sendStr(itoa(oldMinFile,input,10));sendChar('<');len += strlen(input) + 1;
+          
           //sendStr(itoa(currentFile,input,10));sendChar('<');
-          itoa(currentFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;       
+          //itoa(currentFile,input,10); sendStr(input);sendChar('<'); len += strlen(input) + 1;
+          sendStr(itoa(currentFile,input,10));sendChar('<'); len += strlen(input) + 1;
+                
           //sendStr(itoa(oldMaxFile,input,10));
-          itoa(oldMaxFile,input,10); sendStr(input);  len += strlen(input);                      
+          //itoa(oldMaxFile,input,10); sendStr(input);  len += strlen(input);
+          sendStr(itoa(oldMaxFile,input,10)); len += strlen(input);                   
           //const char len=strlen(itoa(oldMinFile,input,10)) + 1 + strlen(itoa(currentFile,input,10)) + 1 + strlen(itoa(oldMaxFile,input,10));
           for(char x=len;x<16;x++) sendChar(' ');                       
         #endif
