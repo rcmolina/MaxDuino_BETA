@@ -6,7 +6,8 @@ void checkForEXT (char *filename) {
     Timer1.attachInterrupt(wave2);
     Timer1.stop();                            //Stop the timer until we're ready    
 */    
-  if(checkForTap(filename)) {                 //Check for Tap File.  As these have no header we can skip straight to playing data
+  //if(checkForTap(filename)) {                 //Check for Tap File.  As these have no header we can skip straight to playing data
+  if(checkFor(PSTR(".tap"),filename)) {                 //Check for Tap File.  As these have no header we can skip straight to playing data
     casduino =0;
  /*   Timer1.initialize(100000);                //100ms pause prevents anything bad happening before we're ready
     Timer1.attachInterrupt(wave2);
@@ -15,7 +16,8 @@ void checkForEXT (char *filename) {
     currentID=TAP;
     //printtextF(PSTR("TAP Playing"),0);
   }
-  if(checkForP(filename)) {                 //Check for P File.  As these have no header we can skip straight to playing data
+  //if(checkForP(filename)) {                 //Check for P File.  As these have no header we can skip straight to playing data
+  if(checkFor(PSTR(".p"),filename)) {                 //Check for P File.  As these have no header we can skip straight to playing data
     casduino=0;
 /*    Timer1.initialize(100000);                //100ms pause prevents anything bad happening before we're ready
     Timer1.attachInterrupt(wave2);
@@ -24,7 +26,8 @@ void checkForEXT (char *filename) {
     currentID=ZXP;
     //printtextF(PSTR("ZX81 P Playing"),0);
   }
-  if(checkForO(filename)) {                 //Check for O File.  As these have no header we can skip straight to playing data
+  //if(checkForO(filename)) {                 //Check for O File.  As these have no header we can skip straight to playing data
+  if(checkFor(PSTR(".o"),filename)) {                 //Check for O File.  As these have no header we can skip straight to playing data    
     casduino =0;
  /*   Timer1.initialize(100000);                //100ms pause prevents anything bad happening before we're ready
     Timer1.attachInterrupt(wave2);
@@ -33,7 +36,10 @@ void checkForEXT (char *filename) {
     currentID=ZXO;
     //printtextF(PSTR("ZX80 O Playing"),0);
   }
-  if(checkForAY(filename)) {                 //Check for AY File.  As these have no TAP header we must create it and send AY DATA Block after
+  
+#ifdef AYPLAY
+  //if(checkForAY(filename)) {                 //Check for AY File.  As these have no TAP header we must create it and send AY DATA Block after
+  if(checkFor(PSTR(".ay"),filename)) {                 //Check for AY File.  As these have no TAP header we must create it and send AY DATA Block after    
     casduino =0;    
 /*    Timer1.initialize(100000);                //100ms pause prevents anything bad happening before we're ready
     Timer1.attachInterrupt(wave2);
@@ -44,8 +50,11 @@ void checkForEXT (char *filename) {
     hdrptr = HDRSTART;                      // Start reading from position 1 -> 0x13 [0x00]
     //printtextF(PSTR("AY Playing"),0);
   }
+#endif
+  
 #ifdef Use_UEF
-  if(checkForUEF(filename)) {                 //Check for UEF File. 
+  //if(checkForUEF(filename)) {                 //Check for UEF File. 
+  if(checkFor(PSTR(".uef"),filename)) {                 //Check for UEF File.     
     currentTask=GETUEFHEADER;
     currentID=UEF;
     //Serial.println(F("UEF playing"));
@@ -54,7 +63,8 @@ void checkForEXT (char *filename) {
 #endif 
 
 //#ifdef Use_CAS 
-  if(checkForCAS(filename)) {                 //Check for CAS File.  As these have no header we can skip straight to playing data
+  //if(checkForCAS(filename)) {                 //Check for CAS File.  As these have no header we can skip straight to playing data
+  if(checkFor(PSTR(".cas"),filename)) {                 //Check for CAS File.  As these have no header we can skip straight to playing data    
     //printtextF(PSTR("CAS Playing"),0);
     casduino = 1;
 /*
@@ -117,6 +127,40 @@ void checkForEXT (char *filename) {
 }
 */
 
+bool checkFor(const char* ext, char *filename) {
+  //Check for .xxx file extension as these have no header
+  char x =0;
+  while (*(filename+x) && (*(filename+x) != '.')) {
+    x++;
+  }
+
+  if(strstr_P(strlwr(filename + x), ext)) {
+    return true;
+  }
+  return false;
+
+
+/*
+  byte extbegin =  strlen(filename)- strlen_P(ext);  
+  if(strstr_P(strlwr(filename + extbegin), ext)) {
+    return true;
+  }
+  return false;
+*/
+/*
+  char x =0;
+  while (*(filename+x) && (*(filename+x) != '.')) {
+    x++;
+  }
+  boolean goflag = true;
+  while (char ch=pgm_read_byte(ext) && goflag) {
+    if (*(filename+x) != ch) goflag = false;
+    ext++;
+    x++;
+  }
+  return goflag;
+*/
+}
 
 //#ifdef Use_CAS
 bool checkForCAS(char *filename) {
@@ -156,6 +200,7 @@ bool checkForO(char *filename) {
   return false;
 }
 
+//#ifdef AYPLAY
 bool checkForAY(char *filename) {
   //Check for AY file extensions as these have no header
   byte len = strlen(filename);
@@ -164,8 +209,9 @@ bool checkForAY(char *filename) {
   }
   return false;
 }
+//#endif
 
-#ifdef Use_UEF
+//#ifdef Use_UEF
 bool checkForUEF(char *filename) {
   //Serial.println(F("checkForUEF"));
   byte len = strlen(filename);
@@ -174,6 +220,6 @@ bool checkForUEF(char *filename) {
   }
   return false;
 }
-#endif
+//#endif
 
 
