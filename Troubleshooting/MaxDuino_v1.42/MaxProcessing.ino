@@ -1040,10 +1040,12 @@ void TZXProcess() {
           #endif
   
           //delay(8000);
+           noInterrupts();  
            while(digitalRead(btnStop)==HIGH) {
              //waits until the button Stop is pressed.
              //delay(50);
            }
+          interrupts();           
           stopFile();
         break;
       }
