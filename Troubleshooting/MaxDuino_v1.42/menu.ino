@@ -426,5 +426,6 @@ void menuMode()
 void checkLastButton()
 {
   if(digitalRead(btnDown) && digitalRead(btnUp) && digitalRead(btnPlay) && digitalRead(btnStop)) lastbtn=false; 
+  delay(50);
 }
 
