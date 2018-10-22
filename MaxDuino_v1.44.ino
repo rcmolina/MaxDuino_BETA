@@ -680,60 +680,13 @@ void loop(void) {
         lcd.print(PlayBytes);        
        }
       #endif
-#else
-     if(digitalRead(btnRoot)==LOW && start==0){
-       #if (SPLASH_SCREEN && TIMEOUT_RESET)
-            timeout_reset = TIMEOUT_RESET;
-       #endif
-       //Return to root of the SD card.
-       //printtextF(PSTR(VERSION),0);
-       //lcd_clearline(0);
-       //lcd.print(F(VERSION));
-
-        #ifdef Use_MENU
-           menuMode();
-           //setBaud();
-           //printtextF(PSTR(VERSION),0);
-           printtext(PlayBytes,0);           
-           //lcd_clearline(1);
-          #ifdef LCDSCREEN16x2
-            printtextF(PSTR(""),1);
-          #endif      
-          #ifdef OLED1306
-            printtextF(PSTR(""),lineaxy);
-          #endif
-          #ifdef P8544
-            printtextF(PSTR(""),1);
-          #endif      
-         
-          scrollPos=0;
-          scrollText(fileName);
-     /*     #ifdef OLED1306 
-            OledStatusLine();
-          #endif */
-       #else             
-         subdir=0;
-         prevSubDir[0][0]='\0';
-         prevSubDir[1][0]='\0';
-         prevSubDir[2][0]='\0';
-         sd.chdir(true);
-         getMaxFile();
-         currentFile=1;
-         seekFile(currentFile);         
-       #endif
-
-       debounce(btnRoot);  
-/*       while(digitalRead(btnRoot)==LOW) {
-         //prevent button repeats by waiting until the button is released.
-         delay(50);
-       }
-*/       
-     }
- 
 #endif  
 
 #ifdef btnRoot_AS_PIVOT
      if(digitalRead(btnRoot)==LOW && start==0 && digitalRead(btnStop)==LOW ){                   // go menu
+#else
+     if(digitalRead(btnRoot)==LOW && start==0){
+#endif
        #if (SPLASH_SCREEN && TIMEOUT_RESET)
             timeout_reset = TIMEOUT_RESET;
        #endif
@@ -781,7 +734,6 @@ void loop(void) {
        }
 */       
      }
-#endif
 
 #ifdef btnRoot_AS_PIVOT
      if(digitalRead(btnStop)==LOW && start==1 && digitalRead(btnRoot)) {                                                   // stop
