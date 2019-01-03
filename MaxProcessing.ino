@@ -362,8 +362,8 @@ void TZXProcess() {
           //    blockOffset[block%maxblock] = bytesRead;
           //    blockID[block%maxblock] = currentID;
     
-              EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-              EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+              //EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+              //EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
          
               #ifdef OLED1306
                     #ifdef XY
@@ -422,8 +422,8 @@ void TZXProcess() {
           //    blockOffset[block%maxblock] = bytesRead;
           //    blockID[block%maxblock] = currentID;
         
-              EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-              EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+              //EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+              //EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
               
               #ifdef OLED1306
                     #ifdef XY
@@ -694,8 +694,8 @@ void TZXProcess() {
           //    blockOffset[block%maxblock] = bytesRead;
           //    blockID[block%maxblock] = currentID;
     
-              EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-              EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+              //EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+              //EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
               
               #ifdef OLED1306
                     #ifdef XY
@@ -823,8 +823,8 @@ void TZXProcess() {
           //    blockOffset[block%maxblock] = bytesRead;
           //    blockID[block%maxblock] = currentID;
     
-              EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-              EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+              //EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+              //EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
               
               #ifdef OLED1306
                     #ifdef XY
@@ -1669,7 +1669,13 @@ void UniSetup()
 */
 void UniSetup() {
     //pinMode(outputPin, OUTPUT);               //Set output pin
-    DDRB |= _BV(1);                            // El pin9 es el bit1 del PORTB
+
+    #ifdef MINIDUINO_AMPLI
+      DDRB |= B00000011;                          // pin8+ pin9 es el bit0-bit1 del PORTB
+    #else
+      DDRB |= _BV(1);                            // El pin9 es el bit1 del PORTB
+    #endif
+ 
     //digitalWrite(outputPin, LOW);             //Start output LOW
     WRITE_LOW;    
     isStopped=true;
