@@ -1669,12 +1669,7 @@ void UniSetup()
 */
 void UniSetup() {
     //pinMode(outputPin, OUTPUT);               //Set output pin
-
-    #ifdef MINIDUINO_AMPLI
-      DDRB |= B00000011;                          // pin8+ pin9 es el bit0-bit1 del PORTB
-    #else
-      DDRB |= _BV(1);                            // El pin9 es el bit1 del PORTB
-    #endif
+    INIT_OUTPORT;
  
     //digitalWrite(outputPin, LOW);             //Start output LOW
     WRITE_LOW;    

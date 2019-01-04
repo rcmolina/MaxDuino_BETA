@@ -1,10 +1,12 @@
-#define MINIDUINO_AMPLI     // For A.Villena Miniduino
+#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
 #define outputPin           9
 
-#ifdef MINIDUINO_AMPLI 
+#ifdef MINIDUINO_AMPLI
+  #define INIT_OUTPORT        DDRB |= B00000011;       // pin8+ pin9 es el bit0-bit1 del PORTB 
   #define WRITE_LOW           PORTB &= B11111100       // pin8+ pin9 , bit0- bit1 del PORTB
   #define WRITE_HIGH          PORTB |= B00000011       // pin8+ pin9 , bit0- bit1 del PORTB
 #else
+  #define INIT_OUTPORT        DDRB |= _BV(1);         // El pin9 es el bit1 del PORTB
   #define WRITE_LOW           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
   #define WRITE_HIGH          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
 #endif
