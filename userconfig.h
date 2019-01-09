@@ -76,8 +76,9 @@ byte lineaxy=2;
 
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
-#define LOGOMAXDUINO2              // new logo2 created by rcmolina
+// #define LOGOMAXDUINO2              // new logo2 created by rcmolina
 //#define LOGOMAXDUINO3            // new logo3 created by rcmolina
 //#define LOGOMAXDUINO4            // new logo4 created by rcmolina
 //#define SUGARLESS_1              // new logo cretaed bt YoxxxoY
 //#define SUGARLESS_2              // new logo created by YoxxxoY
+#define LOGOMINIDUINO            // new logo for A.Villena's Miniduino by rcmolina

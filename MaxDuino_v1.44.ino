@@ -348,7 +348,7 @@ void setup() {
     str4cpy(oldMinFileName,fileName);
   #endif
 */
-  #ifdef Use_MENU
+  #if defined(Use_MENU) && defined(LOAD_EEPROM_LOGO)
     loadEEPROM();
   #endif  
   //delay(2000);  
@@ -695,7 +695,7 @@ void loop(void) {
        //lcd_clearline(0);
        //lcd.print(F(VERSION));
 
-        #ifdef Use_MENU
+        #if defined(Use_MENU) && defined(LOAD_EEPROM_LOGO)
            menuMode();
            //setBaud();
            //printtextF(PSTR(VERSION),0);
