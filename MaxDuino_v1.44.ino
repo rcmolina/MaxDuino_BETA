@@ -83,7 +83,9 @@
  //                     and not 128x64
  //               V1.43 Implemented half-interval (logarithmic) search for dirs and block selection. Now root button used as pivot.
  //                     Menu funcions now activated with ROOT + STOP, new half-interval search with ROOT + UP/DOWN. (Frank Schröder)
- //               V1.44 btnRoot_AS_PIVOT define in userconfig.h so it can be deactivated by user.
+ //               V1.44 New define btnRoot_AS_PIVOT in userconfig.h so it can be deactivated by user. New #define in Maxduino.h to support 
+ //                     Antonio Villena's MINIDUINO new design with amplifier. New Miniduino logo. It's posible to select RECORD_EEPROM 
+ //                     and LOAD_EEPROM both for better testing new logo activation, pressing MENU simulates a reset.
  //           
 #include <SdFat.h>
 #include <TimerOne.h>
@@ -695,7 +697,7 @@ void loop(void) {
        //lcd_clearline(0);
        //lcd.print(F(VERSION));
 
-        #if defined(Use_MENU) && defined(LOAD_EEPROM_LOGO)
+        #if defined(Use_MENU) && !defined(RECORD_EEPROM_LOGO)
            menuMode();
            //setBaud();
            //printtextF(PSTR(VERSION),0);
@@ -716,15 +718,28 @@ void loop(void) {
      /*     #ifdef OLED1306 
             OledStatusLine();
           #endif */
-       #else             
-         subdir=0;
-         prevSubDir[0][0]='\0';
-         prevSubDir[1][0]='\0';
-         prevSubDir[2][0]='\0';
-         sd.chdir(true);
-         getMaxFile();
-         currentFile=1;
-         seekFile(currentFile);         
+       #else
+          #ifdef RECORD_EEPROM_LOGO
+              init_OLED();
+              delay(1500);              // Show logo
+              reset_display();           // Clear logo and load saved mode
+              printtextF(PSTR("Reset.."),0);
+              delay(500);
+              PlayBytes[0]='\0'; 
+              strcat_P(PlayBytes,PSTR(VERSION));
+              printtext(PlayBytes,0);
+              OledStatusLine();
+
+          #else             
+             subdir=0;
+             prevSubDir[0][0]='\0';
+             prevSubDir[1][0]='\0';
+             prevSubDir[2][0]='\0';
+             sd.chdir(true);
+             getMaxFile();
+             currentFile=1;
+             seekFile(currentFile);
+          #endif         
        #endif
 
        debounce(btnRoot);  

@@ -68,15 +68,18 @@ byte lineaxy=2;
 // Phase 1: Uncomment RECORD_EEPROM_LOGO define , this copies logo from memory to EEPROM. Compile the sketh.
 // Phase 2:  Comment RECORD_EEPROM define, uncomment LOAD_EEPROM define. Complile the sketch again 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Also it's posible to select record and load both for better testing new logo activation, pressing MENU simulates a reset.
+// And both can be deactivated also showing a black screen.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 #define BLOCK_EEPROM_START 512
-//#define RECORD_EEPROM_LOGO 
+//#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
 #define LOAD_EEPROM_LOGO 
 
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
-// #define LOGOMAXDUINO2              // new logo2 created by rcmolina
+ //#define LOGOMAXDUINO2              // new logo2 created by rcmolina
 //#define LOGOMAXDUINO3            // new logo3 created by rcmolina
 //#define LOGOMAXDUINO4            // new logo4 created by rcmolina
 //#define SUGARLESS_1              // new logo cretaed bt YoxxxoY
