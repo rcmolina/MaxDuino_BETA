@@ -348,7 +348,7 @@ void setup() {
     str4cpy(oldMinFileName,fileName);
   #endif
 */
-  #if defined(Use_MENU) && defined(LOAD_EEPROM_LOGO)
+  #ifdef LOAD_EEPROM_LOGO
     loadEEPROM();
   #endif  
   //delay(2000);  
