@@ -37,6 +37,7 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 #define LCD_I2C_ADDR    0x3f        // Set the i2c address of your 1602LCD usually 0x27 or 0x3f
 //#define LCDSCREEN16x2             // Set if you are using a 1602 LCD screen
 
+//#define OLED_SETCONTRAS   0xcf      // Override default value inside Diplay.ino, bigger to increase output current per segment
 #define OLED1306                    // Set if you are using OLED 1306 display
     //#define OLED1106_1.3              // Use this line as well if you have a 1.3" OLED screen but using 128x32 and not 128x64
 //#define P8544                     // Set if you are Display Nokia 5110 display

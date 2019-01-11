@@ -605,13 +605,18 @@ static void init_OLED(void)
       sendcommand(0xDA);            //0xDA
       sendcommand(0x02);           //COMSCANDEC /* com pin HW config, sequential com pin config (bit 4), disable left/right remap (bit 5) */
     #endif
-    
-    #ifdef OLED1106_1.3
-      sendcommand(0x81);           //SETCONTRAS
-      sendcommand(0x27);           // default 0x80
+
+    #ifdef OLED_SETCONTRAS
+          sendcommand(0x81);                    //SETCONTRAS
+          sendcommand(OLED_SETCONTRAS);         // value inside userconfig.h
     #else
-      sendcommand(0x81);           //SETCONTRAS
-      sendcommand(0xcf);           //
+        #ifdef OLED1106_1.3
+          sendcommand(0x81);                    //SETCONTRAS
+          sendcommand(0x27);                    // default 0x80 : (SMALL 0x00, LARGE 0xFF)
+        #else
+          sendcommand(0x81);                    //SETCONTRAS
+          sendcommand(0x80);                    //
+        #endif
     #endif
     
    // sendcommand(0xD9);          //SETPRECHARGE /* [2] pre-charge period 0x022/f1*/
