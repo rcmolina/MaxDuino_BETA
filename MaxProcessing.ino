@@ -554,6 +554,8 @@ void TZXProcess() {
             }
             currentBlockTask=DATA;
           } else {
+            currentPeriod = TstatesperSample;
+            bitSet(currentPeriod, 14);
             DirectRecording();
           }
         break;
@@ -1247,18 +1249,30 @@ void writeData4B() {
 
 void DirectRecording() {
   //Direct Recording - Output bits based on specified sample rate (Ticks per clock) either 44.1KHz or 22.05
-  switch(currentBlockTask) {
-    case DATA:
-      writeData();          
-    break;
-    
-    case PAUSE:
-      temppause = pauseLength;
-    currentID = IDPAUSE;
-    break;
-  }
-}
 
+    byte r;
+    if(currentBit==0) {                         //Check for byte end/first byte
+        if(r=ReadByte(bytesRead)==1) {            //Read in a byte
+            currentByte = outByte;
+            bytesToRead += -1; 
+
+        }  
+
+        if(bytesToRead!=1) {                      //If we're not reading the last byte play all 8 bits
+            currentBit=8;
+        } else {
+            currentBit=usedBitsInLastByte;          //Otherwise only play back the bits needed
+        }
+    } 
+ 
+  if(currentByte&0x80) {                       //Set next period depending on value of bit 0
+        bitSet(currentPeriod, 15);
+    }
+
+      currentByte <<= 1;                        //Shift along to the next bit
+      currentBit += -1;               
+
+}
 void ZX81FilenameBlock() {
   //output ZX81 filename data  byte r;
   if(currentBit==0) {                         //Check for byte end/first byte
@@ -1512,6 +1526,21 @@ void wave2() {
   byte pauseFlipBit = false;
   unsigned long newTime=1;
   intError = false;
+ if(isStopped==0 && bitRead(workingPeriod, 14)) {
+      if (bitRead(workingPeriod, 15) == LOW)     WRITE_LOW;    
+      else  WRITE_HIGH;      
+      bitClear(workingPeriod,15);         //Clear ID15 bit value
+      bitClear(workingPeriod,14);         //Clear ID15 flag
+      pos += 2;
+      if(pos > buffsize)                  //Swap buffer pages if we've reached the end
+      {
+        pos = 0;
+        workingBuffer^=1;
+        morebuff = HIGH;                  //Request more data to fill inactive page  
+      }
+      Timer1.setPeriod(workingPeriod +4);    //Finally set the next pulse length
+                  
+ } else {
   if(isStopped==0 && workingPeriod >= 1)
   {
       if bitRead(workingPeriod, 15)          
@@ -1596,7 +1625,7 @@ void wave2() {
   Timer1.setPeriod(newTime +4);    //Finally set the next pulse length  
 }
 
-
+}
 
 
 void writeHeader2() {
