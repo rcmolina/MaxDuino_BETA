@@ -556,7 +556,8 @@ void TZXProcess() {
           } else {
             currentPeriod = TstatesperSample;
             bitSet(currentPeriod, 14);
-            DirectRecording();
+            //DirectRecording();
+            writeData();
           }
         break;
         
@@ -1247,32 +1248,6 @@ void writeData4B() {
   }
 }
 
-void DirectRecording() {
-  //Direct Recording - Output bits based on specified sample rate (Ticks per clock) either 44.1KHz or 22.05
-
-    byte r;
-    if(currentBit==0) {                         //Check for byte end/first byte
-        if(r=ReadByte(bytesRead)==1) {            //Read in a byte
-            currentByte = outByte;
-            bytesToRead += -1; 
-
-        }  
-
-        if(bytesToRead!=1) {                      //If we're not reading the last byte play all 8 bits
-            currentBit=8;
-        } else {
-            currentBit=usedBitsInLastByte;          //Otherwise only play back the bits needed
-        }
-    } 
- 
-  if(currentByte&0x80) {                       //Set next period depending on value of bit 0
-        bitSet(currentPeriod, 15);
-    }
-
-      currentByte <<= 1;                        //Shift along to the next bit
-      currentBit += -1;               
-
-}
 void ZX81FilenameBlock() {
   //output ZX81 filename data  byte r;
   if(currentBit==0) {                         //Check for byte end/first byte
@@ -1473,7 +1448,7 @@ void writeData() {
       if(bytesToRead == 0) {                  //Check for end of data block
         bytesRead += -1;                      //rewind a byte if we've reached the end
         if(pauseLength==0) {                  //Search for next ID if there is no pause
-          currentTask = GETID;
+          if (bitRead(currentPeriod, 14) == 0) currentTask = GETID;
         } else {
           currentBlockTask = PAUSE;           //Otherwise start the pause
         }
@@ -1501,13 +1476,21 @@ void writeData() {
       currentBit=usedBitsInLastByte;          //Otherwise only play back the bits needed
     }
     pass=0;
-  } 
- if(currentByte&0x80) {                       //Set next period depending on value of bit 0
-    currentPeriod = onePulse;
-  } else {
-    currentPeriod = zeroPulse;
   }
-  pass+=1;                                    //Data is played as 2 x pulses
+  if bitRead(currentPeriod, 14) {
+    //bitWrite(currentPeriod,13,currentByte&0x80);
+    if(currentByte&0x80) bitSet(currentPeriod, 13);
+    pass+=2;
+  }
+  else {
+     if(currentByte&0x80){                       //Set next period depending on value of bit 0
+        currentPeriod = onePulse;
+      } else {
+        currentPeriod = zeroPulse;
+      }
+      pass+=1;
+  }
+  
   if(pass==2) {
     currentByte <<= 1;                        //Shift along to the next bit
     currentBit += -1;
@@ -1515,7 +1498,42 @@ void writeData() {
   }    
 }
 
+void DirectRecording() {
+  //Direct Recording - Output bits based on specified sample rate (Ticks per clock) either 44.1KHz or 22.05
 
+    byte r;
+    if(currentBit==0) {                         //Check for byte end/first byte
+        if(r=ReadByte(bytesRead)==1) {            //Read in a byte
+            currentByte = outByte;
+            bytesToRead += -1; 
+
+        }  
+        
+      if(bytesToRead == 0) {                  //Check for end of data block
+        bytesRead += -1;                      //rewind a byte if we've reached the end
+        if(pauseLength==0) {                  //Search for next ID if there is no pause
+          //currentTask = GETID;
+        } else {
+          currentBlockTask = PAUSE;           //Otherwise start the pause
+        }
+        return;                               // exit
+      }
+
+        if(bytesToRead!=1) {                      //If we're not reading the last byte play all 8 bits
+            currentBit=8;
+        } else {
+            currentBit=usedBitsInLastByte;          //Otherwise only play back the bits needed
+        }
+    } 
+ 
+  if(currentByte&0x80) {                       //Set next period depending on value of bit 0
+        bitSet(currentPeriod, 13);
+    }
+
+      currentByte <<= 1;                        //Shift along to the next bit
+      currentBit += -1;               
+
+}
 
 void wave2() {
   //ISR Output routine
@@ -1527,9 +1545,9 @@ void wave2() {
   unsigned long newTime=1;
   intError = false;
  if(isStopped==0 && bitRead(workingPeriod, 14)) {
-      if (bitRead(workingPeriod, 15) == LOW)     WRITE_LOW;    
+      if (bitRead(workingPeriod, 13) == LOW)     WRITE_LOW;    
       else  WRITE_HIGH;      
-      bitClear(workingPeriod,15);         //Clear ID15 bit value
+      bitClear(workingPeriod,13);         //Clear ID15 bit value
       bitClear(workingPeriod,14);         //Clear ID15 flag
       pos += 2;
       if(pos > buffsize)                  //Swap buffer pages if we've reached the end
