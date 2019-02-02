@@ -538,7 +538,7 @@ void TZXProcess() {
           if(currentBlockTask==READPARAM) {
             if(r=ReadWord(bytesRead)==2) {     
               //Number of T-states per sample (bit of data) 79 or 158 - 22.6757uS for 44.1KHz
-              TstatesperSample = TickToUs(outWord); 
+              UsperSample = TickToUs(outWord); 
             }
             if(r=ReadWord(bytesRead)==2) {      
               //Pause after this block in milliseconds
@@ -554,7 +554,7 @@ void TZXProcess() {
             }
             currentBlockTask=DATA;
           } else {
-            currentPeriod = TstatesperSample;
+            currentPeriod = UsperSample;
             bitSet(currentPeriod, 14);
             //DirectRecording();
             writeData();
@@ -1436,15 +1436,19 @@ void writeData() {
   if(currentBit==0) {                         //Check for byte end/first byte
     if(r=ReadByte(bytesRead)==1) {            //Read in a byte
       currentByte = outByte;
+      #ifdef AYPLAY 
       if (AYPASS==5) {
         currentByte = 0xFF;                 // Only insert first DATA byte if sending AY TAP DATA Block and don't decrement counter
         AYPASS = 4;                         // set Checksum flag to be sent when EOF reached
         bytesRead += -1;                    // rollback ptr and compensate for dummy read byte
         bytesToRead += 2;                   // add 2 bytes to read as we send 0xFF (data flag header byte) and chksum at the end of the block
       } else {
+      #endif
         bytesToRead += -1;  
+      #ifdef AYPLAY 
       }
       blkchksum = blkchksum ^ currentByte;    // keep calculating checksum
+      #endif
       if(bytesToRead == 0) {                  //Check for end of data block
         bytesRead += -1;                      //rewind a byte if we've reached the end
         if(pauseLength==0) {                  //Search for next ID if there is no pause
@@ -1463,10 +1467,13 @@ void writeData() {
             currentBlockTask = PAUSE;
           }
           return;                           // return here if normal TAP or TZX
-        } else {
-          currentByte = blkchksum;            // else send calculated chksum
-          bytesToRead += 1;                   // add one byte to read
-          AYPASS = 0;                         // Reset flag to end block
+        } 
+        else {
+          #ifdef AYPLAY  
+            currentByte = blkchksum;            // else send calculated chksum
+            bytesToRead += 1;                   // add one byte to read
+            AYPASS = 0;                         // Reset flag to end block
+          #endif
         }
       //return;
     }
