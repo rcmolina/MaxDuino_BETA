@@ -114,7 +114,7 @@ word currentPeriod=1;
 #define ID12                0x12    //Pure tone
 #define ID13                0x13    //Sequence of pulses of various lengths
 #define ID14                0x14    //Pure data block
-//#define ID15                0x15    //Direct recording block -- TBD - curious to load OTLA files using direct recording (22KHz)
+#define ID15                0x15    //Direct recording block -- TBD - curious to load OTLA files using direct recording (22KHz)
 //#define ID18                0x18    //CSW recording block
 //#define ID19                0x19    //Generalized data block
 #define ID20                0x20    //Pause (silence) or 'Stop the tape' command
@@ -216,7 +216,7 @@ byte stopBitPulses = 8;
 byte stopBitValue = 1;
 byte endianness = 0;    //0:LSb 1:MSb (default:0)
 
-word TstatesperSample=0;
+word SampleLength=0;
 byte usedBitsInLastByte=8;
 word loopCount=0;
 byte seqPulses=0;

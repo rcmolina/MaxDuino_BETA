@@ -538,7 +538,7 @@ void TZXProcess() {
           if(currentBlockTask==READPARAM) {
             if(r=ReadWord(bytesRead)==2) {     
               //Number of T-states per sample (bit of data) 79 or 158 - 22.6757uS for 44.1KHz
-              UsperSample = TickToUs(outWord); 
+              SampleLength = TickToUs(outWord); 
             }
             if(r=ReadWord(bytesRead)==2) {      
               //Pause after this block in milliseconds
@@ -554,7 +554,7 @@ void TZXProcess() {
             }
             currentBlockTask=DATA;
           } else {
-            currentPeriod = UsperSample;
+            currentPeriod = SampleLength;
             bitSet(currentPeriod, 14);
             //DirectRecording();
             writeData();
@@ -1586,7 +1586,7 @@ void wave2() {
         if (bitRead(workingPeriod, 13) == 0)     WRITE_LOW;    
         else  {WRITE_HIGH; bitClear(workingPeriod,13);}     
         bitClear(workingPeriod,14);         //Clear ID15 flag
-        workingPeriod = UsperSample +5;
+        workingPeriod = SampleLength +5;
         //workingPeriod += 5;              
       }
       if(pauseFlipBit==true) {
