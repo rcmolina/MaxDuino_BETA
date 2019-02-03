@@ -1026,6 +1026,8 @@ void TZXProcess() {
               } while( u8g.nextPage() ); */
               printtextF(PSTR("ID? "),0);
               utoa(currentID,PlayBytes,16);sendStrXY(PlayBytes,4,0);
+              //ltoa(bytesRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
+              //ltoa(bytesToRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               ltoa(bytesRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               utoa(loopCount,PlayBytes,10);sendStrXY(PlayBytes,10,lineaxy);
 
@@ -1452,7 +1454,8 @@ void writeData() {
       if(bytesToRead == 0) {                  //Check for end of data block
         bytesRead += -1;                      //rewind a byte if we've reached the end
         if(pauseLength==0) {                  //Search for next ID if there is no pause
-          if (bitRead(currentPeriod, 14) == 0) currentTask = GETID;
+          //if (bitRead(currentPeriod, 14) == 0) currentTask = GETID;
+          currentTask = GETID;
         } else {
           currentBlockTask = PAUSE;           //Otherwise start the pause
         }
@@ -1551,21 +1554,7 @@ void wave2() {
   byte pauseFlipBit = false;
   unsigned long newTime=1;
   intError = false;
- if(isStopped==0 && bitRead(workingPeriod, 14)) {
-      if (bitRead(workingPeriod, 13) == LOW)     WRITE_LOW;    
-      else  WRITE_HIGH;      
-      bitClear(workingPeriod,13);         //Clear ID15 bit value
-      bitClear(workingPeriod,14);         //Clear ID15 flag
-      pos += 2;
-      if(pos > buffsize)                  //Swap buffer pages if we've reached the end
-      {
-        pos = 0;
-        workingBuffer^=1;
-        morebuff = HIGH;                  //Request more data to fill inactive page  
-      }
-      Timer1.setPeriod(workingPeriod +4);    //Finally set the next pulse length
-                  
- } else {
+ 
   if(isStopped==0 && workingPeriod >= 1)
   {
       if bitRead(workingPeriod, 15)          
@@ -1588,10 +1577,18 @@ void wave2() {
         */
             if (wasPauseBlock==true && isPauseBlock==false) wasPauseBlock=false;        
       }
-      //digitalWrite(outputPin, pinState);
-      pinState = !pinState;
-      if (pinState == LOW)     WRITE_LOW;    
-      else  WRITE_HIGH;      
+      if (bitRead(workingPeriod, 14)== 0) {
+        //digitalWrite(outputPin, pinState);
+        pinState = !pinState;
+        if (pinState == LOW)     WRITE_LOW;    
+        else  WRITE_HIGH;
+      } else {
+        if (bitRead(workingPeriod, 13) == 0)     WRITE_LOW;    
+        else  {WRITE_HIGH; bitClear(workingPeriod,13);}     
+        bitClear(workingPeriod,14);         //Clear ID15 flag
+        workingPeriod = UsperSample +5;
+        //workingPeriod += 5;              
+      }
       if(pauseFlipBit==true) {
         newTime = 1500;                     //Set 1.5ms initial pause block
         
@@ -1605,7 +1602,7 @@ void wave2() {
  //       if (TSXCONTROLzxpolarityUEFTURBO) pinState = LOW;         //Set next pinstate LOW
  //       else pinState = HIGH;                     //Set next pinstate HIGH
 
-        pinState = !TSXCONTROLzxpolarityUEFTURBO;
+       // pinState = !TSXCONTROLzxpolarityUEFTURBO;
        
         //wbuffer[pos][workingBuffer] = highByte(workingPeriod - 1);
         //wbuffer[pos+1][workingBuffer] = lowByte(workingPeriod - 1);
@@ -1650,7 +1647,6 @@ void wave2() {
   Timer1.setPeriod(newTime +4);    //Finally set the next pulse length  
 }
 
-}
 
 
 void writeHeader2() {
@@ -1826,7 +1822,7 @@ int ReadLong(unsigned long pos) {
     i = entry.read(out,3);
     if(i==3) bytesRead += 3;
   }
-  outLong = (word(out[2],out[1]) << 8) | out[0];
+  outLong = ((unsigned long) word(out[2],out[1]) << 8) | out[0];
   //blkchksum = blkchksum ^ out[0] ^ out[1] ^ out[2];
   return i;
 }
