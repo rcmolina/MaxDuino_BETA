@@ -551,7 +551,9 @@ void TZXProcess() {
             if(r=ReadLong(bytesRead)==3) {
               // Length of samples' data
               bytesToRead = outLong+1;
-            }
+              // Uncomment next line for testing to force id error
+              //currentID=0x9A;
+            }            
             currentBlockTask=DATA;
           } else {
             currentPeriod = SampleLength;
@@ -1026,7 +1028,6 @@ void TZXProcess() {
               } while( u8g.nextPage() ); */
               printtextF(PSTR("ID? "),0);
               utoa(currentID,PlayBytes,16);sendStrXY(PlayBytes,4,0);
-              //ltoa(bytesRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               //ltoa(bytesToRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               ltoa(bytesRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               utoa(loopCount,PlayBytes,10);sendStrXY(PlayBytes,10,lineaxy);
@@ -1836,7 +1837,7 @@ int ReadDword(unsigned long pos) {
     i = entry.read(out,4);
     if(i==4) bytesRead += 4;
   }
-  outLong = (word(out[3],out[2]) << 16) | word(out[1],out[0]);
+  outLong = ((unsigned long)word(out[3],out[2]) << 16) | word(out[1],out[0]);
   //blkchksum = blkchksum ^ out[0] ^ out[1] ^ out[2] ^ out[3];
   return i;
 }
