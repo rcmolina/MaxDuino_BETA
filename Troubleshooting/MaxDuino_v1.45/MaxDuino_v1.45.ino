@@ -87,6 +87,8 @@
  //                     Antonio Villena's MINIDUINO new design with amplifier and new define OLED_SETCONTRAS in userconfig.h for contrast 
  //                     value override. New Miniduino logo. It's posible to select RECORD_EEPROM and LOAD_EEPROM both for better testing 
  //                     when selecting new logos in userconfig.h, pressing MENU simulates a reset to show logo again.
+ //               V1.45 New ID15 testing code, can be deactivated from userconfig.h to save space. Amstrad bugs solved: 
+ //                     Deflektor and other cdts now loading.
  //           
 #include <SdFat.h>
 #include <TimerOne.h>

@@ -1496,19 +1496,23 @@ void writeData() {
     }
     pass=0;
   }
+  #ifdef DIRECT_RECORDING
   if bitRead(currentPeriod, 14) {
     //bitWrite(currentPeriod,13,currentByte&0x80);
     if(currentByte&0x80) bitSet(currentPeriod, 13);
     pass+=2;
   }
   else {
+  #endif
      if(currentByte&0x80){                       //Set next period depending on value of bit 0
         currentPeriod = onePulse;
       } else {
         currentPeriod = zeroPulse;
       }
       pass+=1;
+  #ifdef DIRECT_RECORDING
   }
+  #endif
   
   if(pass==2) {
     currentByte <<= 1;                        //Shift along to the next bit
@@ -1586,11 +1590,14 @@ void wave2() {
         */
             if (wasPauseBlock==true && isPauseBlock==false) wasPauseBlock=false;        
       }
+      #ifdef DIRECT_RECORDING
       if (bitRead(workingPeriod, 14)== 0) {
+      #endif
         //digitalWrite(outputPin, pinState);
         pinState = !pinState;
         if (pinState == LOW)     WRITE_LOW;    
         else  WRITE_HIGH;
+      #ifdef DIRECT_RECORDING
       } else {
         if (bitRead(workingPeriod, 13) == 0)     WRITE_LOW;    
         else  {WRITE_HIGH; bitClear(workingPeriod,13);}     
@@ -1598,6 +1605,7 @@ void wave2() {
         workingPeriod = SampleLength +5;
         //workingPeriod += 5;              
       }
+      #endif
       if(pauseFlipBit==true) {
         newTime = 1500;                     //Set 1.5ms initial pause block
         
