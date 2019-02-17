@@ -21,7 +21,7 @@
 //#define AYPLAY
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define BLOCK_EEPROM_PUT
-#define DIRECT_RECORDING
+//#define DIRECT_RECORDING
 //** If Use_MENU commented to remove Menu, then vars need setting preference cause no EEPROM for read/write **//
 int BAUDRATE = 3600;
 byte scale = 2;                         // 1 for BAUDRATE 1200
@@ -78,11 +78,12 @@ byte lineaxy=2;
 
 //#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 #define BLOCK_EEPROM_START 512
-//#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
+#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
 #define LOAD_EEPROM_LOGO 
 
 #ifdef OLED1306_128_64
-  #define A_MAXDUINO2               // new Maxduino2 logo 128x64 by Alfredo Retrocant
+  //#define Maxduino2Alf              // new Maxduino2 logo 128x64 by Alfredo Retrocant
+  #define CosmicCruiser             // Dragon32 CosmicCruiser by rcmolina
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
