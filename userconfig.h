@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define AYPLAY
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//#define BLOCK_EEPROM_PUT          // disable for heavy block loading, as in Amstrad cpc demo Breaking Baud
+//#define BLOCK_EEPROM_PUT          // disable if loading many turbo short blocks, as in Amstrad cpc demo Breaking Baud
 #define BLOCKID_INTO_MEM            // enable for blockid recording and later rewinding if EEPROM_PUT is disabled.
 #define DIRECT_RECORDING
 //** If Use_MENU commented to remove Menu, then vars need setting preference cause no EEPROM for read/write **//
