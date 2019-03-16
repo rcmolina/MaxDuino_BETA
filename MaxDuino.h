@@ -232,7 +232,7 @@ byte oldMinBlock = 0;
   byte oldMaxBlock = 99;
 #endif
 #ifdef BLOCKID_INTO_MEM
-  byte oldMaxBlock = 20;
+  byte oldMaxBlock = 19;
 #endif
 
 PROGMEM const char UEFFile[9] = {'U','E','F',' ','F','i','l','e','!'};

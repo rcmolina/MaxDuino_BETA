@@ -2,7 +2,7 @@
 
 http://www.va-de-retro.com/foros/viewtopic.php?t=5541
 
-* V1.47 Optional EEPROM_PUT if heavy block loading need as in Amstrad cpc Breaking Bauds demo. 
+* V1.47 Optional EEPROM_PUT if loading many short blocks. Needed in Amstrad cpc Breaking Bauds demo. 
 * V1.46 OLED 128x64 mode with 8 rows, logo can also be loaded with full resolution (@geloalex, @merlinkv, @acf76es)
 * V1.45 New ID15 testing code, can be deactivated from userconfig.h to save space. Amstrad bugs solved: Deflektor and other cdts now loading.
 * V1.44 New define btnRoot_AS_PIVOT in userconfig.h so it can be deactivated by user. New #define in Maxduino.h to support Antonio Villena's MINIDUINO new design with amplifier and new define OLED_SETCONTRAS in userconfig.h for contrast value override. New Miniduino logo. It's posible to select RECORD_EEPROM and LOAD_EEPROM both for better testing when selecting new logos in userconfig.h, pressing MENU simulates a reset to show logo again.
