@@ -230,8 +230,7 @@ byte block = 0;
 byte oldMinBlock = 0;
 #ifdef BLOCK_EEPROM_PUT
   byte oldMaxBlock = 99;
-#endif
-#ifdef BLOCKID_INTO_MEM
+#else
   byte oldMaxBlock = 19;
 #endif
 
