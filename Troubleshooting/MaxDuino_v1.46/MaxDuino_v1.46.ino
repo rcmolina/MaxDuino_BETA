@@ -1619,6 +1619,7 @@ void printtext(char* text, int l) {  //Print text to screen.
    
 }
 
+#ifdef OLED1306
 void OledStatusLine() {
   #ifdef XY
     setXY(4,2);
@@ -1664,6 +1665,7 @@ void OledStatusLine() {
     #endif      
   #endif  
 }
+#endif
 
 void SetPlayBlock()
 {
