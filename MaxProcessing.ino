@@ -603,7 +603,7 @@ void TZXProcess() {
           if(currentBlockTask==READPARAM) {
             if(r=ReadWord(bytesRead)==2) {     
               //Number of T-states per sample (bit of data) 79 or 158 - 22.6757uS for 44.1KHz
-              SampleLength = TickToUs(outWord) + TickToUs(outWord)/10; 
+              SampleLength = TickToUs(outWord) + TickToUs(outWord)/9; 
             }
             if(r=ReadWord(bytesRead)==2) {      
               //Pause after this block in milliseconds
@@ -620,6 +620,9 @@ void TZXProcess() {
               //currentID=0x9A;
             }            
             currentBlockTask=DATA;
+          } else if(currentBlockTask==PAUSE) {
+            temppause = pauseLength;
+            currentID = IDPAUSE;                     
           } else {
             currentPeriod = SampleLength;
             bitSet(currentPeriod, 14);
@@ -1110,10 +1113,10 @@ void TZXProcess() {
                   u8g.print(String(bytesRead,HEX) + " - L: " + String(loopCount, DEC));
               } while( u8g.nextPage() ); */
               printtextF(PSTR("ID? "),0);
-              utoa(currentID,PlayBytes,16);sendStrXY(PlayBytes,4,0);
+              utoa(currentID,PlayBytes,16);setXY(4,0);sendStr(PlayBytes);
               //ltoa(bytesToRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
               ltoa(bytesRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
-              utoa(loopCount,PlayBytes,10);sendStrXY(PlayBytes,10,lineaxy);
+              utoa(loopCount,PlayBytes,10);setXY(10,lineaxy);sendStr(PlayBytes);
 
           #endif 
           
@@ -1545,12 +1548,14 @@ void writeData() {
       #endif
       if(bytesToRead == 0) {                  //Check for end of data block
         bytesRead += -1;                      //rewind a byte if we've reached the end
+        
         if(pauseLength==0) {                  //Search for next ID if there is no pause
           //if (bitRead(currentPeriod, 14) == 0) currentTask = GETID;
           currentTask = GETID;
         } else {
           currentBlockTask = PAUSE;           //Otherwise start the pause
         }
+        
         return;                               // exit
       }
     } else if(r==0) {                         // If we reached the EOF
