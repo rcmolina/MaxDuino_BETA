@@ -1113,8 +1113,8 @@ void TZXProcess() {
                   u8g.setPrintPos(0, 30); 
                   u8g.print(String(bytesRead,HEX) + " - L: " + String(loopCount, DEC));
               } while( u8g.nextPage() ); */
-              printtextF(PSTR("ID? "),0);
-              utoa(currentID,PlayBytes,16);setXY(4,0);sendStr((unsigned char *)PlayBytes);
+              //printtextF(PSTR("ID? "),0);
+              //utoa(currentID,PlayBytes,16);setXY(4,0);sendStr((unsigned char *)PlayBytes);
               //ltoa(bytesToRead,PlayBytes,16);strcat_P(PlayBytes,PSTR(" - L: "));printtext(PlayBytes,lineaxy);
 
               ltoa(bytesRead,PlayBytes,16);printtext(PlayBytes,lineaxy);
