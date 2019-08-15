@@ -286,10 +286,60 @@ void processDragon()
         if(!count==0) {
           writeByte(0x55);
           count--;
-        } else {      
+        } else {
+          //count= 119;
+          count = 2;      
+          currentTask=wSync;
+        }
+
+    } else if(currentTask==wSync) { 
+      
+          if(!count==0) {
+            writeByte(input[0]);
+            bytesRead+=1;
+            count--;
+          } else {
+            writeByte(input[0]);            //Si no cierras el FileNmae block con el primer 0x55 se desincroniza
+            bytesRead+=1;
+                currentTask=wNameFileBlk;
+                count=input[0]++;                   
+                //currentTask==lookLeader;             
+                //count=256;                 
+          }
+ 
+ 
+    } else if(currentTask==wNameFileBlk) { 
+          if(!count==0) {
+            writeByte(input[0]);
+            bytesRead+=1;
+            count--;
+          } else {
+            writeByte(input[0]);            //Si no cierras el FileNmae block con el primer 0x55 se desincroniza
+            bytesRead+=1;            
+            currentTask=lookLeader;
+            count=256;                 
+          }
+
+          
+    } else if(currentTask==lookLeader) { 
+          if(input[0] == 0x55) {
+           writeByte(0x55); 
+           bytesRead+=1;
+           count--;
+          } else {
+           currentTask=wNewLeader; 
+          }
+
+    } else if(currentTask==wNewLeader) {      
+        if(!count==0) {
+          writeByte(0x55);
+          count--;
+        } else {   
           currentTask=wData;
         }
+                  
     } else {
+
 #endif
           currentTask=wData;
           writeByte(input[0]);

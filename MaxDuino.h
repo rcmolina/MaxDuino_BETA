@@ -64,6 +64,10 @@ PROGMEM const byte BASIC[10] = { 0xD3, 0xD3, 0xD3, 0xD3, 0xD3, 0xD3, 0xD3, 0xD3,
 #define wSilence      3     //Write Silence
 #define wData         4     //Write Data
 #define wClose        5     //Write closing silence
+#define wSync         6     //
+#define wNameFileBlk  7     //
+#define lookLeader    8
+#define wNewLeader    9
 
 #define typeNothing   0
 #define typeAscii     1
