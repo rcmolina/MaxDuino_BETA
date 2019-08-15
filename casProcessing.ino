@@ -271,25 +271,30 @@ void processDragon()
   byte r=0;
   if((r=readfile(1,bytesRead))==1) {
     
-#if defined(Use_CAS) && defined(Use_DRAGON) && defined(Use_Dragon_sLeader)     
-    if(currentTask==lookHeader) {
+#if defined(Use_CAS) && defined(Use_DRAGON) && defined(Use_Dragon_sLeader)
+     
+    if(currentTask==lookHeader) {      
       if(input[0] == 0x55) {
-       bytesRead+=1; 
+       writeByte(0x55); 
+       bytesRead+=1;
+       count--;
       } else {
-       count=256;
        currentTask=wHeader; 
-      }    
-    } else if(currentTask==wHeader) {
+      }
+        
+    } else if(currentTask==wHeader) {      
         if(!count==0) {
           writeByte(0x55);
           count--;
-        } else {
+        } else {      
+          currentTask=wData;
+        }
+    } else {
 #endif
           currentTask=wData;
           writeByte(input[0]);
           bytesRead+=1; 
-#if defined(Use_CAS) && defined(Use_DRAGON) && defined(Use_Dragon_sLeader)                 
-        }
+#if defined(Use_CAS) && defined(Use_DRAGON) && defined(Use_Dragon_sLeader)                       
     }
 #endif             
     } else {

@@ -23,6 +23,7 @@ void checkForEXT (char *filename) {
           out=HIGH;
           dragonMode=1;
           period=249;
+          count=256;
         }
       #endif
     }
