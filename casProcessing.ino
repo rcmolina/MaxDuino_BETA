@@ -267,7 +267,7 @@ void process()
 #if defined(Use_CAS) && defined(Use_DRAGON)
 void processDragon()
 {
-  lastByte=input[0];
+  //lastByte=input[0];
   byte r=0;
   if((r=readfile(1,bytesRead))==1) {
     
@@ -294,12 +294,13 @@ void processDragon()
 #endif             
     } else {
       if(currentTask==wData) {
-       if(lastByte != 0x55) {
-        writeByte(0x55);
-        //lcd.print(lastByte);
-        //Serial.println(lastByte);
-   //     printtext(lastByte,0);
-   //     delay(200);
+       //if(lastByte != 0x55) {
+       if(input[0] != 0x55) {  //lastByte
+          writeByte(0x55);
+          //lcd.print(lastByte);
+          //Serial.println(lastByte);
+          //printtext(lastByte,0);
+          //delay(200);
       }      
       count = 54;
       currentTask=wSilence;
