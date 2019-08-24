@@ -350,27 +350,33 @@ void setup() {
 
 #ifdef __AVR_ATmega4809__
   pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnPlay,HIGH);
+  //digitalWrite(btnPlay,HIGH);
+  VPORTC.OUT |= _BV(3);
   //PORTC |= _BV(3);
   
   pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnStop,HIGH);
+  //digitalWrite(btnStop,HIGH);
+  VPORTC.OUT |= _BV(2);
   //PORTC |= _BV(2);
 
   pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnUp,HIGH);
+  //digitalWrite(btnUp,HIGH);
+  VPORTC.OUT |= _BV(1);
   //PORTC |= _BV(1);
 
   pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnDown,HIGH);
+  //digitalWrite(btnDown,HIGH);
+  VPORTC.OUT |= _BV(0);
   //PORTC |= _BV(0);
 
   pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnMotor,HIGH);
+  //digitalWrite(btnMotor,HIGH);
+  VPORTD.OUT |= _BV(btnMotor);
   //PORTD |= _BV(btnMotor);
   
   pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  digitalWrite(btnRoot, HIGH); 
+  //digitalWrite(btnRoot, HIGH);
+  VPORTD.OUT |= _BV(btnRoot); 
   //PORTD |= _BV(btnRoot);
 #endif
 
