@@ -108,23 +108,14 @@
                           // 1. In SdFatConfig.h change line 84 #define SD_SPI_CONFIGURATION 0
                           //    with #define SD_SPI_CONFIGURATION 1
                           // 2. In SdSpi.h change line 292 #ifdef __AVR__
-                          //    with: 
-                          //          #ifdef __AVR_ATmega4809__
-                          //            // Nothing to do here
-                          //          #else //__AVR_ATmega328P__
+                          //    with: #if defined(__AVR__) && not defined(__AVR_ATmega4809__)
                           //
                           // SDFat 1.1.0
-                          // 1. In SdFatConfig.h insert before line 216 #elif defined(__AVR__)\
-                          //    with:
-                          //          #elif defined(__AVR_ATmega4809__) 
-                          //          // Use standard SPI library.
-                          //          #define SD_HAS_CUSTOM_SPI 0
+                          // 1. In SdFatConfig.h change line 216 #elif defined(__AVR__)\
+                          //    with: #elif defined(__AVR__) && not defined(__AVR_ATmega4809__)\
                           //
                           // 2. In SpiDriver/SdSpiDriver.h change line 374 #ifdef __AVR__
-                          //    with: 
-                          //          #ifdef __AVR_ATmega4809__
-                          //            // Nothing to do here
-                          //          #else //__AVR_ATmega328P__
+                          //    with: #if defined(__AVR__) && not defined(__AVR_ATmega4809__)
                          
   //#include <TimerOne.h>  
 #else  //__AVR_ATmega328P__
