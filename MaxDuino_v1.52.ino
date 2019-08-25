@@ -101,11 +101,6 @@
  //           
 //
 
-#ifdef __AVR_ATmega328P__
-  #define SDFat
-  //#include <TimerOne.h>
-#endif
-
 #ifdef __AVR_ATmega4809__
   #define SDFat           // Needs 2 patches, check your version:
                           //
@@ -113,14 +108,27 @@
                           // 1. In SdFatConfig.h change line 84 #define SD_SPI_CONFIGURATION 0
                           //    with #define SD_SPI_CONFIGURATION 1
                           // 2. In SdSpi.h change line 292 #ifdef __AVR__
-                          //    with #ifdef __AVR_ATmega328P__
+                          //    with: 
+                          //          #ifdef __AVR_ATmega4809__
+                          //            // Nothing to do here
+                          //          #else //__AVR_ATmega328P__
                           //
                           // SDFat 1.1.0
-                          // 1. In SdFatConfig.h change line 216 #elif defined(__AVR__)\
-                          //    with #elif defined(__AVR_ATmega328P__)\ 
+                          // 1. In SdFatConfig.h insert before line 216 #elif defined(__AVR__)\
+                          //    with:
+                          //          #elif defined(__AVR_ATmega4809__) 
+                          //          // Use standard SPI library.
+                          //          #define SD_HAS_CUSTOM_SPI 0
+                          //
                           // 2. In SpiDriver/SdSpiDriver.h change line 374 #ifdef __AVR__
-                          //    with #ifdef __AVR_ATmega328P__
+                          //    with: 
+                          //          #ifdef __AVR_ATmega4809__
+                          //            // Nothing to do here
+                          //          #else //__AVR_ATmega328P__
                          
+  //#include <TimerOne.h>  
+#else  //__AVR_ATmega328P__
+  #define SDFat
   //#include <TimerOne.h>
 #endif
 
@@ -335,32 +343,6 @@ void setup() {
   //General Pin settings
   //Setup buttons with internal pullup
 
-#ifdef __AVR_ATmega328P__  
-  //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnPlay,HIGH);
-  PORTC |= _BV(3);
-  
-  //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnStop,HIGH);
-  PORTC |= _BV(2);
-
-  //pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnUp,HIGH);
-  PORTC |= _BV(1);
-
-  //pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnDown,HIGH);
-  PORTC |= _BV(0);
-
-  //pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnMotor,HIGH);
-  PORTD |= _BV(btnMotor);
-  
-  //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnRoot, HIGH); 
-  PORTD |= _BV(btnRoot);
-#endif
-
 #ifdef __AVR_ATmega4809__
   pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnPlay,HIGH);
@@ -391,6 +373,31 @@ void setup() {
   //digitalWrite(btnRoot, HIGH);
   VPORTD.OUT |= _BV(btnRoot); 
   //PORTD |= _BV(btnRoot);
+
+#else  //__AVR_ATmega328P__
+  //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnPlay,HIGH);
+  PORTC |= _BV(3);
+  
+  //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnStop,HIGH);
+  PORTC |= _BV(2);
+
+  //pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnUp,HIGH);
+  PORTC |= _BV(1);
+
+  //pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnDown,HIGH);
+  PORTC |= _BV(0);
+
+  //pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnMotor,HIGH);
+  PORTD |= _BV(btnMotor);
+  
+  //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  digitalWrite(btnRoot, HIGH); 
+  PORTD |= _BV(btnRoot);
 #endif
 
   #ifdef SPLASH_SCREEN
