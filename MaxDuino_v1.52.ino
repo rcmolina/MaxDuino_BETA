@@ -107,7 +107,20 @@
 #endif
 
 #ifdef __AVR_ATmega4809__
-  //#define SDFat
+  #define SDFat           // Needs 2 patches, check your version:
+                          //
+                          // SDFat 20150201:
+                          // 1. In SdFatConfig.h change line 84 #define SD_SPI_CONFIGURATION 0
+                          //    with #define SD_SPI_CONFIGURATION 1
+                          // 2. In SdSpi.h change line 292 #ifdef __AVR__
+                          //    with #ifdef __AVR_ATmega328P__
+                          //
+                          // SDFat 1.1.0
+                          // 1. In SdFatConfig.h change line 216 #elif defined(__AVR__)\
+                          //    with #elif defined(__AVR_ATmega328P__)\ 
+                          // 2. In SpiDriver/SdSpiDriver.h change line 374 #ifdef __AVR__
+                          //    with #ifdef __AVR_ATmega328P__
+                         
   //#include <TimerOne.h>
 #endif
 
