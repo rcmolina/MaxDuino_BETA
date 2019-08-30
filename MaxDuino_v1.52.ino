@@ -106,7 +106,7 @@
                           //
                           // SDFat 20150201:
                           // 1. In SdFatConfig.h change line 84 #define SD_SPI_CONFIGURATION 0
-                          //    with #define SD_SPI_CONFIGURATION 1
+                          //    with: #define SD_SPI_CONFIGURATION 1
                           // 2. In SdSpi.h change line 292 #ifdef __AVR__
                           //    with: #if defined(__AVR__) && not defined(__AVR_ATmega4809__)
                           //
@@ -117,10 +117,10 @@
                           // 2. In SpiDriver/SdSpiDriver.h change line 374 #ifdef __AVR__
                           //    with: #if defined(__AVR__) && not defined(__AVR_ATmega4809__)
                          
-  //#include <TimerOne.h>  
+  //#define TimerOne  
 #else  //__AVR_ATmega328P__
   #define SDFat
-  //#include <TimerOne.h>
+  //#define TimerOne
 #endif
 
 #ifdef TimerOne
@@ -134,11 +134,19 @@
   void (*TimerCounter::isrCallback)() = NULL;
   
   // interrupt service routine that wraps a user defined function supplied by attachInterrupt
-
-  ISR(TIMER1_OVF_vect)
-  {
-    Timer1.isrCallback();
-  }
+  #ifdef __AVR_ATmega4809__
+    ISR(TCA0_OVF_vect)
+    {
+      Timer1.isrCallback();
+    /* The interrupt flag has to be cleared manually */
+    //TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
+    }  
+  #else //__AVR_ATmega328P__
+    ISR(TIMER1_OVF_vect)
+    {
+      Timer1.isrCallback();
+    }
+  #endif
 #endif
 
 #ifdef SDFat
@@ -335,39 +343,53 @@ void setup() {
   //Setup buttons with internal pullup
 
 #ifdef __AVR_ATmega4809__
-  pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//  pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+//pinMode(btnPlay,INPUT); // 17 PD0
+//PORTD.PIN0CTRL |=0B00001000;
+PORTD.PIN0CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+
+  //VPORTC.DIR |= ~PIN3_bm;
+  //PORTC.DIR |= ~PIN3_bm; /* Configure PC3 as digital input */
+  //PORTC.PIN3CTRL = PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  
+    
   //digitalWrite(btnPlay,HIGH);
-  VPORTC.OUT |= _BV(3);
+//  VPORTC.OUT |= _BV(3);
   //PORTC |= _BV(3);
   
-  pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnStop,HIGH);
-  VPORTC.OUT |= _BV(2);
+  //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnStop,HIGH); // 16 PD1
+PORTD.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+  //VPORTC.OUT |= _BV(2);
   //PORTC |= _BV(2);
 
-  pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnUp,HIGH);
-  VPORTC.OUT |= _BV(1);
+  //pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnUp,HIGH); // 15 PD2
+PORTD.PIN2CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+  //VPORTC.OUT |= _BV(1);
   //PORTC |= _BV(1);
 
-  pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnDown,HIGH);
-  VPORTC.OUT |= _BV(0);
+  //pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnDown,HIGH); // 14 PD3 also to enbale PULLUP if PINMODE is INPUT
+PORTD.PIN3CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+  //VPORTC.OUT |= _BV(0);
   //PORTC |= _BV(0);
 
-  pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnMotor,HIGH);
-  VPORTD.OUT |= _BV(btnMotor);
+  //pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnMotor,HIGH); // 6 PF4
+PORTF.PIN4CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+  //VPORTD.OUT |= _BV(btnMotor);
   //PORTD |= _BV(btnMotor);
   
-  pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnRoot, HIGH);
-  VPORTD.OUT |= _BV(btnRoot); 
+  //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnRoot, HIGH); // 7 PA1 
+PORTA.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  //VPORTD.OUT |= _BV(btnRoot); 
   //PORTD |= _BV(btnRoot);
 
 #else  //__AVR_ATmega328P__
   //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-//  digitalWrite(btnPlay,HIGH);
+//  digitalWrite(btnPlay,HIGH); // Wrte for INPUT_PULLUP if input type is only INPUT
   PORTC |= _BV(3);
   
   //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)

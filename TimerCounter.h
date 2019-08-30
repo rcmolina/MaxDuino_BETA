@@ -25,42 +25,69 @@ class TimerCounter
     //****************************
     void initialize(unsigned long microseconds=1000000) __attribute__((always_inline)) {
 //  TCCR1B = _BV(WGM13);        // set mode as phase and frequency correct pwm, stop the timer
+    TCA0.SINGLE.CTRLB = TCA_SINGLE_WGMODE_NORMAL_gc;        // set mode as NORMAL, stop the timer
 //  TCCR1A = 0;                 // clear control register A 
-  setPeriod(microseconds);
+    //TCA0.SINGLE.CTRLA=0;
+    //TCA0.SINGLE.CTRLA = ~(TCA_SINGLE_ENABLE_bm);     //stop the timer 
+    /* disable event counting */
+    TCA0.SINGLE.EVCTRL &= ~(TCA_SINGLE_CNTEI_bm);
+    setPeriod(microseconds);
     }
     void setPeriod(unsigned long microseconds) __attribute__((always_inline)) {
   const unsigned long cycles = (F_CPU / 2000000) * microseconds;
+ /*
   if (cycles < TIMER1_RESOLUTION) {
     //clockSelectBits = _BV(CS10);
-    clockSelectBits = 0;
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV1_gc;
     pwmPeriod = cycles;
   } else
+  if (cycles < TIMER1_RESOLUTION * 2) {
+    //clockSelectBits = _BV(CS10);
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV2_gc;
+    pwmPeriod = cycles / 2;
+  } else  
+  if (cycles < TIMER1_RESOLUTION * 4) {
+    //clockSelectBits = _BV(CS10);
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV4_gc;
+    pwmPeriod = cycles / 4;
+  } else  
   if (cycles < TIMER1_RESOLUTION * 8) {
     //clockSelectBits = _BV(CS11);
-    clockSelectBits = 0;    
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV8_gc;
     pwmPeriod = cycles / 8;
+  } else
+  if (cycles < TIMER1_RESOLUTION * 16) {
+    //clockSelectBits = _BV(CS10);
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV16_gc;
+    pwmPeriod = cycles / 16;
   } else
   if (cycles < TIMER1_RESOLUTION * 64) {
     //clockSelectBits = _BV(CS11) | _BV(CS10);
-    clockSelectBits = 0;    
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV64_gc;    
     pwmPeriod = cycles / 64;
   } else
   if (cycles < TIMER1_RESOLUTION * 256) {
     //clockSelectBits = _BV(CS12);
-    clockSelectBits = 0;   
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV256_gc;   
     pwmPeriod = cycles / 256;
   } else
   if (cycles < TIMER1_RESOLUTION * 1024) {
     //clockSelectBits = _BV(CS12) | _BV(CS10);
-    clockSelectBits = 0;    
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV1024_gc;
     pwmPeriod = cycles / 1024;
   } else {
     //clockSelectBits = _BV(CS12) | _BV(CS10);
-    clockSelectBits = 0;    
+    clockSelectBits = TCA_SINGLE_CLKSEL_DIV1024_gc;    
     pwmPeriod = TIMER1_RESOLUTION - 1;
   }
+*/ pwmPeriod = cycles / 64;
+  
   //ICR1 = pwmPeriod;
+    TCA0.SINGLE.PER = pwmPeriod;
   //TCCR1B = _BV(WGM13) | clockSelectBits;
+    //TCA0.SINGLE.CTRLA = clockSelectBits                     /* set clock source (sys_clk/256) */
+      //                | TCA_SINGLE_ENABLE_bm;                /* start timer */
+      //TCA0.SINGLE.CTRLA = TCA_SINGLE_CLKSEL_DIV64_gc| TCA_SINGLE_ENABLE_bm;
     }
 
     //****************************
@@ -68,17 +95,28 @@ class TimerCounter
     //****************************
     void start() __attribute__((always_inline)) {
   //TCCR1B = 0;
+  TCA0.SINGLE.CTRLB=TCA_SINGLE_WGMODE_NORMAL_gc;
+  TCA0.SINGLE.CTRLA = ~(TCA_SINGLE_ENABLE_bm);
   //TCNT1 = 0;    // TODO: does this cause an undesired interrupt?
+  TCA0.SINGLE.CNT = 0;
   resume();
     }
     void stop() __attribute__((always_inline)) {
   //TCCR1B = _BV(WGM13);
+  //TCA0.SINGLE.CTRLB=TCA_SINGLE_WGMODE_NORMAL_gc;
+  //TCA0.SINGLE.CTRLA =0;
+  //TCA0.SINGLE.CTRLA = ~(TCA_SINGLE_ENABLE_bm);
+  
     }
     void restart() __attribute__((always_inline)) {
   start();
     }
     void resume() __attribute__((always_inline)) {
   //TCCR1B = _BV(WGM13) | clockSelectBits;
+    //TCA0.SINGLE.CTRLB = TCA_SINGLE_WGMODE_NORMAL_gc;
+    //TCA0.SINGLE.CTRLA = clockSelectBits                    /* set clock source (sys_clk/256) */
+                //      | TCA_SINGLE_ENABLE_bm;                /* start timer */
+   TCA0.SINGLE.CTRLA = TCA_SINGLE_ENABLE_bm;                 
     }
 
     //****************************
@@ -87,6 +125,8 @@ class TimerCounter
     void attachInterrupt(void (*isr)()) __attribute__((always_inline)) {
   isrCallback = isr;
   //TIMSK1 = _BV(TOIE1);
+     /* enable overflow interrupt */
+    TCA0.SINGLE.INTCTRL &= TCA_SINGLE_OVF_bm;
     }
     void attachInterrupt(void (*isr)(), unsigned long microseconds) __attribute__((always_inline)) {
   if(microseconds > 0) setPeriod(microseconds);
@@ -94,6 +134,8 @@ class TimerCounter
     }
     void detachInterrupt() __attribute__((always_inline)) {
   //TIMSK1 = 0;
+     /* disable overflow interrupt */
+    TCA0.SINGLE.INTCTRL &= ~(TCA_SINGLE_OVF_bm);
     }
     static void (*isrCallback)();
 
@@ -101,7 +143,9 @@ class TimerCounter
     // properties
     static unsigned short pwmPeriod;
     static unsigned char clockSelectBits;
+    
 #else  //__AVR_ATmega328P__
+
   public:
     //****************************
     //  Configuration

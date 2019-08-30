@@ -2,29 +2,15 @@
 #define outputPin           9
 
 #ifdef __AVR_ATmega4809__
-  #ifdef MINIDUINO_AMPLI
-    //#define INIT_OUTPORT         DDRB |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB 
-    //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT);pinMode(8,OUTPUT) 
-    #define INIT_OUTPORT         VPORTB.DIR |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB   
-    //#define WRITE_LOW           (PORTB &= B11111101) |= B00000001               // pin8+ pin9 , bit0- bit1 del PORTB
-    //#define WRITE_LOW             digitalWrite(outputPin,LOW);digitalWrite(8,LOW)
-    #define WRITE_LOW           (VPORTB.OUT &= B11111101) |= B00000001               // pin8+ pin9 , bit0- bit1 del PORTB
-    //#define WRITE_HIGH          (PORTB |= B00000010) &= B11111110               // pin8+ pin9 , bit0- bit1 del PORTB  
-    //#define WRITE_HIGH             digitalWrite(outputPin,HIGH);digitalWrite(8,HIGH)
-    #define WRITE_HIGH          (VPORTB.OUT |= B00000010) &= B11111110               // pin8+ pin9 , bit0- bit1 del PORTB  
-  //  #define WRITE_LOW           PORTB = (PORTB & B11111101) | B00000001         // pin8+ pin9 , bit0- bit1 del PORTB
-  //  #define WRITE_HIGH          PORTB = (PORTB | B00000010) & B11111110         // pin8+ pin9 , bit0- bit1 del PORTB 
-  #else
-    //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
-    //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
-    #define INIT_OUTPORT         VPORTB.DIR |=  _BV(1)         // El pin9 es el bit1 del PORTB
-    //#define WRITE_LOW           PORTB &= ~_BV(1)         // El pin9 es el bit1 del PORTB
-    //#define WRITE_LOW             digitalWrite(outputPin,LOW)
-    #define WRITE_LOW           VPORTB.OUT &= ~_BV(1)         // El pin9 es el bit1 del PORTB
-    //#define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
-    //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
-    #define WRITE_HIGH          VPORTB.OUT |=  _BV(1)         // El pin9 es el bit1 del PORTB
-  #endif
+  //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+  //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
+  #define INIT_OUTPORT         VPORTB.DIR |=  _BV(0)         // El pin9 es PB0
+  //#define WRITE_LOW           PORTB &= ~_BV(1)         // El pin9 es el bit1 del PORTB
+  //#define WRITE_LOW             digitalWrite(outputPin,LOW)
+  #define WRITE_LOW           VPORTB.OUT &= ~_BV(0)         // El pin9 es PB0
+  //#define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+  //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+  #define WRITE_HIGH          VPORTB.OUT |=  _BV(0)         // El pin9 es PB0
 #else  //__AVR_ATmega328P__
   #ifdef MINIDUINO_AMPLI
     #define INIT_OUTPORT         DDRB |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB 
