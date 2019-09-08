@@ -1052,10 +1052,10 @@ void TZXProcess() {
               currentTask = GETID; 
               bitSet(currentPeriod, 15);       */             
           if(temppause>0) {
-            if(temppause > 8300) {
+            if(temppause > MAXPAUSE_PERIOD) {
               //Serial.println(temppause, DEC);
-              currentPeriod = 8300;
-              temppause += -8300;         
+              currentPeriod = MAXPAUSE_PERIOD;
+              temppause += -MAXPAUSE_PERIOD;    
             } else {
               currentPeriod = temppause;
               temppause = 0;
@@ -1659,8 +1659,8 @@ void wave2() {
   //ISR Output routine
   //unsigned long fudgeTime = micros();         //fudgeTime is used to reduce length of the next period by the time taken to process the ISR
   //word workingPeriod = wbuffer[pos][workingBuffer];
-  word workingPeriod = 256 * wbuffer[pos][workingBuffer] | wbuffer[pos+1][workingBuffer];
-  //word workingPeriod = word(wbuffer[pos][workingBuffer], wbuffer[pos+1][workingBuffer]);  
+  //word workingPeriod = 256 * wbuffer[pos][workingBuffer] | wbuffer[pos+1][workingBuffer];
+  word workingPeriod = word(wbuffer[pos][workingBuffer], wbuffer[pos+1][workingBuffer]);  
   byte pauseFlipBit = false;
   unsigned long newTime=1;
   intError = false;
@@ -1862,7 +1862,7 @@ void setBaud()
   }
 //  scale=BAUDRATE/1200;
 //  period=208/scale;
-  Timer1.setPeriod(period);
+  //Timer1.setPeriod(period);
   Timer1.stop();
 }
 
