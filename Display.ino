@@ -805,13 +805,27 @@ static void init_OLED(void)
    #ifdef LOAD_MEM_LOGO
      SendByte(pgm_read_byte(logo+j*128+i));
    #endif
-   #ifdef RECORD_EEPROM_LOGO
+   #if defined(RECORD_EEPROM_LOGO) && not defined(EEPROM_LOGO_COMPRESS)
      EEPROM.put(j*128+i, pgm_read_byte(logo+j*128+i));
    #endif
-   #ifdef LOAD_EEPROM_LOGO
+   #if defined(RECORD_EEPROM_LOGO) && defined(EEPROM_LOGO_COMPRESS)
+     if (i%2 == 0){   
+        EEPROM.put(j*64+i/2, pgm_read_byte(logo+j*128+i));
+     }
+   #endif   
+   #if defined(LOAD_EEPROM_LOGO) && not defined(EEPROM_LOGO_COMPRESS)
      EEPROM.get(j*128+i,hdrptr);
      SendByte(hdrptr);
    #endif
+   #if defined(LOAD_EEPROM_LOGO) && defined(EEPROM_LOGO_COMPRESS)
+     if (i%2 == 0){
+      EEPROM.get(j*64+i/2,hdrptr);
+      SendByte(hdrptr);
+     } else {
+      SendByte(hdrptr);
+     }
+   #endif   
+   
     }  
   }
 }

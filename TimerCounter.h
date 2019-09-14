@@ -35,67 +35,57 @@ class TimerCounter
       //const unsigned long cycles = 16 * microseconds;  //WGMODE_NORMAL
    //DSBOTTOM: the counter runs backwards after TOP, interrupt is at BOTTOM so divide microseconds by 2
   const unsigned long cycles = (F_CPU / 2000000) * microseconds;
-
-   if (cycles < TIMER1_RESOLUTION * 64) {
+/*
+  if (cycles < TIMER1_RESOLUTION * 64) {
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV64_gc;    
     pwmPeriod = cycles / 64;
- } else {
+  } else {
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV64_gc;    
     pwmPeriod = TIMER1_RESOLUTION - 1;
-  }
-  
- /*
+  }  
+*/
+/*
   if (cycles < TIMER1_RESOLUTION) {
-    //clockSelectBits = _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV1_gc;
     pwmPeriod = cycles;
   } else
   if (cycles < TIMER1_RESOLUTION * 2) {
-    //clockSelectBits = _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV2_gc;
     pwmPeriod = cycles / 2;
-  } else  
+  } else 
   if (cycles < TIMER1_RESOLUTION * 4) {
-    //clockSelectBits = _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV4_gc;
     pwmPeriod = cycles / 4;
-  } else  
+  } else
   if (cycles < TIMER1_RESOLUTION * 8) {
-    //clockSelectBits = _BV(CS11);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV8_gc;
     pwmPeriod = cycles / 8;
   } else
   if (cycles < TIMER1_RESOLUTION * 16) {
-    //clockSelectBits = _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV16_gc;
     pwmPeriod = cycles / 16;
-  } else
+  } else */
   if (cycles < TIMER1_RESOLUTION * 64) {
-    //clockSelectBits = _BV(CS11) | _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV64_gc;    
     pwmPeriod = cycles / 64;
   } else
   if (cycles < TIMER1_RESOLUTION * 256) {
-    //clockSelectBits = _BV(CS12);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV256_gc;   
     pwmPeriod = cycles / 256;
   } else
   if (cycles < TIMER1_RESOLUTION * 1024) {
-    //clockSelectBits = _BV(CS12) | _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV1024_gc;
     pwmPeriod = cycles / 1024;
   } else {
-    //clockSelectBits = _BV(CS12) | _BV(CS10);
     clockSelectBits = TCA_SINGLE_CLKSEL_DIV1024_gc;    
     pwmPeriod = TIMER1_RESOLUTION - 1;
   }
- */ 
+
   //ICR1 = pwmPeriod;
     TCA0.SINGLE.PER = pwmPeriod;
     //TCA0.SINGLE.PER = cycles / 64;
                                           // set clock source and start timer
-    TCA0.SINGLE.CTRLA = clockSelectBits | TCA_SINGLE_ENABLE_bm;
-  //TCA0.SINGLE.INTCTRL |= (TCA_SINGLE_OVF_bm); // Enable timer interrupts on overflow on timer A   
+    TCA0.SINGLE.CTRLA = clockSelectBits | TCA_SINGLE_ENABLE_bm;  
     }
 
     //****************************
@@ -113,8 +103,7 @@ class TimerCounter
   //TCCR1B = _BV(WGM13);
   //TCA0.SINGLE.CTRLB=TCA_SINGLE_WGMODE_NORMAL_gc;
   //TCA0.SINGLE.CTRLA =0;
-  //TCA0.SINGLE.CTRLA = ~(TCA_SINGLE_ENABLE_bm);
-  //TCA0.SINGLE.INTCTRL &= ~(TCA_SINGLE_OVF_bm); 
+  TCA0.SINGLE.CTRLA &= ~(TCA_SINGLE_ENABLE_bm);
     }
     void restart() __attribute__((always_inline)) {
   start();
@@ -124,7 +113,7 @@ class TimerCounter
     //TCA0.SINGLE.CTRLB = TCA_SINGLE_WGMODE_NORMAL_gc;
     //TCA0.SINGLE.CTRLA = clockSelectBits                    /* set clock source (sys_clk/256) */
                 //      | TCA_SINGLE_ENABLE_bm;                /* start timer */
-   //TCA0.SINGLE.CTRLA = TCA_SINGLE_ENABLE_bm;                 
+   TCA0.SINGLE.CTRLA |= TCA_SINGLE_ENABLE_bm;                 
     }
 
     //****************************
@@ -262,12 +251,32 @@ static volatile TCB_t* _timer = &TCB0;
 
 #define TIME_TRACKING_TIMER_PERIOD    0xFF
 #define TIME_TRACKING_TICKS_PER_OVF   (TIME_TRACKING_TIMER_PERIOD + 1)  // Timer ticks per overflow of TCB3
-#define TIME_TRACKING_TIMER_DIVIDER   64    // Clock divider for TCB0
+#define TIME_TRACKING_TIMER_DIVIDER   2    // Clock divider for TCB0
 #define TIME_TRACKING_CYCLES_PER_OVF  (TIME_TRACKING_TICKS_PER_OVF * TIME_TRACKING_TIMER_DIVIDER)
 
 void timerBinit() {   // needed for things like clocks, timers and uart
-                // Para que no se ejecute la funcion init() en setup()
-                // la redefino vacía
+                // Para complementar la funcion init() en setup()
+                //
+                //After any reset, CLK_MAIN is provided by the 16/20 MHz Oscillator (OSC20M) 
+                //and with a prescaler division factor of 6. The actual frequency of the OSC20M is determined 
+                //by the Frequency Select bits (FREQSEL) of the Oscillator Configuration fuse (FUSE.OSCCFG). 
+                //Refer to the description of FUSE.OSCCFG for details of the possible frequencies after reset. 
+
+  /* Enable writing to protected register */
+  //CPU_CCP = CCP_IOREG_gc;
+  /* Disable CLK_PER Prescaler */
+  //CLKCTRL.MCLKCTRLB = 0 << CLKCTRL_PEN_bp;
+  /* Enable Prescaler and set Prescaler Division to 64 */
+      _PROTECTED_WRITE(CLKCTRL_MCLKCTRLB, 0 << CLKCTRL_PEN_bp );  // Prescaler Disabled
+  //CLKCTRL.MCLKCTRLB = CLKCTRL_PDIV_64X_gc | CLKCTRL_PEN_bm;
+      //_PROTECTED_WRITE(CLKCTRL_MCLKCTRLB, 0x00);  // OSC20M
+  /* Enable writing to protected register */
+  //CPU_CCP = CCP_IOREG_gc;
+  /* Select 32KHz Internal Ultra Low Power Oscillator (OSCULP32K) */
+  //CLKCTRL.MCLKCTRLA = CLKCTRL_CLKSEL_OSCULP32K_gc;
+  /* Wait for system oscillator changing to finish */
+  //while(CLKCTRL.MCLKSTATUS & CLKCTRL_SOSC_bm){;}
+ 
   // Calculate relevant time tracking values
   microseconds_per_timer_overflow = clockCyclesToMicroseconds(TIME_TRACKING_CYCLES_PER_OVF);
   microseconds_per_timer_tick = microseconds_per_timer_overflow/TIME_TRACKING_TIMER_PERIOD;
@@ -282,13 +291,14 @@ void timerBinit() {   // needed for things like clocks, timers and uart
   // Enable timer interrupt
   _timer->INTCTRL |= TCB_CAPT_bm;
 
-  // Clock selection -> same as TCA (F_CPU/64 -- 250kHz) 
-  _timer->CTRLA = TCB_CLKSEL_CLKTCA_gc;
+  // Clock selection -> same as TCA (F_CPU/64 -- 250kHz)
+ // _timer->CTRLA = TCB_CLKSEL_CLKTCA_gc;   
+  _timer->CTRLA = TCB_CLKSEL_CLKDIV2_gc;
 
   // Enable & start
   _timer->CTRLA |= TCB_ENABLE_bm; // Keep this last before enabling interrupts to ensure tracking as accurate as possible 
 
- //_PROTECTED_WRITE(CLKCTRL_MCLKCTRLB, 0x00);              
+             
 } 
 
 ISR(TCB0_INT_vect)

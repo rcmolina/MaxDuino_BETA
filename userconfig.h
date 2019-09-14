@@ -44,14 +44,17 @@ byte skip2A = 0;                        // Pause on for BLK:2A
   //#define SERIALSCREEN              // For testing and debugging 
 
   #define LCD_I2C_ADDR    0x27        // Set the i2c address of your 1602LCD usually 0x27
-  #define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
+  //#define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
 
   //#define OLED_SETCONTRAS   0xcf      // Override default value inside Diplay.ino, bigger to increase output current per segment
-  //#define OLED1306                      // Set if you are using OLED 1306 display
+  #define OLED1306                      // Set if you are using OLED 1306 display
       //#define OLED1306_128_64         // 128x64 resolution with 8 rows
       //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
   #define EEPROM_CONFIG_BYTEPOS  255     // Byte position to save configuration
-  #define MAXPAUSE_PERIOD   520         // millis 
+  #define EEPROM_LOGO_COMPRESS
+  #define MAXPAUSE_PERIOD   8300         // millis
+  //#define MAXPAUSE_PERIOD   520         // millis  
+  #define maxblock 99                   // maxblock if not using EEPROM 
 #else  //__AVR_ATmega328P__
   //#define SERIALSCREEN              // For testing and debugging
   
@@ -64,8 +67,10 @@ byte skip2A = 0;                        // Pause on for BLK:2A
       //#define OLED1306_128_64         // 128x64 resolution with 8 rows
       //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
   //#define P8544                       // Set if you are Display Nokia 5110 display
-  #define EEPROM_CONFIG_BYTEPOS  1023     // Byte position to save configuration 
-  #define MAXPAUSE_PERIOD   8300         // millis 
+  #define EEPROM_CONFIG_BYTEPOS  1023     // Byte position to save configuration
+  //#define EEPROM_LOGO_COMPRESS
+  #define MAXPAUSE_PERIOD   8300         // millis
+  #define maxblock 19                   // maxblock if not using EEPROM  
 #endif
 
 //#define btnRoot_AS_PIVOT
@@ -93,7 +98,7 @@ byte lineaxy=2;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EEPROM LOGO. How to move to EEPROM, saving memory:
-// Phase 1: Uncomment RECORD_EEPROM_LOGO define , this copies logo from memory to EEPROM. Compile the sketh.
+// Phase 1: Uncomment RECORD_EEPROM_LOGO define , this copies logo from memory to EEPROM. Compile the sketch.
 // Phase 2:  Comment RECORD_EEPROM define, uncomment LOAD_EEPROM define. Complile the sketch again 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Also it's posible to select record and load both for better testing new logo activation, pressing MENU simulates a reset.
