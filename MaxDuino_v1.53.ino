@@ -280,9 +280,7 @@ byte lastbtn=true;
 #endif
 
 void setup() {
-  #ifdef __AVR_ATmega4809__
-    timerBinit();
-  #endif  
+
   #ifdef LCDSCREEN16x2
     lcd.init();                     //Initialise LCD (16x2 type)
     //lcd.begin();                     //Initialise LCD (16x2 type)    
@@ -326,7 +324,7 @@ void setup() {
     //mydelay(1500);              // Show logo
     //reset_display();           // Clear logo and load saved mode
     #if (!SPLASH_SCREEN)
-        mydelay(1500);              // Show logo
+        delay(1500);              // Show logo
         reset_display();           // Clear logo and load saved mode
     #endif
   #endif
@@ -337,7 +335,7 @@ void setup() {
     //lcd.clear();
     P8544_splash(); 
   #endif
- 
+
   //General Pin settings
   //Setup buttons with internal pullup
 
@@ -440,6 +438,10 @@ PORTA.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
 //    return;
 //    mydelay(250);
   } 
+  
+  #ifdef __AVR_ATmega4809__
+    timerBinit();
+  #endif
   
   //sd.chdir("/");                       //set SD to root directory
   UniSetup();                       //Setup TZX specific options
