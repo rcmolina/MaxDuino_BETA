@@ -675,7 +675,7 @@ static void clear_display(void)
       for(i=0;i<128;i++)     //was 128
       {
         SendByte(0);         //clear all COL
-        //mydelay(10);
+        //delay(10);
       }
     }
   }
@@ -784,7 +784,7 @@ static void init_OLED(void)
   //  sendcommand(0xa0);    //seg re-map 0->127(default)
   //  sendcommand(0xa1);    //seg re-map 127->0
   //  sendcommand(0xc8);
-  //  mydelay(1000);
+  //  delay(1000);
   //----------------------------REVERSE comments----------------------------//
   // sendcommand(0xa7);  //Set Inverse Display  
   // sendcommand(0xae);   //display off
@@ -809,8 +809,33 @@ static void init_OLED(void)
      EEPROM.put(j*128+i, pgm_read_byte(logo+j*128+i));
    #endif
    #if defined(RECORD_EEPROM_LOGO) && defined(EEPROM_LOGO_COMPRESS)
-     if (i%2 == 0){   
-        EEPROM.put(j*64+i/2, pgm_read_byte(logo+j*128+i));
+     if (i%2 == 0){
+        #ifdef OLED1306_128_64
+            if (j%2 == 0){
+              byte nl=0;
+              byte rnl=0;
+              byte nb=0;
+              rnl = pgm_read_byte(logo+j*128+i);
+              for(nb=0;nb<4;nb++) {
+                if (bitRead (rnl,nb*2)) {
+                  nl |= (1 << nb);
+                }
+              }
+              byte nh=0;
+              byte rnh=0;
+              byte nc=0;
+              rnh = pgm_read_byte(logo+(j+1)*128+i);
+              for(nc=0;nc<4;nc++) {
+                if (bitRead (rnh,nc*2)) {
+                  nh |= (1 << nc);
+                }
+              }             
+              EEPROM.put((j/2)*64+i/2,nl+nh*16);                          
+            } 
+
+        #else         
+            EEPROM.put(j*64+i/2, pgm_read_byte(logo+j*128+i));
+        #endif
      }
    #endif   
    #if defined(LOAD_EEPROM_LOGO) && not defined(EEPROM_LOGO_COMPRESS)
@@ -819,11 +844,37 @@ static void init_OLED(void)
    #endif
    #if defined(LOAD_EEPROM_LOGO) && defined(EEPROM_LOGO_COMPRESS)
      if (i%2 == 0){
-      EEPROM.get(j*64+i/2,hdrptr);
-      SendByte(hdrptr);
-     } else {
-      SendByte(hdrptr);
+        #ifdef OLED1306_128_64
+            if (j%2 == 0){
+              byte il=0;
+              byte ril=0;
+              byte ib=0;
+              EEPROM.get((j/2)*64+i/2,ril);
+              for(ib=0;ib<4;ib++) {
+                if (bitRead (ril,ib)) {
+                  il |= (1 << ib*2);
+                  il |= (1 << (ib*2)+1);
+                }
+              }
+              hdrptr = il;
+            } else {
+              byte ih=0;
+              byte rih=0;
+              byte ic=0; 
+              EEPROM.get((j/2)*64+i/2,rih);
+              for(ic=4;ic<8;ic++) {
+                if (bitRead (rih,ic)) {
+                  ih |= (1 << (ic-4)*2);
+                  ih |= (1 << ((ic-4)*2)+1);
+                }
+              }
+              hdrptr = ih;                           
+            }
+        #else
+            EEPROM.get(j*64+i/2,hdrptr);
+        #endif
      }
+     SendByte(hdrptr);
    #endif   
    
     }  
@@ -1287,7 +1338,7 @@ const unsigned char logo [] PROGMEM = {
   lcd.bitmap(logo2, 3,84); */
   bitmap2(logo, 6,84);
   
-  mydelay(2000); 
+  delay(2000); 
   lcd.clear();
   
 }
