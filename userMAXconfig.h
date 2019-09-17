@@ -45,10 +45,10 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 //#define SERIALSCREEN              // For testing and debugging 
 
 #define LCD_I2C_ADDR    0x27        // Set the i2c address of your 1602LCD usually 0x27
-#define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
+//#define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
 
 //#define OLED_SETCONTRAS   0xcf      // Override default value inside Diplay.ino, bigger to increase output current per segment
-//#define OLED1306                      // Set if you are using OLED 1306 display
+#define OLED1306                      // Set if you are using OLED 1306 display
     //#define OLED1306_128_64         // 128x64 resolution with 8 rows
     //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
 
@@ -70,8 +70,8 @@ byte lineaxy=2;
 
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss
 //#define  cntrMSS                  // if not defined use sss format, if defined m:ss
-#define MAXPAUSE_PERIOD   8300         // millis
-//#define MAXPAUSE_PERIOD   520         // millis  
+//#define MAXPAUSE_PERIOD   8300         // millis
+#define MAXPAUSE_PERIOD   520         // millis  
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
@@ -86,6 +86,7 @@ byte lineaxy=2;
 // And both can be deactivated also showing a black screen.
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define EEPROM_CONFIG_BYTEPOS  255     // Byte position to save configuration
+#define COMPRESS_REPEAT_ROW
 #define EEPROM_LOGO_COMPRESS
 //#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 #define BLOCK_EEPROM_START 512
