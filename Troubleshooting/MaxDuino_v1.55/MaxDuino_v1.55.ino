@@ -1036,9 +1036,9 @@ void loop(void) {
      }     
 
 #ifdef btnRoot_AS_PIVOT
-     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot) ) {             //  up block sequential search
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot) ) {
 #else
-     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 ) {             //  up block sequential search
+     if(digitalRead(btnUp)==LOW && start==1 && pauseOn==1 ) {  //  up block sequential search
 #endif
 /*
        bytesRead=11;                     // for tzx skip header(10) + GETID(11)
@@ -1048,6 +1048,7 @@ void loop(void) {
        bytesRead=0;                       // for both tap and tzx, no header for tap
        currentTask=GETFILEHEADER;         //First task (default): search for tzx header
 */
+       firstBlockPause = false;
        #ifdef BLOCKID_INTO_MEM
          oldMinBlock = 0;
          oldMaxBlock = maxblock;
@@ -1157,9 +1158,9 @@ void loop(void) {
 #endif
 
 #ifdef btnRoot_AS_PIVOT
-     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)) {            // down block sequential search
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 && digitalRead(btnRoot)) {
 #else
-     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 ) {            // down block sequential search
+     if(digitalRead(btnDown)==LOW && start==1 && pauseOn==1 ) {   // down block sequential search
 #endif
 
 /*
