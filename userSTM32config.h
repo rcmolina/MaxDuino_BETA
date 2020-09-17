@@ -3,7 +3,7 @@
 /*                 Add // at the beginning of lines to comment and remove selected option                                */
 //**************************************  OPTIONAL USE TO SAVE SPACE  ***************************************************//
 #define Use_MENU                          // removing menu saves space
-//#define AYPLAY
+#define AYPLAY
 #define DIRECT_RECORDING
 #define ZX81SPEEDUP
 #define ID19REW                           // trace id19 block for zx81 .tzx to be rewinded
@@ -13,7 +13,7 @@
     #define Use_DRAGON
         #define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
 #define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
-    //#define Use_c112                      // integer gap chunk for .uef
+    #define Use_c112                      // integer gap chunk for .uef
     #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
         #define Use_c104                  // defined tape format data block: data bits per packet/parity/stop bits    
         //#define Use_c114                // security cycles replaced with carrier tone

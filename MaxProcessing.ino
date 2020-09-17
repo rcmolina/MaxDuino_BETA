@@ -1945,7 +1945,7 @@ void OricBitWrite(){
   if (currentBit == 11) { //Start Bit
       //currentPeriod = ORICZEROPULSE;
      #ifdef ORICSPEEDUP
-     if (BAUDRATE == 1200){
+     if (BAUDRATE <= 2400){
       if (pass==0) currentPeriod = ORICZEROLOWPULSE; 
       if (pass==1) currentPeriod = ORICZEROHIGHPULSE;
      } else {
@@ -1959,7 +1959,7 @@ void OricBitWrite(){
   } else if (currentBit == 2) { // Paridad inversa i.e. Impar
       //currentPeriod =  bitChecksum ? ORICONEPULSE : ORICZEROPULSE;
      #ifdef ORICSPEEDUP
-     if (BAUDRATE == 1200){
+     if (BAUDRATE <= 2400){
       if (pass==0)  currentPeriod = bitChecksum ? ORICZEROLOWPULSE : ORICONEPULSE; 
       if (pass==1)  currentPeriod = bitChecksum ? ORICZEROHIGHPULSE : ORICONEPULSE;
      } else {
@@ -1972,7 +1972,7 @@ void OricBitWrite(){
      #endif     
   } else if (currentBit == 1) {
      #ifdef ORICSPEEDUP
-     if (BAUDRATE == 1200){
+     if (BAUDRATE <= 2400){
       currentPeriod = ORICONEPULSE;       
      } else {
       currentPeriod = ORICTURBOONEPULSE;             
@@ -1983,7 +1983,7 @@ void OricBitWrite(){
   } else {
     if(currentByte&0x01) {                       //Set next period depending on value of bit 0
      #ifdef ORICSPEEDUP
-     if (BAUDRATE == 1200){
+     if (BAUDRATE <= 2400){
        currentPeriod = ORICONEPULSE;
      } else{
        currentPeriod = ORICTURBOONEPULSE;          
@@ -1994,7 +1994,7 @@ void OricBitWrite(){
     } else {
       //currentPeriod = ORICZEROPULSE;
      #ifdef ORICSPEEDUP
-     if (BAUDRATE == 1200){
+     if (BAUDRATE <= 2400){
       if (pass==0)  currentPeriod = ORICZEROLOWPULSE; 
       if (pass==1)  currentPeriod = ORICZEROHIGHPULSE;
      }else{
