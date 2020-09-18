@@ -11,7 +11,7 @@
     #define ORICSPEEDUP
 #define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
     #define Use_DRAGON
-        //#define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
+        #define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
 //#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
     #define Use_c112                      // integer gap chunk for .uef
     #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
@@ -99,7 +99,7 @@ byte lineaxy=2;
 //#define EEPROM_LOGO_COMPRESS
 //#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 //#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
-#define LOAD_EEPROM_LOGO 
+//#define LOAD_EEPROM_LOGO 
 
 #ifdef OLED1306_128_64
   //#define Maxduino2Alf              // new Maxduino2 logo 128x64 by Alfredo Retrocant
