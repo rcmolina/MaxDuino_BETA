@@ -1292,7 +1292,7 @@ void TZXProcess() {
                   currentPeriod = 32769;
                   count += -1;
                 } else {
-                  count= 255;
+                  count= 100;
                   currentBlockTask=SYNC1;
                 }
                 break;                
