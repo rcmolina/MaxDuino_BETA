@@ -6,7 +6,7 @@
 //#define AYPLAY
 #define DIRECT_RECORDING
 #define ZX81SPEEDUP
-//#define ID19REW                           // trace id19 block for zx81 .tzx to be rewinded
+#define ID19REW                           // trace id19 block for zx81 .tzx to be rewinded
 #define tapORIC
     #define ORICSPEEDUP
 #define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
@@ -51,10 +51,12 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 //#define LCDSCREEN16x2             // Set if you are using a 1602 LCD screen
 
 //#define OLED_SETCONTRAS   0xcf      // Override default value inside Diplay.ino, bigger to increase output current per segment
+#define OLED_ROTATE180
+#define OLED_address   0x3C           //0x3C or 0x3D
 #define OLED1306                      // Set if you are using OLED 1306 display
     //#define OLED1306_128_64         // 128x64 resolution with 8 rows
-    #define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
-    #define video64text32
+    //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
+    //#define video64text32
 //#define P8544                       // Set if you are Display Nokia 5110 display
 
 //#define btnRoot_AS_PIVOT
@@ -105,6 +107,7 @@ byte lineaxy=2;
 #if defined(OLED1306_128_64) || defined(video64text32)
   //#define Maxduino2Alf              // new Maxduino2 logo 128x64 by Alfredo Retrocant
   #define CosmicCruiser             // Dragon32 CosmicCruiser by rcmolina
+  //#define Marilyn
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
@@ -115,4 +118,7 @@ byte lineaxy=2;
 //#define SUGARLESS_2              // new logo created by YoxxxoY
 //#define LOGOMINIDUINO            // new logo for A.Villena's Miniduino by rcmolina
 #endif
+
+//#define BasicFont
+#define BoldFont
 
