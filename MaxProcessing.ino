@@ -478,9 +478,15 @@ void TZXProcess() {
                       setXY(13,1);sendChar(48+block%10);
                     #endif
                     #if defined(XY2) && defined(OLED1306_128_64)
-                      setXY(7,4);sendChar('1');sendChar('0');
-                      setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(15,4);sendChar(48+block%10);
+                      #ifdef XY2force
+                        sendStrXY("10",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        itoa(block%10,input,10);sendStrXY(input,15,4);
+                      #else                      
+                        setXY(7,4);sendChar('1');sendChar('0');
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
                     #endif                    
               #endif
               #ifdef BLOCKID_INTO_MEM
@@ -557,9 +563,15 @@ void TZXProcess() {
                       setXY(13,1);sendChar(48+block%10);
                     #endif
                     #if defined(XY2) && defined(OLED1306_128_64)
-                      setXY(7,4);sendChar('1');sendChar('1');                    
-                      setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(15,4);sendChar(48+block%10);
+                      #ifdef XY2force
+                        sendStrXY("11",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        itoa(block%10,input,10);sendStrXY(input,15,4);                      
+                      #else
+                        setXY(7,4);sendChar('1');sendChar('1');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
                     #endif                    
               #endif   
               #ifdef BLOCKID_INTO_MEM
@@ -729,9 +741,15 @@ void TZXProcess() {
                       setXY(13,1);sendChar(48+block%10);
                     #endif
                     #if defined(XY2) && defined(OLED1306_128_64)
-                      setXY(7,4);sendChar('1');sendChar('9');                    
-                      setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(15,4);sendChar(48+block%10);
+                      #ifdef XY2force
+                        sendStrXY("19",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        itoa(block%10,input,10);sendStrXY(input,15,4);                      
+                      #else 
+                        setXY(7,4);sendChar('1');sendChar('9');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
                     #endif                    
               #endif
         //#endif              
@@ -952,9 +970,15 @@ void TZXProcess() {
                       setXY(13,1);sendChar(48+block%10);
                     #endif
                     #if defined(XY2) && defined(OLED1306_128_64)
-                      setXY(7,4);sendChar('4');sendChar('B');                    
-                      setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(15,4);sendChar(48+block%10);
+                      #ifdef XY2force
+                        sendStrXY("4B",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        itoa(block%10,input,10);sendStrXY(input,15,4);                      
+                      #else
+                        setXY(7,4);sendChar('4');sendChar('B');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
                     #endif                    
               #endif     
               #ifdef BLOCKID_INTO_MEM
@@ -1099,9 +1123,15 @@ void TZXProcess() {
                       setXY(13,1);sendChar(48+block%10);
                     #endif
                     #if defined(XY2) && defined(OLED1306_128_64)
-                      setXY(7,4);sendChar('F');sendChar('E');                    
-                      setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(15,4);sendChar(48+block%10);
+                      #ifdef XY2force
+                        sendStrXY("FE",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        itoa(block%10,input,10);sendStrXY(input,15,4);                      
+                      #else
+                        setXY(7,4);sendChar('F');sendChar('E');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
                     #endif                    
               #endif     
               #ifdef BLOCKID_INTO_MEM

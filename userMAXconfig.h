@@ -65,6 +65,7 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   
 #define XY                         // use original settings for Oled line 0,1 and status for menu
 //#define XY2                      // use double size font wihtout status line for menu
+//#define XY2force
 #ifdef XY
   byte lineaxy=1;
 #endif
