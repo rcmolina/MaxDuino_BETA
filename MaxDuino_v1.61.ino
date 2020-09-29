@@ -112,7 +112,7 @@
  //               V1.58 STM32 testing support thanks to @Sildenafile.
  //               V1.59 Oric native tap support.
  //               V1.60 Oric tap speedup if speed greater than 2400.
- //               V1.61 Graphic 128x164 and text 128x32 combined mode for Oled screens.
+ //               V1.61 Graphic 128x64 and text 128x32 combined mode for Oled screens. Optional 8x8 bold font.
  //         
 #ifdef __AVR_ATmega4809__
                           // In C:\Users\Rafael\AppData\Local\Arduino15\packages\arduino\hardware\megaavr\1.8.4

@@ -30,7 +30,7 @@
     {
     Wire.beginTransmission(OLED_address); // begin transmitting
     Wire.write(0x40);//data mode
-    for(int i=0;i<8;i++)Wire.write(pgm_read_byte(myFont[data-0x20]+i));
+    for(int i=0;i<8;i++)  Wire.write(pgm_read_byte(myFont[data-0x20]+i));
     Wire.endTransmission(); // stop transmitting
     } 
     /*
@@ -43,8 +43,7 @@
     setXY(X, Y);
     Wire.beginTransmission(OLED_address); // begin transmitting
     Wire.write(0x40);//data mode
-    for(int i=0;i<8;i++)
-    Wire.write(pgm_read_byte(myFont[data-0x20]+i));
+    for(int i=0;i<8;i++)  Wire.write(pgm_read_byte(myFont[data-0x20]+i));
     Wire.endTransmission(); // stop transmitting
     }
     */
@@ -73,7 +72,7 @@
     {
     SendByte(pgm_read_byte(myFont[*string-0x20]+i));
     }
-    *string++;
+    string++;
     }
     }
     //==========================================================//
@@ -92,7 +91,7 @@
       for(i=0;i<4;i++)  SendByte(pgm_read_byte(myFont[*string-0x20]+i));    
     #endif
 
-      *string++;
+      string++;
     }
     #endif
     
@@ -127,7 +126,7 @@
           SendByte(ih);
       }
       X++;    
-     *string++;
+     string++;
     }
     #endif
     }
