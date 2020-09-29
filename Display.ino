@@ -30,8 +30,7 @@
     {
     Wire.beginTransmission(OLED_address); // begin transmitting
     Wire.write(0x40);//data mode
-    for(int i=0;i<8;i++)
-    Wire.write(pgm_read_byte(myFont[data-0x20]+i));
+    for(int i=0;i<8;i++)Wire.write(pgm_read_byte(myFont[data-0x20]+i));
     Wire.endTransmission(); // stop transmitting
     } 
     /*
@@ -88,55 +87,47 @@
     while(*string)
     {
     #ifdef OLED1306_128_64
-      for(i=0;i<8;i++)
+      for(i=0;i<8;i++)  SendByte(pgm_read_byte(myFont[*string-0x20]+i));
     #else
-      for(i=0;i<4;i++)    
+      for(i=0;i<4;i++)  SendByte(pgm_read_byte(myFont[*string-0x20]+i));    
     #endif
-    {
-    SendByte(pgm_read_byte(myFont[*string-0x20]+i));
-    }
-    *string++;
+
+      *string++;
     }
     #endif
     
     #ifdef XY2
-    while(*string)
-    {
-      setXY(X,Y);
-    
-      for(int i=0;i<8;i++)
-        {
-        unsigned int il=0;
-        unsigned int ril=(pgm_read_byte(myFont[*string-0x20]+i));
-        
-        for(int ib=0;ib<4;ib++)
-            {
-            if (bitRead (ril,ib)) 
-              {
-                il |= (1 << ib*2);
-                il |= (1 << (ib*2)+1);
+    while(*string){
+
+      setXY(X,Y);    
+      for(int i=0;i<8;i++){
+          unsigned int il=0;
+          unsigned int ril=(pgm_read_byte(myFont[*string-0x20]+i));
+          
+          for(int ib=0;ib<4;ib++){
+              if (bitRead (ril,ib)){
+                  il |= (1 << ib*2);
+                  il |= (1 << (ib*2)+1);
               }
-            }
-            SendByte(il);
-        }
-    setXY (X,Y+1);
-        for(int i=0;i<8;i++)
-         {
+          }
+          SendByte(il);
+      }
+      
+      setXY (X,Y+1);
+      for(int i=0;i<8;i++){
          unsigned int ih=0;
          unsigned int rih=(pgm_read_byte(myFont[*string-0x20]+i));
         
-         for(int ic=4;ic<8;ic++)
-            {
-            if (bitRead (rih,ic)) 
-               {
+         for(int ic=4;ic<8;ic++){
+            if (bitRead (rih,ic)) {
                 ih |= (1 << (ic-4)*2);
                 ih |= (1 << ((ic-4)*2)+1);
-                }   
-            }
-            SendByte(ih);
-            }
-    X++;    
-   *string++;
+            }   
+          }
+          SendByte(ih);
+      }
+      X++;    
+     *string++;
     }
     #endif
     }
