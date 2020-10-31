@@ -72,7 +72,7 @@ void menuMode()
         case 2:
         printtextF(PSTR("TSXCzxpUEFSW ?"),lineaxy);
         break;
-      #ifndef Use_UEF
+      #ifdef MenuBLK2A
         case 3:
         printtextF(PSTR("Skip BLK:2A ?"),lineaxy);
         break;       
@@ -82,10 +82,10 @@ void menuMode()
       updateScreen=false;
     }
     if(digitalRead(btnDown)==LOW && !lastbtn){
-      #ifndef Use_UEF
+      #ifdef MenuBLK2A
       if(menuItem<3) menuItem+=1;
       #endif
-      #ifdef Use_UEF
+      #ifndef MenuBLK2A
       if(menuItem<2) menuItem+=1;      
       #endif
       
@@ -296,7 +296,7 @@ void menuMode()
           lastbtn=true;
           updateScreen=true;
         break;
-   #ifndef Use_UEF
+   #ifdef MenuBLK2A
         case 3:
           subItem=0;
           updateScreen=true;
@@ -396,7 +396,7 @@ void menuMode()
 
   if(mselectMask) settings |=128;
   if(TSXCONTROLzxpolarityUEFSWITCHPARITY) settings |=64;
-  #ifndef Use_UEF
+  #ifdef MenuBLK2A
   if(skip2A) settings |=32;
   #endif
 
@@ -429,7 +429,7 @@ void menuMode()
   } else {
     TSXCONTROLzxpolarityUEFSWITCHPARITY=0;
   }
-  #ifndef Use_UEF
+  #ifdef MenuBLK2A
   if(bitRead(settings,5)) {
     skip2A=1;
   } else {

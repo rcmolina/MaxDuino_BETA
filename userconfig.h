@@ -4,6 +4,7 @@
 //**************************************  OPTIONAL USE TO SAVE SPACE  ***************************************************//
 #define Use_MENU                          // removing menu saves space
 //#define AYPLAY
+#define MenuBLK2A
 #define DIRECT_RECORDING
 #define ZX81SPEEDUP
 //#define ID19REW                           // trace id19 block for zx81 .tzx to be rewinded
