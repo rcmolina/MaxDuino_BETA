@@ -99,9 +99,10 @@
     
     int Xh=X, Xl=X;
     char *stringL=string, *stringH=string;
+    
+    setXY(Xl,Y);    
     while(*stringL){
-      setXY(Xl,Y);
-
+      //setXY(Xl,Y);
       Wire.beginTransmission(OLED_address); // begin transmitting
       Wire.write(0x40);//data mode
       for(int i=0;i<8;i++){
@@ -122,9 +123,9 @@
       stringL++;
     }
     
+    setXY (Xh,Y+1);    
     while(*stringH){      
-      setXY (Xh,Y+1);
-      
+      //setXY (Xh,Y+1);      
       Wire.beginTransmission(OLED_address); // begin transmitting
       Wire.write(0x40);//data mode          
       for(int i=0;i<8;i++){
