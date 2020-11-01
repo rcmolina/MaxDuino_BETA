@@ -95,7 +95,7 @@
     }
     #endif
     
-    #ifdef XY2
+    #if defined(XY2) && not defined(DoubleFont)
     
     int Xh=X, Xl=X;
     char *stringL=string, *stringH=string;
@@ -179,6 +179,40 @@
      string++;
     } */
     #endif
+
+    #if defined(XY2) && defined(DoubleFont)
+    int Xh=X, Xl=X;
+    char *stringL=string, *stringH=string;
+    
+    setXY(Xl,Y);    
+    while(*stringL){
+      //setXY(Xl,Y);
+      Wire.beginTransmission(OLED_address); // begin transmitting
+      Wire.write(0x40);//data mode
+      for(int i=0;i<8;i++){
+          unsigned int ril=(pgm_read_byte(myFont[*stringL-0x20]+i));
+          Wire.write(ril);
+      }
+      Wire.endTransmission(); // stop transmitting
+      Xl++;    
+      stringL++;
+    }
+    
+    setXY (Xh,Y+1);    
+    while(*stringH){      
+      //setXY (Xh,Y+1);      
+      Wire.beginTransmission(OLED_address); // begin transmitting
+      Wire.write(0x40);//data mode          
+      for(int i=0;i<8;i++){
+          unsigned int rih=(pgm_read_byte(myFont[*stringH-0x20]+i+8));
+          Wire.write(rih);          
+      }
+      Wire.endTransmission(); // stop transmitting      
+      Xh++;    
+      stringH++;
+    }
+    
+    #endif    
     }
     //==========================================================//
 

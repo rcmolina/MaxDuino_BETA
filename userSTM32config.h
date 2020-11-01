@@ -123,7 +123,13 @@ byte lineaxy=2;
 /////////////////////
 //      FONTS      //
 /////////////////////
+//#define DoubleFont
+
+#ifdef DoubleFont
+#define Retro8x16
+#else
 //#define BasicFont
 //#define BoldFont
 //#define c64Font
 #define zxFont
+#endif
