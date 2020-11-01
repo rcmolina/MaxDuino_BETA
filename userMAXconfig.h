@@ -121,7 +121,7 @@ byte skip2A = 1;                        // Pause on for BLK:2A
 /////////////////////
 //      FONTS      //
 /////////////////////
-#define DoubleFont
+//#define DoubleFont
 
 #ifdef DoubleFont
 #define Retro8x16
@@ -135,4 +135,14 @@ byte skip2A = 1;                        // Pause on for BLK:2A
 //#define BoldFont
 //#define c64Font
 #define zxFont
+//#define borderFont
+//#define cartoonFont
+//#define CGAFont
+//#define ComputerFont
+//#define MilitaryFont
+//#define MSXFont
+//#define RoundFont
+//#define minimalFont
+//#define DigitalFont
+//#define TinyFont
 #endif

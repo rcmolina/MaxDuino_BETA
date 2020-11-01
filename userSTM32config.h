@@ -123,7 +123,7 @@ byte lineaxy=2;
 /////////////////////
 //      FONTS      //
 /////////////////////
-#define DoubleFont
+//#define DoubleFont
 
 #ifdef DoubleFont
 #define Retro8x16
@@ -137,4 +137,14 @@ byte lineaxy=2;
 //#define BoldFont
 //#define c64Font
 #define zxFont
+//#define borderFont
+//#define cartoonFont
+//#define CGAFont
+//#define ComputerFont
+//#define MilitaryFont
+//#define MSXFont
+//#define RoundFont
+//#define minimalFont
+//#define DigitalFont
+//#define TinyFont
 #endif
