@@ -123,6 +123,7 @@ byte lineaxy=2;
   //#define GPL
   //#define GNU
   //#define LinuxGnu
+  //#define Bentley  
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax

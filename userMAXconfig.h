@@ -123,6 +123,7 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define GPL
   //#define GNU
   //#define LinuxGnu
+  //#define Bentley  
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
