@@ -109,7 +109,7 @@ byte skip2A = 1;                        // Pause on for BLK:2A
 
 #if defined(OLED1306_128_64) || defined(video64text32)
   //#define EmptyLogo               // to erase
-  #define Maxduino2Alf            // new Maxduino2 logo 128x64 by Alfredo Retrocant
+  //#define Maxduino2Alf            // new Maxduino2 logo 128x64 by Alfredo Retrocant
   //#define CosmicCruiser             // Dragon32 CosmicCruiser by rcmolina
   //#define Batman
   //#define Superman
@@ -123,7 +123,13 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define GPL
   //#define GNU
   //#define LinuxGnu
-  //#define Bentley  
+  //#define Bentley
+  //#define dragon
+  //#define heckbert
+  //#define cassette
+  #define Audiocable
+  //#define Digital
+  //#define dragon32Max   
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
