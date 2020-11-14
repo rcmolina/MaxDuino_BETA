@@ -129,7 +129,16 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define cassette
   #define Audiocable
   //#define Digital
-  //#define dragon32Max   
+  //#define dragon32Max
+  //#define Maxduino7
+  //#define Maxduino14
+  //#define Maxduino15
+  //#define Maxduino19
+  //#define Maxduino37
+  //#define Maxduino42
+  //#define Maxduino43
+  //#define Horse
+  //#define Cat     
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
