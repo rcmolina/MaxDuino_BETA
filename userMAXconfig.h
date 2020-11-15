@@ -116,7 +116,6 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define Spider
   //#define Arduino
   //#define Audi
-  //#define Porsche
   //#define Apple
   //#define Nike
   //#define WWF
@@ -139,6 +138,18 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define Cat
   //#define chimpeyes
   //#define buda
+  //#define AbuSimbel
+  //#define Penetrat
+  //#define Goody1
+  //#define Goody2
+  //#define Goody3
+  //#define GameOver
+  //#define Dizzy2017
+  //#define Sega
+  //#define ParisToDakar
+  //#define BatmanTheMovie
+  //#define Phantomas
+  //#define Castle
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax

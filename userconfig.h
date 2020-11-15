@@ -118,7 +118,6 @@ byte lineaxy=2;
   //#define Spider
   //#define Arduino
   //#define Audi
-  //#define Porsche
   //#define Apple
   //#define Nike
   //#define WWF
@@ -140,7 +139,19 @@ byte lineaxy=2;
   //#define Horse
   //#define Cat
   //#define chimpeyes
-  //#define buda    
+  //#define buda
+  //#define AbuSimbel
+  //#define Penetrat
+  //#define Goody1
+  //#define Goody2
+  //#define Goody3
+  //#define GameOver
+  //#define Dizzy2017
+  //#define Sega
+  //#define ParisToDakar
+  //#define BatmanTheMovie
+  //#define Phantomas
+  //#define Castle    
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
