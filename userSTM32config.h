@@ -152,6 +152,12 @@ byte lineaxy=2;
   //#define BatmanTheMovie
   //#define Phantomas
   //#define Castle
+  //#define Marilyn
+  //#define LadyGaga
+  //#define lionface
+  //#define MichaelJackson
+  //#define CheGuevara
+  //#define yinyang
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
