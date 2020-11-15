@@ -155,7 +155,8 @@ byte lineaxy=2;
   //#define lionface
   //#define MichaelJackson
   //#define CheGuevara
-  //#define yinyang  
+  //#define yinyang
+  //#define OLEDmeter    
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
