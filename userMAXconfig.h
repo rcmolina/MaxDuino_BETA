@@ -120,14 +120,13 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define Apple
   //#define Nike
   //#define WWF
-  //#define GPL
   //#define GNU
   //#define LinuxGnu
   //#define Bentley
   //#define dragon
   //#define heckbert
-  //#define cassette
-  #define Audiocable
+  #define cassette
+  //#define Audiocable
   //#define Digital
   //#define dragon32Max
   //#define Maxduino7
@@ -136,9 +135,10 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define Maxduino19
   //#define Maxduino37
   //#define Maxduino42
-  //#define Maxduino43
   //#define Horse
-  //#define Cat     
+  //#define Cat
+  //#define chimpeyes
+  //#define buda
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
