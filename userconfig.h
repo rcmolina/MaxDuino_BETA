@@ -164,7 +164,8 @@ byte lineaxy=2;
   //#define tanque3
   //#define tanque4
   //#define tanque1
-  //#define dostanques          
+  //#define dostanques
+  //#define cablemax            
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
