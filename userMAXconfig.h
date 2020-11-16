@@ -156,7 +156,13 @@ byte skip2A = 1;                        // Pause on for BLK:2A
   //#define MichaelJackson
   //#define CheGuevara
   //#define yinyang
-  //#define OLEDmeter    
+  //#define OLEDmeter
+  //#define fuelstation
+  //#define tanque2
+  //#define tanque3
+  //#define tanque4
+  //#define tanque1
+  //#define dostanques      
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
