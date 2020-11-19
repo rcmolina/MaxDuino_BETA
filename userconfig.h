@@ -13,10 +13,10 @@
 #define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
     #define Use_DRAGON
         //#define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
-//#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
+#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
     #define Use_c112                      // integer gap chunk for .uef
     #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
-        #define Use_c104                  // defined tape format data block: data bits per packet/parity/stop bits    
+        //#define Use_c104                  // defined tape format data block: data bits per packet/parity/stop bits    
         //#define Use_c114                // security cycles replaced with carrier tone
         //#define Use_c116                // floating point gap chunk for .hq.uef
         //#define Use_c117                // data encoding format change for 300 bauds
@@ -55,9 +55,9 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 #define OLED_ROTATE180
 #define OLED_address   0x3C           //0x3C or 0x3D
 #define OLED1306                      // Set if you are using OLED 1306 display
-    #define OLED1306_128_64         // 128x64 resolution with 8 rows
+    //#define OLED1306_128_64         // 128x64 resolution with 8 rows
     //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
-    //zzz#define video64text32
+    //#define video64text32
 //#define P8544                       // Set if you are Display Nokia 5110 display
 
 //#define btnRoot_AS_PIVOT
@@ -67,8 +67,8 @@ byte skip2A = 0;                        // Pause on for BLK:2A
       
   #define SHOW_BLOCKPOS_LCD
   
-//#define XY                         // use original settings for Oled line 0,1 and status for menu
-#define XY2                      // use double size font wihtout status line for menu
+#define XY                         // use original settings for Oled line 0,1 and status for menu
+//#define XY2                      // use double size font wihtout status line for menu
 //#define XY2force
 #ifdef XY
 byte lineaxy=1;
@@ -78,11 +78,11 @@ byte lineaxy=2;
 #endif
 
 #define SHOW_CNTR
-#define SHOW_PCT
+//#define SHOW_PCT
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss (sorry, no space for separator)
 #define MAXPAUSE_PERIOD   8300         // millis
 //#define ONPAUSE_POLCHG               //
-#define BLOCKMODE                   // REW or FF a block when in pause and Play to select it
+//#define BLOCKMODE                   // REW or FF a block when in pause and Play to select it
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SPLASH_SCREEN   1  // Displays the logo and welcome text at the initialization and remains until a button is pressed.
