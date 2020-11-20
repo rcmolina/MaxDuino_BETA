@@ -253,13 +253,13 @@
 static void reset_display(void)
 {
   displayOff();
+  clear_display();    
   #if defined(video64text32)     // back to 128x32
     sendcommand(0xA8);            //SSD1306_SETMULTIPLEX     
     sendcommand(0x1f);            //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f     
     sendcommand(0xDA);           //0xDA
     sendcommand(0x02);           //COMSCANDEC /* com pin HW config, sequential com pin config (bit 4), disable left/right remap (bit 5) */      
-  #endif  
-  clear_display();  
+  #endif
   displayOn();
 }
 
@@ -283,7 +283,7 @@ void displayOff(void)
 static void clear_display(void)
 {
   unsigned char i,k;
-  #ifdef OLED1306_128_64
+  #if defined(OLED1306_128_64) || defined(video64text32)
     for(k=0;k<8;k++)  // 8 LINES
   #else
     for(k=0;k<4;k++) // 4 LINES  
