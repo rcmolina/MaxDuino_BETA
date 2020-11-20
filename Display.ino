@@ -253,9 +253,13 @@
 static void reset_display(void)
 {
   displayOff();
-  clear_display();
-
-  
+  #if defined(video64text32)     // back to 128x32
+    sendcommand(0xA8);            //SSD1306_SETMULTIPLEX     
+    sendcommand(0x1f);            //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f     
+    sendcommand(0xDA);           //0xDA
+    sendcommand(0x02);           //COMSCANDEC /* com pin HW config, sequential com pin config (bit 4), disable left/right remap (bit 5) */      
+  #endif  
+  clear_display();  
   displayOn();
 }
 
@@ -377,7 +381,7 @@ static void init_OLED(void)
           sendcommand(0x27);                    // default 0x80 : (SMALL 0x00, LARGE 0xFF)
         #else
           sendcommand(0x81);                    //SETCONTRAS
-          sendcommand(0x80);                    //
+          sendcommand(0x60);                    // default 0x80 : (SMALL 0x00, LARGE 0xFF)
         #endif
     #endif
     
@@ -414,7 +418,7 @@ static void init_OLED(void)
   //sendcommand(0x00);            //Set Memory Addressing Mode ab Horizontal addressing mode
     //sendcommand(0x02);         // Set Memory Addressing Mode ab Page addressing mode(RESET)  
   
-  clear_display();
+  //clear_display();
   
   #if defined(OLED1306_128_64) || defined(video64text32)
     for(int j=0;j<8;j++)
@@ -534,15 +538,7 @@ static void init_OLED(void)
    
     }  
   }
-  #if defined(video64text32)     // back to 128x32
-    clear_display();  
-    sendcommand(0xAE);           //DISPLAYOFF
-    sendcommand(0xA8);            //SSD1306_SETMULTIPLEX     
-    sendcommand(0x1f);            //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f     
-    sendcommand(0xDA);           //0xDA
-    sendcommand(0x02);           //COMSCANDEC /* com pin HW config, sequential com pin config (bit 4), disable left/right remap (bit 5) */      
-    sendcommand(0xAF);          //display on
-  #endif  
+
 }
 
 #endif
