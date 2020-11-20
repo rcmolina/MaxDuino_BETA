@@ -253,7 +253,7 @@
 static void reset_display(void)
 {
   displayOff();
-  clear_display();    
+  clear_display();  
   #if defined(video64text32)     // back to 128x32
     sendcommand(0xA8);            //SSD1306_SETMULTIPLEX     
     sendcommand(0x1f);            //--1/48 duty, NEW!!! Feb 23, 2013: 128x32 OLED: 0x01f,  128x64 OLED 0x03f     
@@ -399,7 +399,7 @@ static void init_OLED(void)
       sendcommand(0x20);            //Set Memory Addressing Mode
       sendcommand(0x02);            //Set Memory Addressing Mode ab Page addressing mode      
    #endif              
-    sendcommand(0xAF);    //display on
+    //sendcommand(0xAF);    //display on
 
 /*    sendcommand(0xFF); // U8G_ESC_CS(0) disable chip
     sendcommand(0xd0 | ((0)&0x0f));
@@ -538,7 +538,7 @@ static void init_OLED(void)
    
     }  
   }
-
+  sendcommand(0xAF);    //display on
 }
 
 #endif
