@@ -1,10 +1,10 @@
-////////////////                CONFIG FOR CLASSIC ARDUINO NANO OR PRO MINI                  //////////////////////////////
+////////////////                             CONFIG FOR STM32                                //////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                 Add // at the beginning of lines to comment and remove selected option                                */
 //**************************************  OPTIONAL USE TO SAVE SPACE  ***************************************************//
 #define Use_MENU                          // removing menu saves space
-//#define AYPLAY
-//#define MenuBLK2A
+#define AYPLAY
+#define MenuBLK2A
 #define DIRECT_RECORDING
 #define ZX81SPEEDUP
 #define ID19REW                           // trace id19 block for zx81 .tzx to be rewinded
@@ -12,8 +12,8 @@
     #define ORICSPEEDUP
 #define Use_CAS                           // .cas files playback on MSX / Dragon / CoCo Tandy computers
     #define Use_DRAGON
-        //#define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
-//#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
+        #define Use_Dragon_sLeader        // short Leader of 0x55 allowed for loading TOSEC files
+#define Use_UEF                           // .uef files playback on BBC Micro / Electron / Atom computers
     #define Use_c112                      // integer gap chunk for .uef
     #define Use_hqUEF                     // .hq.uef files playback on BBC Micro / Electron / Atom computers
         #define Use_c104                  // defined tape format data block: data bits per packet/parity/stop bits    
@@ -57,7 +57,7 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 #define OLED1306                      // Set if you are using OLED 1306 display
     #define OLED1306_128_64         // 128x64 resolution with 8 rows
     //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
-    //#define video64text32
+    //#define video64text32    
 //#define P8544                       // Set if you are Display Nokia 5110 display
 
 //#define btnRoot_AS_PIVOT
@@ -81,7 +81,7 @@ byte lineaxy=2;
 #define SHOW_PCT
 #define CNTRBASE 100                // 100 for sss, 60 for m:ss (sorry, no space for separator)
 #define MAXPAUSE_PERIOD   8300         // millis
-//#define ONPAUSE_POLCHG               //
+#define ONPAUSE_POLCHG              // 
 #define BLOCKMODE                   // REW or FF a block when in pause and Play to select it
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ byte lineaxy=2;
 #define BLOCKID_INTO_MEM              // enable for blockid recording and later rewinding if EEPROM_PUT is disabled.
 #define maxblock 19                   // maxblock if not using EEPROM  
 #define BLOCK_EEPROM_START 512
-#define LOAD_EEPROM_SETTINGS
+//#define LOAD_EEPROM_SETTINGS
 #define EEPROM_CONFIG_BYTEPOS  1023     // Byte position to save configuration
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,9 +105,9 @@ byte lineaxy=2;
 
 //#define COMPRESS_REPEAT_ROW
 //#define EEPROM_LOGO_COMPRESS
-//#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
+#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 //#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
-#define LOAD_EEPROM_LOGO 
+//#define LOAD_EEPROM_LOGO 
 
 #if defined(OLED1306_128_64) || defined(video64text32)
   //#define EmptyLogo               // to erase
@@ -184,11 +184,11 @@ byte lineaxy=2;
 
 #ifdef DoubleFont
 //#define Retro8x16
-#define Led8x16
+//#define Led8x16
 //#define rconsole8x16
 //#define symon8x16
 //#define uniscr8x16
-//#define atariST8x16
+#define atariST8x16
 #else
 //#define BasicFont
 //#define BoldFont

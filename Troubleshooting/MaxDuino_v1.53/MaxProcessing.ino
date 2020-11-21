@@ -4,7 +4,11 @@ word TickToUs(word ticks) {
 }
 
 void UniPlay(char *filename){
-  Timer1.stop();                              //Stop timer interrupt
+  #if defined(__AVR__)
+    Timer1.stop();                              //Stop timer interrupt
+  #elif defined(__arm__) && defined(__STM32F1__)
+    timer.pause();
+  #endif
 #ifdef SDFat
   if(!entry.open(filename,O_READ)) {
   //  printtextF(PSTR("Error Opening File"),0);
@@ -34,19 +38,35 @@ void UniPlay(char *filename){
     isStopped=false;
     count = 255;                                //End of file buffer flush
     EndOfFile=false;
+    passforZero=2;
+    passforOne=4;
    // pinState=LOW;                               //Always Start on a LOW output for simplicity
    // digitalWrite(outputPin, pinState);
 //    digitalWrite(outputPin, LOW);
-    WRITE_LOW;    
-    Timer1.initialize(1000);                //100ms pause prevents anything bad happening before we're ready
-    Timer1.attachInterrupt(wave2);
-
+    WRITE_LOW;
+    #if defined(__AVR__)    
+      Timer1.initialize(1000);                //100ms pause prevents anything bad happening before we're ready
+      Timer1.attachInterrupt(wave2);
+    #elif defined(__arm__) && defined(__STM32F1__)
+      //timer.setCount(0);
+      timer.setPeriod(1000);
+      timer.attachInterrupt(2,wave2); // channel 2
+      timer.resume();      
+    #endif
 //    Timer1.setPeriod(1000);                     //set 1ms wait at start of a file.
   }
+
 #ifdef Use_CAS
   else {
-    Timer1.initialize(period);
-    Timer1.attachInterrupt(wave);    
+    #if defined(__AVR__)
+      Timer1.initialize(period);
+      Timer1.attachInterrupt(wave);
+    #elif defined(__arm__) && defined(__STM32F1__)
+      //timer.setCount(0);
+      timer.setPeriod(period);
+      timer.attachInterrupt(2,wave); // channel 2
+      timer.resume();   
+    #endif        
   }
 #endif
 }
@@ -74,7 +94,11 @@ void UniPlay(char *filename) {
 */
 
 void TZXStop() {
-  Timer1.stop();                              //Stop timer
+  #if defined(__AVR__)
+    Timer1.stop();                              //Stop timer
+  #elif defined(__arm__) && defined(__STM32F1__)
+    timer.pause();
+  #endif
   isStopped=true;
   start=0;
   entry.close();                              //Close file                                                                                // DEBUGGING Stuff
@@ -122,8 +146,12 @@ void TZXLoop() {
     } else {
          //lcdSpinner();
          if (pauseOn == 0) {
-          lcdTime();
-          lcdPercent();
+          #if defined(SHOW_CNTR)
+            lcdTime();          
+          #endif
+          #if defined(SHOW_PCT)          
+            lcdPercent();
+          #endif
          }
     } 
 }
@@ -306,7 +334,7 @@ void TZXProcess() {
 
 #if defined(Use_UEF) && defined(Use_c112)         
         case ID0112:
-          if(currentBlockTask==READPARAM){
+//          if(currentBlockTask==READPARAM){
             if(r=ReadWord(bytesRead)==2) {
               if (outWord>0) {
                 //Serial.print(F("delay="));
@@ -321,7 +349,7 @@ void TZXProcess() {
                 currentTask = GETCHUNKID;
               }     
             }
-          } 
+//          } 
           break;
 #endif
 
@@ -340,7 +368,6 @@ void TZXProcess() {
 
 #if defined(Use_UEF) && defined(Use_hqUEF) && defined(Use_c116)
         case ID0116:
-          if(currentBlockTask==READPARAM){
             if(r=ReadDword(bytesRead)==4) {
               byte * FloatB = (byte *) &outLong;
               //memcpy(&outFloat,&outLong,4);
@@ -367,9 +394,26 @@ void TZXProcess() {
                 currentTask = GETCHUNKID;
               }     
             }
-          } 
           break;
 #endif
+
+#if defined(Use_UEF) && defined(Use_hqUEF) && defined(Use_c117)
+        case ID0117:
+            if(r=ReadWord(bytesRead)==2) {
+              if (outWord == 300) {
+                passforZero = 8;
+                passforOne = 16;
+                currentTask = GETCHUNKID;
+              } else {
+                passforZero = 2;
+                passforOne =  4;              
+                currentTask = GETCHUNKID;
+              }     
+            }           
+          break;
+
+#endif
+
 
 #ifdef Use_UEF
         case IDCHUNKEOF:
@@ -415,8 +459,13 @@ void TZXProcess() {
                   blockID[block%maxblock] = currentID;
               #endif
               #ifdef BLOCK_EEPROM_PUT
-                EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-                EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #if defined(__AVR__)
+                  EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #elif defined(__arm__) && defined(__STM32F1__)
+                  EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #endif                
               #endif
          
               #ifdef OLED1306
@@ -430,12 +479,23 @@ void TZXProcess() {
                       setXY(15,2);
                       sendChar(48+block%10);   
                     #endif
-                    #ifdef XY2
-                      setXY(11,1);
-                      if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(12,1);
-                      sendChar(48+block%10);
+                    #if defined(XY2) && not defined(OLED1306_128_64)
+                      setXY(9,1);sendChar('1');sendChar('0');                    
+                      setXY(12,1);if ((block%10) == 0) sendChar(48+block/10);
+                      setXY(13,1);sendChar(48+block%10);
                     #endif
+                    #if defined(XY2) && defined(OLED1306_128_64)
+                      #ifdef XY2force
+                        sendStrXY("10",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        //itoa(block%10,input,10);sendStrXY(input,15,4);
+                        input[0]=48+block%10;input[1]=0;sendStrXY(input,15,4);
+                      #else                      
+                        setXY(7,4);sendChar('1');sendChar('0');
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
+                    #endif                    
               #endif
               #ifdef BLOCKID_INTO_MEM
                 if (block < maxblock) block++;
@@ -485,8 +545,13 @@ void TZXProcess() {
               #endif
           
               #ifdef BLOCK_EEPROM_PUT
-                EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-                EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #if defined(__AVR__)
+                  EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #elif defined(__arm__) && defined(__STM32F1__)
+                  EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #endif                
               #endif
               
               #ifdef OLED1306
@@ -500,12 +565,23 @@ void TZXProcess() {
                       setXY(15,2);
                       sendChar(48+block%10);   
                     #endif
-                    #ifdef XY2
-                      setXY(11,1);
-                      if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(12,1);
-                      sendChar(48+block%10);
+                    #if defined(XY2) && not defined(OLED1306_128_64)
+                      setXY(9,1);sendChar('1');sendChar('1');                      
+                      setXY(12,1);if ((block%10) == 0) sendChar(48+block/10);
+                      setXY(13,1);sendChar(48+block%10);
                     #endif
+                    #if defined(XY2) && defined(OLED1306_128_64)
+                      #ifdef XY2force
+                        sendStrXY("11",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        //itoa(block%10,input,10);sendStrXY(input,15,4);
+                        input[0]=48+block%10;input[1]=0;sendStrXY(input,15,4);                
+                      #else
+                        setXY(7,4);sendChar('1');sendChar('1');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
+                    #endif                    
               #endif   
               #ifdef BLOCKID_INTO_MEM
                 if (block < maxblock) block++;
@@ -610,7 +686,8 @@ void TZXProcess() {
             if(r=ReadWord(bytesRead)==2) {     
               //Number of T-states per sample (bit of data) 79 or 158 - 22.6757uS for 44.1KHz
               //SampleLength = TickToUs(outWord) + TickToUs(outWord)/9;
-              SampleLength = TickToUs(outWord + (outWord /8));
+              //SampleLength = TickToUs(outWord + (outWord /8));
+              SampleLength = TickToUs(outWord);
             }
             if(r=ReadWord(bytesRead)==2) {      
               //Pause after this block in milliseconds
@@ -639,6 +716,107 @@ void TZXProcess() {
         break;
         #endif
 
+        case ID19:
+          //Process ID19 - Generalized data block
+          switch (currentBlockTask) {
+            case READPARAM:
+        #ifdef ID19REW      
+              #ifdef BLOCKID_INTO_MEM
+                    blockOffset[block%maxblock] = bytesRead;
+                    blockID[block%maxblock] = currentID;
+              #endif
+              #ifdef BLOCK_EEPROM_PUT
+                    #if defined(__AVR__)
+                      EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                      EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                    #elif defined(__arm__) && defined(__STM32F1__)
+                      EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                      EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID);
+                    #endif                   
+              #endif
+        //#ifdef ID19REW                
+              #ifdef OLED1306
+                    #ifdef XY
+                      setXY(7,2);
+                      sendChar('1');sendChar('9');
+                      setXY(14,2);
+                      if ((block%10) == 0) sendChar(48+block/10);  
+                      setXY(15,2);
+                      sendChar(48+block%10);   
+                    #endif
+                    #if defined(XY2) && not defined(OLED1306_128_64)
+                      setXY(9,1);sendChar('1');sendChar('9');                     
+                      setXY(12,1);if ((block%10) == 0) sendChar(48+block/10);
+                      setXY(13,1);sendChar(48+block%10);
+                    #endif
+                    #if defined(XY2) && defined(OLED1306_128_64)
+                      #ifdef XY2force
+                        sendStrXY("19",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        //itoa(block%10,input,10);sendStrXY(input,15,4);
+                        input[0]=48+block%10;input[1]=0;sendStrXY(input,15,4);                     
+                      #else 
+                        setXY(7,4);sendChar('1');sendChar('9');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
+                    #endif                    
+              #endif
+        //#endif              
+              #ifdef BLOCKID_INTO_MEM
+                if (block < maxblock) block++;
+                else block = 0; 
+              #endif
+              #ifdef BLOCK_EEPROM_PUT       
+                if (block < 99) block++;
+                else block = 0; 
+              #endif 
+        #endif
+              if(r=ReadDword(bytesRead)==4) {
+                #ifdef ID19REW
+                  bytesToRead = outLong;
+                #endif
+              }
+              if(r=ReadWord(bytesRead)==2) {
+                //Pause after this block in milliseconds
+                pauseLength = outWord;
+                #ifdef ID19REW
+                  //bytesToRead += -2;
+                #endif              
+              }
+              bytesRead += 86 ;  // skip until DataStream filename
+              #ifdef ID19REW
+                //bytesToRead += -86 ; // skip SYMDEF bytes inside block ID                       
+                bytesToRead += -88 ;    // pauseLength + SYMDEFs
+              #endif
+              //currentChar=0;
+              currentBlockTask=PAUSE;
+            break;
+        /*    
+            case PILOT:
+              //ZX81FilenameBlock();
+              bytesRead += 3 ;  // skip until DataStream .P file offset
+              currentBlockTask = DATA;             
+            break;
+        */ 
+            case PAUSE:
+              currentPeriod = PAUSELENGTH;
+              bitSet(currentPeriod, 15);
+              currentBlockTask=DATA;
+            break; 
+                         
+            case DATA:
+              //if (block <= 10) {
+                //bytesRead += bytesToRead;
+                //bytesToRead = 0;
+                //currentTask = GETID;
+              //} else {
+              ZX8081DataBlock();
+              //}
+            break;
+          }  
+        break;
+
       /*  //Old ID20
         case ID20:
           //process ID20 - Pause Block
@@ -650,7 +828,7 @@ void TZXProcess() {
             currentTask=GETID;
           }
         break; */     
-        
+       
         case ID20:
           //process ID20 - Pause Block
           if(r=ReadWord(bytesRead)==2) {
@@ -776,8 +954,13 @@ void TZXProcess() {
                 blockID[block%maxblock] = currentID;
               #endif
               #ifdef BLOCK_EEPROM_PUT
-                EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-                EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #if defined(__AVR__)
+                  EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #elif defined(__arm__) && defined(__STM32F1__)
+                  EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #endif                 
               #endif
               
               #ifdef OLED1306
@@ -791,12 +974,23 @@ void TZXProcess() {
                       setXY(15,2);
                       sendChar(48+block%10);   
                     #endif
-                    #ifdef XY2
-                      setXY(11,1);
-                      if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(12,1);
-                      sendChar(48+block%10);
+                    #if defined(XY2) && not defined(OLED1306_128_64)
+                      setXY(9,1);sendChar('4');sendChar('B');                     
+                      setXY(12,1);if ((block%10) == 0) sendChar(48+block/10);
+                      setXY(13,1);sendChar(48+block%10);
                     #endif
+                    #if defined(XY2) && defined(OLED1306_128_64)
+                      #ifdef XY2force
+                        sendStrXY("4B",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        //itoa(block%10,input,10);sendStrXY(input,15,4);
+                        input[0]=48+block%10;input[1]=0;sendStrXY(input,15,4);                     
+                      #else
+                        setXY(7,4);sendChar('4');sendChar('B');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
+                    #endif                    
               #endif     
               #ifdef BLOCKID_INTO_MEM
                 if (block < maxblock) block++;
@@ -914,8 +1108,13 @@ void TZXProcess() {
                 blockID[block%maxblock] = currentID;
               #endif
               #ifdef BLOCK_EEPROM_PUT
-                EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
-                EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #if defined(__AVR__)
+                  EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #elif defined(__arm__) && defined(__STM32F1__)
+                  EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID); 
+                #endif                 
               #endif
               
               #ifdef OLED1306
@@ -929,12 +1128,23 @@ void TZXProcess() {
                       setXY(15,2);
                       sendChar(48+block%10);   
                     #endif
-                    #ifdef XY2
-                      setXY(11,1);
-                      if ((block%10) == 0) sendChar(48+block/10);
-                      setXY(12,1);
-                      sendChar(48+block%10);
+                    #if defined(XY2) && not defined(OLED1306_128_64)
+                      setXY(9,1);sendChar('F');sendChar('E');                      
+                      setXY(12,1);if ((block%10) == 0) sendChar(48+block/10);
+                      setXY(13,1);sendChar(48+block%10);
                     #endif
+                    #if defined(XY2) && defined(OLED1306_128_64)
+                      #ifdef XY2force
+                        sendStrXY("FE",7,4);
+                        if ((block%10) == 0) {itoa(block/10,input,10);sendStrXY(input,14,4);}
+                        //itoa(block%10,input,10);sendStrXY(input,15,4);
+                        input[0]=48+block%10;input[1]=0;sendStrXY(input,15,4);                     
+                      #else
+                        setXY(7,4);sendChar('F');sendChar('E');                    
+                        setXY(14,4);if ((block%10) == 0) sendChar(48+block/10);
+                        setXY(15,4);sendChar(48+block%10);
+                      #endif
+                    #endif                    
               #endif     
               #ifdef BLOCKID_INTO_MEM
                 if (block < maxblock) block++;
@@ -974,11 +1184,18 @@ void TZXProcess() {
         case ZXP:
           switch(currentBlockTask) {
             case READPARAM:
-              pauseLength = PAUSELENGTH*5;
+              //pauseLength = PAUSELENGTH*5;
+              pauseLength = PAUSELENGTH;
               currentChar=0;
-              currentBlockTask=PILOT;
+              currentBlockTask=PAUSE;
             break;
             
+            case PAUSE:
+              currentPeriod = PAUSELENGTH;
+              bitSet(currentPeriod, 15);
+              currentBlockTask=PILOT;
+            break; 
+                        
             case PILOT:
               ZX81FilenameBlock();
             break;
@@ -993,8 +1210,14 @@ void TZXProcess() {
           switch(currentBlockTask) {
             case READPARAM:
               pauseLength = PAUSELENGTH*5;
-              currentBlockTask=DATA;
+              currentBlockTask=PAUSE;
             break;
+                        
+            case PAUSE:
+              currentPeriod = PAUSELENGTH;
+              bitSet(currentPeriod, 15);
+              currentBlockTask=PILOT;
+            break; 
             
             case DATA:
               ZX8081DataBlock();
@@ -1045,7 +1268,101 @@ void TZXProcess() {
             break;
           }  
         break;
-      #endif  
+      #endif
+
+      #ifdef tapORIC
+        case ORIC:
+            //ReadByte(bytesRead);
+            //OricByteWrite(); 
+          switch(currentBlockTask) {            
+            case READPARAM: // currentBit = 0 y count = 255
+            case SYNC1:
+                if (currentBit >0) OricBitWrite();
+                else {
+                     //if (count >0) {     
+                        ReadByte(bytesRead);currentByte=outByte;currentBit = 11; bitChecksum = 0;lastByte=0;
+                        if (currentByte==0x16) count--;
+                        else {currentBit = 0; currentBlockTask=SYNC2;} //0x24
+                     //}
+                     //else currentBlockTask=SYNC2;
+                }          
+                break;
+            case SYNC2:   
+                if(currentBit >0) OricBitWrite();             
+                else {
+                      if (count >0) {currentByte=0x16; currentBit = 11; bitChecksum = 0;lastByte=0; count--;}
+                      else {count=1; currentBlockTask=SYNCLAST;} //0x24 
+                }
+                break;
+                
+            case SYNCLAST:   
+                if(currentBit >0) OricBitWrite();             
+                else {
+                      if (count >0) {currentByte=0x24; currentBit = 11; bitChecksum = 0;lastByte=0; count--;} 
+                      else {count=9;lastByte=0;currentBlockTask=NEWPARAM;}
+                }
+                break;
+                      
+            case NEWPARAM:            
+                if(currentBit >0) OricBitWrite();
+                else {
+                      if  (count >0) {
+                        ReadByte(bytesRead);currentByte=outByte;currentBit = 11; bitChecksum = 0;lastByte=0;                                        
+                        if      (count == 5) bytesToRead = 256*outByte;
+                        else if (count == 4) bytesToRead += (outByte +1) ;
+                        else if (count == 3) bytesToRead -= (256 * outByte) ;
+                        else if (count == 2) bytesToRead -= outByte; 
+                        count--;
+                      }
+                      else currentBlockTask=NAME;
+                }
+                break;
+                
+            case NAME:
+                if (currentBit >0) OricBitWrite();
+                else {
+                  ReadByte(bytesRead);currentByte=outByte;currentBit = 11; bitChecksum = 0;lastByte=0;
+                  if (currentByte==0x00) {count=1;currentBit = 0; currentBlockTask=NAMELAST;}
+                }               
+                break;
+                
+             case NAMELAST:
+                if(currentBit >0) OricBitWrite();             
+                else {
+                      if (count >0) {currentByte=0x00; currentBit = 11; bitChecksum = 0;lastByte=0; count--;} 
+                      else {count=100;lastByte=0;currentBlockTask=GAP;}
+                }
+                break;
+                                      
+            case GAP:
+                if(count>0) {
+                  currentPeriod = ORICONEPULSE;
+                  count--;
+                } else {   
+                  currentBlockTask=DATA;
+                }             
+                break;
+                          
+            case DATA:
+                OricDataBlock();
+                break;
+                
+            case PAUSE:
+                //currentPeriod = 100; // 100ms pause
+                //bitSet(currentPeriod, 15);
+                if(!count==0) {
+                  currentPeriod = 32769;
+                  count += -1;
+                } else {
+                  count= 100;
+                  currentBlockTask=SYNC1;
+                }
+                break;                
+          }
+          break;
+
+      #endif 
+                
         case IDPAUSE:
          /*     currentPeriod = temppause;
               temppause = 0;
@@ -1069,7 +1386,7 @@ void TZXProcess() {
                 } else {
                   pauseOn=1;
                   currentTask = GETID;
-                  printtextF(PSTR("PAUSED*"),0);
+                  printtext2F(PSTR("PAUSED* "),0);
                   forcePause0=0;
                 }
               } else { 
@@ -1382,16 +1699,16 @@ void ZX8081DataBlock() {
   if(currentBit==0) {                         //Check for byte end/first byte
     if(r=ReadByte(bytesRead)==1) {            //Read in a byte
       currentByte = outByte;
-      bytesToRead += -1;
-      /*if(bytesToRead == 0) {                  //Check for end of data block
-        bytesRead += -1;                      //rewind a byte if we've reached the end
-        if(pauseLength==0) {                  //Search for next ID if there is no pause
-          currentTask = GETID;
-        } else {
-          currentBlockTask = PAUSE;           //Otherwise start the pause
-        }
-        return;
-      }*/
+    #ifdef ID19REW        
+        bytesToRead += -1;
+        if((bytesToRead == -1) && (currentID == ID19)) {    
+          bytesRead += -1;                      //rewind a byte if we've reached the end
+          temppause = PAUSELENGTH;
+          currentID = IDPAUSE;
+          //return;
+        }                   
+    #endif 
+          
     } else if(r==0) {
       EndOfFile=true;
       temppause = pauseLength;
@@ -1401,28 +1718,22 @@ void ZX8081DataBlock() {
     currentBit=9;
     pass=0;
   }
-  /*currentPeriod = ZX80PULSE;
-  if(pass==1) {
-    currentPeriod=ZX80BITGAP;
-  }
-  if(pass==0) {
-    if(currentByte&0x80) {                       //Set next period depending on value of bit 0
-      pass=19;
-    } else {
-      pass=9;
-    }
-    currentByte <<= 1;                        //Shift along to the next bit
-    currentBit += -1;
-    currentPeriod=0;
-  }
-  pass+=-1;*/
+  
   ZX80ByteWrite();
 }
 
 void ZX80ByteWrite(){
   currentPeriod = ZX80PULSE;
+#ifdef ZX81SPEEDUP
+  //if (TSXCONTROLzxpolarityUEFSWITCHPARITY == 1) currentPeriod = ZX80TURBOPULSE;
+  if (BAUDRATE != 1200) currentPeriod = ZX80TURBOPULSE;
+#endif
   if(pass==1) {
     currentPeriod=ZX80BITGAP;
+  #ifdef ZX81SPEEDUP
+    //if (TSXCONTROLzxpolarityUEFSWITCHPARITY == 1) currentPeriod = ZX80TURBOBITGAP;
+    if (BAUDRATE != 1200) currentPeriod = ZX80TURBOBITGAP;
+  #endif   
   }
   if(pass==0) {
     if(currentByte&0x80) {                       //Set next period depending on value of bit 0
@@ -1497,10 +1808,10 @@ void writeUEFData() {
     }
     
   }
-  pass+=1;      //Data is played as 2 x pulses for a zero, and 4 pulses for a one
+  pass+=1;      //Data is played as 2 x pulses for a zero, and 4 pulses for a one when speed is 1200
 
   if (currentPeriod == zeroPulse) {
-    if(pass==2) {
+    if(pass==passforZero) {
        if ((currentBit>1) && (currentBit<11)) {
           currentByte >>= 1;                        //Shift along to the next bit
        }
@@ -1512,7 +1823,7 @@ void writeUEFData() {
     }
   } else {
     // must be a one pulse
-    if(pass==4) {
+    if(pass==passforOne) {
       if ((currentBit>1) && (currentBit<11)) {
         bitChecksum ^= 1;
         currentByte >>= 1;                        //Shift along to the next bit
@@ -1655,6 +1966,175 @@ void DirectRecording() {
 
 }
 
+void OricDataBlock() {
+  //Convert byte from file into string of pulses.  One pulse per pass
+  byte r;
+  if(currentBit==0) {                         //Check for byte end/first byte
+    
+    if(r=ReadByte(bytesRead)==1) {            //Read in a byte
+      currentByte = outByte;
+      bytesToRead += -1;
+      bitChecksum = 0;
+      if(bytesToRead == 0) {                  //Check for end of data block
+        lastByte = 1;
+        //if(pauseLength==0) {                  //Search for next ID if there is no pause
+          //currentTask = IDEOF;
+        //} else {
+          //currentBlockTask = PAUSE;           //Otherwise start the pause
+        //}
+        //return;                               // exit
+      }
+    } else if(r==0) {                         // If we reached the EOF
+      EndOfFile=true;
+      temppause = 0;
+      forcePause0=1;
+      count =255;
+      currentID = IDPAUSE;
+      //currentBlockTask = GAP;
+      //currentTask = IDEOF;
+      
+      return;
+    }
+
+    currentBit = 11;
+    pass=0;
+  }
+  OricBitWrite();
+
+}
+
+void OricBitWrite(){
+  if (currentBit == 11) { //Start Bit
+      //currentPeriod = ORICZEROPULSE;
+     #ifdef ORICSPEEDUP
+     if (BAUDRATE <= 2400){
+      if (pass==0) currentPeriod = ORICZEROLOWPULSE; 
+      if (pass==1) currentPeriod = ORICZEROHIGHPULSE;
+     } else {
+      if (pass==0) currentPeriod = ORICTURBOZEROLOWPULSE; 
+      if (pass==1) currentPeriod = ORICTURBOZEROHIGHPULSE;            
+     }
+     #else
+      if (pass==0) currentPeriod = ORICZEROLOWPULSE; 
+      if (pass==1) currentPeriod = ORICZEROHIGHPULSE;
+     #endif         
+  } else if (currentBit == 2) { // Paridad inversa i.e. Impar
+      //currentPeriod =  bitChecksum ? ORICONEPULSE : ORICZEROPULSE;
+     #ifdef ORICSPEEDUP
+     if (BAUDRATE <= 2400){
+      if (pass==0)  currentPeriod = bitChecksum ? ORICZEROLOWPULSE : ORICONEPULSE; 
+      if (pass==1)  currentPeriod = bitChecksum ? ORICZEROHIGHPULSE : ORICONEPULSE;
+     } else {
+      if (pass==0)  currentPeriod = bitChecksum ? ORICTURBOZEROLOWPULSE : ORICTURBOONEPULSE; 
+      if (pass==1)  currentPeriod = bitChecksum ? ORICTURBOZEROHIGHPULSE : ORICTURBOONEPULSE;                     
+     }
+     #else      
+      if (pass==0)  currentPeriod = bitChecksum ? ORICZEROLOWPULSE : ORICONEPULSE; 
+      if (pass==1)  currentPeriod = bitChecksum ? ORICZEROHIGHPULSE : ORICONEPULSE;
+     #endif     
+  } else if (currentBit == 1) {
+     #ifdef ORICSPEEDUP
+     if (BAUDRATE <= 2400){
+      currentPeriod = ORICONEPULSE;       
+     } else {
+      currentPeriod = ORICTURBOONEPULSE;             
+     }
+     #else      
+      currentPeriod = ORICONEPULSE; 
+     #endif  
+  } else {
+    if(currentByte&0x01) {                       //Set next period depending on value of bit 0
+     #ifdef ORICSPEEDUP
+     if (BAUDRATE <= 2400){
+       currentPeriod = ORICONEPULSE;
+     } else{
+       currentPeriod = ORICTURBOONEPULSE;          
+     }
+     #else      
+      currentPeriod = ORICONEPULSE; 
+     #endif        
+    } else {
+      //currentPeriod = ORICZEROPULSE;
+     #ifdef ORICSPEEDUP
+     if (BAUDRATE <= 2400){
+      if (pass==0)  currentPeriod = ORICZEROLOWPULSE; 
+      if (pass==1)  currentPeriod = ORICZEROHIGHPULSE;
+     }else{
+      if (pass==0)  currentPeriod = ORICTURBOZEROLOWPULSE; 
+      if (pass==1)  currentPeriod = ORICTURBOZEROHIGHPULSE;                 
+     }
+     #else       
+      if (pass==0)  currentPeriod = ORICZEROLOWPULSE; 
+      if (pass==1)  currentPeriod = ORICZEROHIGHPULSE;
+     #endif        
+    }
+  }   
+
+  pass+=1;      //Data is played as 2 x pulses for a zero, and 2 pulses for a one
+ #ifdef ORICSPEEDUP
+    if ((currentPeriod == ORICONEPULSE) || (currentPeriod == ORICTURBOONEPULSE)) { 
+ #else  
+    if (currentPeriod == ORICONEPULSE) {
+ #endif
+    // must be a one pulse
+       
+/*    if(pass==2) {
+      
+      if ((currentBit>2) && (currentBit<11)) {
+        bitChecksum ^= 1;
+        currentByte >>= 1;                        //Shift along to the next bit
+      }
+      
+      currentBit += -1;
+      pass=0; 
+      if ((lastByte) && (currentBit==0)) {
+        //currentTask = GETCHUNKID;
+        currentBlockTask = PAUSE;
+      } 
+    } */
+      if ((currentBit>2) && (currentBit<11) && (pass==2)) {
+            bitChecksum ^= 1;
+            currentByte >>= 1;                        //Shift along to the next bit
+            currentBit += -1;
+            pass=0;                          
+      }
+      if ((currentBit==1) && (pass==6)) {
+            currentBit += -1;
+            pass=0;          
+      }
+      if (((currentBit==2) || (currentBit==11))  && (pass==2)) {
+            currentBit += -1;
+            pass=0;          
+      }
+      //if ((currentBit==0) && (lastByte)) {
+        //currentTask = GETCHUNKID;
+      //  count = 255;
+      //  currentBlockTask = PAUSE;
+      //}             
+  }
+  else {
+    // must be a zero pulse
+    if(pass==2) {
+       if ((currentBit>2) && (currentBit<11)) {
+          currentByte >>= 1;                        //Shift along to the next bit
+       }
+       currentBit += -1;
+       pass=0; 
+       //if ((currentBit==0) && (lastByte)) {
+         //currentTask = GETCHUNKID;
+       //  count = 255;
+       //  currentBlockTask = PAUSE;
+       //} 
+    }
+   
+  }
+       if ((currentBit==0) && (lastByte)) {
+        //currentTask = GETCHUNKID;
+        count = 255;
+        currentBlockTask = PAUSE;
+      }    
+}
+
 void wave2() {
   //ISR Output routine
   //unsigned long fudgeTime = micros();         //fudgeTime is used to reduce length of the next period by the time taken to process the ISR
@@ -1758,7 +2238,11 @@ void wave2() {
   //newTime += 12;
   //fudgeTime = micros() - fudgeTime;         //Compensate for stupidly long ISR
   //Timer1.setPeriod(newTime - fudgeTime);    //Finally set the next pulse length
-  Timer1.setPeriod(newTime +4);    //Finally set the next pulse length  
+  #if defined(__AVR__)
+    Timer1.setPeriod(newTime +4);    //Finally set the next pulse length
+  #elif defined(__arm__) && defined(__STM32F1__)
+    timer.setPeriod(newTime + 4);
+  #endif  
 }
 
 
@@ -1863,7 +2347,11 @@ void setBaud()
 //  scale=BAUDRATE/1200;
 //  period=208/scale;
   //Timer1.setPeriod(period);
-  Timer1.stop();
+  #if defined(__AVR__)
+    Timer1.stop();
+  #elif defined(__arm__) && defined(__STM32F1__)
+    timer.pause();
+  #endif
 }
 
 

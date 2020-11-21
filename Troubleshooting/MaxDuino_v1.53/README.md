@@ -1,7 +1,17 @@
 # maxduino
 
 https://www.va-de-retro.com/foros/viewtopic.php?t=5541&start=9999
-
+* V1.63 New Logos. Fixed side-effect on MSX cas when implementing Oric native tap files loading.
+* V1.62 aka "Marble". New StandardFont (8x8) pack. DoubleFont (8x16) support. Improved speed loading in oled marble mode (XY2force) @alferboy. MenuBLK2A option in userconfig, no dependencies from UEF (@merlinkv).
+* V1.61 Graphic 128x64 and text 128x32 combined mode for Oled screens. Optional 8x8 bold font. Better XY2 thanks to @alferboy.
+* V1.60 Oric tap speedup if speed greater than 2400.
+* V1.59 Oric native tap support.
+* V1.58 STM32 testing support thanks to @Sildenafile.
+* V1.57 Changed zx81 TSXControl to Speed to avoid polarity problems. Better zx81 file loading (@El Viejoven FX). Removed Amstrad tweaking to slower ID15, 
+so Oricium game now can load in 4 minutes in Oric Atmos, file attached for testing.
+* V1.56 aka "baby Fran". ID19 short implementation to load zx81 tzx files. Now you can use TSXControl to speedup loadings.
+* V1.55 support for BBC chunk 0x117 (@vanekp)
+* V1.54 Maintenance release. Final byte patched again for Dragon and Coco, got switched when testing in v1.51.
 * V1.53 Some rework for Arduino nano every and timers TCA / TCB0 and using last SDFat for better speed.
 * V1.52 New arduino nano EVERY micro supported. Need work for turbo loading. Compressed logo where only even columns are used for load/save with EEPROM. Different config files for new high capacity chips (Riccardo Repetto).
 * V1.51 Dragon TOSEC files with short leader loading now.

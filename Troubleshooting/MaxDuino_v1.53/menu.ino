@@ -31,6 +31,27 @@ void menuMode()
  */
 // byte lastbtn=true;
 
+
+#if defined(__arm__) && defined(__STM32F1__)
+
+  uint8_t EEPROM_get(uint16_t address, byte *data) {
+    if (EEPROM.init()==EEPROM_OK) {
+      *data = (byte)(EEPROM.read(address) & 0xff);  
+      return true;  
+    } else 
+      return false;
+  }
+  
+  
+  uint8_t EEPROM_put(uint16_t address, byte data) {
+    if (EEPROM.init()==EEPROM_OK) {
+      EEPROM.write(address, (uint16_t) data); 
+      return true;    
+    } else
+      return false;
+  }
+  #endif
+
  void menuMode()
  { 
   byte menuItem=0;
@@ -51,7 +72,7 @@ void menuMode()
         case 2:
         printtextF(PSTR("TSXCzxpUEFSW ?"),lineaxy);
         break;
-      #ifndef Use_UEF
+      #ifdef MenuBLK2A
         case 3:
         printtextF(PSTR("Skip BLK:2A ?"),lineaxy);
         break;       
@@ -61,10 +82,10 @@ void menuMode()
       updateScreen=false;
     }
     if(digitalRead(btnDown)==LOW && !lastbtn){
-      #ifndef Use_UEF
+      #ifdef MenuBLK2A
       if(menuItem<3) menuItem+=1;
       #endif
-      #ifdef Use_UEF
+      #ifndef MenuBLK2A
       if(menuItem<2) menuItem+=1;      
       #endif
       
@@ -275,7 +296,7 @@ void menuMode()
           lastbtn=true;
           updateScreen=true;
         break;
-   #ifndef Use_UEF
+   #ifdef MenuBLK2A
         case 3:
           subItem=0;
           updateScreen=true;
@@ -375,19 +396,28 @@ void menuMode()
 
   if(mselectMask) settings |=128;
   if(TSXCONTROLzxpolarityUEFSWITCHPARITY) settings |=64;
-  #ifndef Use_UEF
+  #ifdef MenuBLK2A
   if(skip2A) settings |=32;
   #endif
-  EEPROM.put(EEPROM_CONFIG_BYTEPOS,settings);
+
+  #if defined(__AVR__)
+    EEPROM.put(EEPROM_CONFIG_BYTEPOS,settings);
+  #elif defined(__arm__) && defined(__STM32F1__)
+    EEPROM_put(EEPROM_CONFIG_BYTEPOS,settings);
+  #endif      
   setBaud();
  }
 
  void loadEEPROM()
  {
   byte settings=0;
-  EEPROM.get(EEPROM_CONFIG_BYTEPOS,settings);
+  #if defined(__AVR__)
+    EEPROM.get(EEPROM_CONFIG_BYTEPOS,settings);
+  #elif defined(__arm__) && defined(__STM32F1__)
+    EEPROM_get(EEPROM_CONFIG_BYTEPOS,&settings);
+  #endif
+      
   if(!settings) return;
-
 
   if(bitRead(settings,7)) {
     mselectMask=1;
@@ -399,7 +429,7 @@ void menuMode()
   } else {
     TSXCONTROLzxpolarityUEFSWITCHPARITY=0;
   }
-  #ifndef Use_UEF
+  #ifdef MenuBLK2A
   if(bitRead(settings,5)) {
     skip2A=1;
   } else {

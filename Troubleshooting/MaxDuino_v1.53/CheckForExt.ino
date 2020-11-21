@@ -3,7 +3,16 @@ void checkForEXT (char *filename) {
     //Check for .xxx file extension as these have no header
   char x =0;
   while (*(filename+x) && (*(filename+x) != '.')) x++;
-  if(strstr_P(strlwr(filename + x), PSTR(".tap"))) {casduino =0; currentTask=PROCESSID; currentID=TAP;}
+  if(strstr_P(strlwr(filename + x), PSTR(".tap"))) {
+    casduino =0; currentTask=PROCESSID; currentID=TAP;
+    #ifdef tapORIC
+      if((readfile(1,bytesRead))==1) {
+         if (input[0] == 0x16) {
+            currentID=ORIC;
+         }
+      }
+    #endif
+  }
   else if(strstr_P(strlwr(filename + x), PSTR(".p"))) {casduino =0; currentTask=PROCESSID; currentID=ZXP;}
   else if(strstr_P(strlwr(filename + x), PSTR(".o"))) {casduino =0; currentTask=PROCESSID; currentID=ZXO;}
  #ifdef AYPLAY  
@@ -15,10 +24,9 @@ void checkForEXT (char *filename) {
  //#ifdef Use_CAS
   else if(strstr_P(strlwr(filename + x), PSTR(".cas"))) {
     casduino =1; 
-    byte r=0;
     out=LOW;
     dragonMode=0;
-    if((r=readfile(1,bytesRead))==1) {
+    if((readfile(1,bytesRead))==1) {
       #if defined(Use_CAS) && defined(Use_DRAGON)
         //if(!memcmp_P(input,DRAGON,1)) {
         if (input[0] == 0x55) {

@@ -8,7 +8,11 @@ void casPause()
 
 void casStop()
 {
-  Timer1.stop();
+  #if defined(__AVR__)
+    Timer1.stop();
+  #elif defined(__arm__) && defined(__STM32F1__)
+    timer.pause();
+  #endif
   //noInterrupts();
   isStopped=true;
   start=0;
@@ -443,9 +447,13 @@ void casduinoLoop()
 #endif
     } else {
          //lcdSpinner();
-         if (pauseOn == 0) {
-          lcdTime();
-          lcdPercent();
+         if (pauseOn == 0) {      
+          #if defined(SHOW_CNTR)
+            lcdTime();          
+          #endif
+          #if defined(SHOW_PCT)          
+            lcdPercent();
+          #endif        
          }
     } 
 }
