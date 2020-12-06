@@ -389,7 +389,6 @@ void setup() {
 //    delay(1000);  //Needed!
     // Initialize I2C and OLED Display
       // I2C Init
-
   
     Wire.begin();
     init_OLED();
@@ -434,9 +433,9 @@ void setup() {
   // Digital pin 6
   PORTH |= _BV(3);
 
-#elif defined(__AVR_ATmega4809__) || defined(__AVR_ATmega4808__)
-  //  pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //pinMode(btnPlay,INPUT); // 17 PD0
+#elif defined(__AVR_ATmega4809__)
+  //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnPlay,HIGH); // 17 PD0
   //PORTD.PIN0CTRL |=0B00001000;
   PORTD.PIN0CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
 
@@ -478,6 +477,32 @@ void setup() {
   PORTA.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
   //VPORTD.OUT |= _BV(btnRoot); 
   //PORTD |= _BV(btnRoot);
+
+#elif defined(__AVR_ATmega4808__)
+  //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnPlay,HIGH); // 17 PD3
+  PORTD.PIN3CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+
+  //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnStop,HIGH); // 16 PD2
+  PORTD.PIN2CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+
+  //pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnUp,HIGH); // 15 PD1
+  PORTD.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+
+  //pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnDown,HIGH); // 14 PD0 also to enbale PULLUP if PINMODE is INPUT
+  PORTD.PIN0CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+
+  //pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnMotor,HIGH); // 6 PA4
+  PORTA.PIN4CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+  
+  //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
+  //digitalWrite(btnRoot, HIGH); // 7 PA5 
+  PORTA.PIN5CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  
 #elif defined(__arm__) && defined(__STM32F1__)
 
   //General Pin settings

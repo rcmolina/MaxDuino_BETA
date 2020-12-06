@@ -13,7 +13,7 @@
   #define WRITE_LOW           PORTA &= ~_BV(1)         // El pin23 es el bit1 del PORTA
   #define WRITE_HIGH          PORTA |=  _BV(1)         // El pin23 es el bit1 del PORTA
 
-#elif defined(__AVR_ATmega4809__) || defined(__AVR_ATmega4808__)
+#elif defined(__AVR_ATmega4809__)
   //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
   #define INIT_OUTPORT         VPORTB.DIR |=  _BV(0)         // El pin9 es PB0
@@ -23,6 +23,14 @@
   //#define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
   #define WRITE_HIGH          VPORTB.OUT |=  _BV(0)         // El pin9 es PB0
+
+#elif defined(__AVR_ATmega4808__)
+  //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
+  #define INIT_OUTPORT         VPORTA.DIR |=  _BV(7)         // El pin9 es PA7
+  //#define WRITE_LOW             digitalWrite(outputPin,LOW)
+  #define WRITE_LOW           VPORTA.OUT &= ~_BV(7)         // El pin9 es PA7
+  //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+  #define WRITE_HIGH          VPORTA.OUT |=  _BV(7)         // El pin9 es PA7
 
 #elif defined(__arm__) && defined(__STM32F1__)
   #define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  

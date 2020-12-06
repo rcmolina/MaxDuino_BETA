@@ -47,13 +47,13 @@ byte skip2A = 0;                        // Pause on for BLK:2A
 
 //#define SERIALSCREEN              // For testing and debugging 
 
-#define LCD_I2C_ADDR    0x27        // Set the i2c address of your 1602LCD usually 0x27
-#define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
+//#define LCD_I2C_ADDR    0x27        // Set the i2c address of your 1602LCD usually 0x27
+//#define LCDSCREEN16x2               // Set if you are using a 1602 LCD screen
 
 //#define OLED_SETCONTRAS   0xcf      // Override default value inside Diplay.ino, bigger to increase output current per segment
 #define OLED_ROTATE180
 #define OLED_address   0x3C           //0x3C or 0x3D
-//#define OLED1306                      // Set if you are using OLED 1306 display
+#define OLED1306                      // Set if you are using OLED 1306 display
       //#define OLED1306_128_64         // 128x64 resolution with 8 rows
       //#define OLED1106_1_3            // Use this line as well if you have a 1.3" OLED screen
       //#define video64text32
@@ -103,9 +103,9 @@ byte lineaxy=2;
 
 //#define COMPRESS_REPEAT_ROW
 #define EEPROM_LOGO_COMPRESS
-//#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
+#define LOAD_MEM_LOGO             // legacy, logo is not in EEPROM then wasting memory.
 //#define RECORD_EEPROM_LOGO        // Uncommenting RECORD_EEPROM deactivates #define Use_MENU
-#define LOAD_EEPROM_LOGO 
+//#define LOAD_EEPROM_LOGO 
 
 #if defined(OLED1306_128_64) || defined(video64text32)
   //#define EmptyLogo               // to erase
@@ -168,12 +168,12 @@ byte lineaxy=2;
 #else
 //#define LOGOARDUITAPE            // original arduitape logo
 //#define LOGOMAXDUINO             // new logo created by Spirax
- //#define LOGOMAXDUINO2              // new logo2 created by rcmolina
+ #define LOGOMAXDUINO2              // new logo2 created by rcmolina
 //#define LOGOMAXDUINO3            // new logo3 created by rcmolina
 //#define LOGOMAXDUINO4            // new logo4 created by rcmolina
 //#define SUGARLESS_1              // new logo cretaed bt YoxxxoY
 //#define SUGARLESS_2              // new logo created by YoxxxoY
-#define LOGOMINIDUINO            // new logo for A.Villena's Miniduino by rcmolina
+//#define LOGOMINIDUINO            // new logo for A.Villena's Miniduino by rcmolina
 #endif
 /////////////////////
 //      FONTS      //
