@@ -1,5 +1,109 @@
+#ifdef __AVR_ATmega2560__
+#define outputPin           23 
+#define INIT_OUTPORT        DDRA |=  _BV(1)         // El pin23 es el bit1 del PORTA
+#define WRITE_LOW           PORTA &= ~_BV(1)         // El pin23 es el bit1 del PORTA
+#define WRITE_HIGH          PORTA |=  _BV(1)         // El pin23 es el bit1 del PORTA
+
+#elif defined(__AVR_ATmega4809__)
+  #define outputPin           9
+  //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+  //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
+  #define INIT_OUTPORT         VPORTB.DIR |=  _BV(0)         // El pin9 es PB0
+  //#define WRITE_LOW           PORTB &= ~_BV(1)         // El pin9 es el bit1 del PORTB
+  //#define WRITE_LOW             digitalWrite(outputPin,LOW)
+  #define WRITE_LOW           VPORTB.OUT &= ~_BV(0)         // El pin9 es PB0
+  //#define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+  //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+  #define WRITE_HIGH          VPORTB.OUT |=  _BV(0)         // El pin9 es PB0
+
+#elif defined(__AVR_ATmega4808__)
+  #define outputPin           9
+  //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
+  #define INIT_OUTPORT         VPORTA.DIR |=  PIN7_bm         // El pin9 es PA7
+  //#define WRITE_LOW             digitalWrite(outputPin,LOW)
+  #define WRITE_LOW            VPORTA.OUT &= ~PIN7_bm         // El pin9 es PA7
+  //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+  #define WRITE_HIGH           VPORTA.OUT |=  PIN7_bm         // El pin9 es PA7
+
+#elif defined(__arm__) && defined(__STM32F1__)
+  #define outputPin     PA9    // this pin is 5V tolerant and PWM output capable 
+  #define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
+  #define WRITE_LOW             digitalWrite(outputPin,LOW)
+  #define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+      
+#else  //__AVR_ATmega328P__
+  //#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
+  #define outputPin           9
+  #ifdef MINIDUINO_AMPLI
+    #define INIT_OUTPORT         DDRB |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB 
+    #define WRITE_LOW           (PORTB &= B11111101) |= B00000001               // pin8+ pin9 , bit0- bit1 del PORTB
+    #define WRITE_HIGH          (PORTB |= B00000010) &= B11111110               // pin8+ pin9 , bit0- bit1 del PORTB  
+  //  #define WRITE_LOW           PORTB = (PORTB & B11111101) | B00000001         // pin8+ pin9 , bit0- bit1 del PORTB
+  //  #define WRITE_HIGH          PORTB = (PORTB | B00000010) & B11111110         // pin8+ pin9 , bit0- bit1 del PORTB 
+  #else
+    #define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+    #define WRITE_LOW           PORTB &= ~_BV(1)         // El pin9 es el bit1 del PORTB
+    #define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
+  #endif
+
+// pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+
+/*
+#ifdef rpolarity 
+  #define WRITE_LOW           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
+  #define WRITE_HIGH          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
+  // pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+#endif
+
+#ifndef rpolarity 
+  #define WRITE_HIGH           PORTB &= ~_BV(1)        // El pin9 es el bit1 del PORTB
+  #define WRITE_LOW          PORTB |= _BV(1)         // El pin9 es el bit1 del PORTB
+  // pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
+#endif
+*/
+
+#endif 
+/////////////////////////////////////////////////////////////////////////////////////////////
   //General Pin settings
   //Setup buttons with internal pullup
+
+#ifdef __AVR_ATmega2560__
+
+  const byte chipSelect = 53;          //Sd card chip select pin
+  
+  #define btnUp         A0            //Up button
+  #define btnDown       A1            //Down button
+  #define btnPlay       A2            //Play Button
+  #define btnStop       A3            //Stop Button
+  #define btnRoot       A4            //Return to SD card root
+  // #define btnDelete     A5         //Not implemented this button is for an optional function
+  #define btnMotor      6             //Motor Sense (connect pin to gnd to play, NC for pause)
+
+#elif defined(__arm__) && defined(__STM32F1__)
+//
+// Pin definition for Blue Pill boards
+//
+
+#define chipSelect    PB12            //Sd card chip select pin
+
+#define btnPlay       PA0           //Play Button
+#define btnStop       PA1           //Stop Button
+#define btnUp         PA2           //Up button
+#define btnDown       PA3           //Down button
+#define btnMotor      PA8     //Motor Sense (connect pin to gnd to play, NC for pause)
+#define btnRoot       PA4           //Return to SD card root
+
+#else
+  const byte chipSelect = 10;          //Sd card chip select pin
+  
+  #define btnPlay       17            //Play Button
+  #define btnStop       16            //Stop Button
+  #define btnUp         15            //Up button
+  #define btnDown       14            //Down button
+  #define btnMotor      6             //Motor Sense (connect pin to gnd to play, NC for pause)
+  #define btnRoot       7             //Return to SD card root
+#endif
+
 
 #ifdef __AVR_ATmega2560__
 
@@ -72,27 +176,39 @@
 #elif defined(__AVR_ATmega4808__)
   //pinMode(btnPlay,INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnPlay,HIGH); // 17 PD3
+  VPORTD.DIR |= ~PIN3_bm;
   PORTD.PIN3CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  VPORTD.OUT |=  PIN3_bm;
 
   //pinMode(btnStop,INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnStop,HIGH); // 16 PD2
-  PORTD.PIN2CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+  VPORTD.DIR |= ~PIN2_bm;  
+  PORTD.PIN2CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  VPORTD.OUT |=  PIN2_bm;    
 
   //pinMode(btnUp,INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnUp,HIGH); // 15 PD1
-  PORTD.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+  VPORTD.DIR |= ~PIN1_bm;
+  PORTD.PIN1CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  VPORTD.OUT |=  PIN1_bm;    
 
   //pinMode(btnDown,INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnDown,HIGH); // 14 PD0 also to enbale PULLUP if PINMODE is INPUT
-  PORTD.PIN0CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */    
+  VPORTD.DIR |= ~PIN0_bm;
+  PORTD.PIN0CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */ 
+  VPORTD.OUT |=  PIN0_bm;   
 
   //pinMode(btnMotor, INPUT_PULLUP);  // Not needed, default is INPUT (0)
   //digitalWrite(btnMotor,HIGH); // 6 PA4
-  PORTA.PIN4CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */  
+  VPORTA.DIR |= ~PIN4_bm;
+  PORTA.PIN4CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  VPORTA.OUT |=  PIN4_bm;  
   
   //pinMode(btnRoot, INPUT_PULLUP);  // Not needed, default is INPUT (0)
-  //digitalWrite(btnRoot, HIGH); // 7 PA5 
+  //digitalWrite(btnRoot, HIGH); // 7 PA5
+  VPORTA.DIR |= ~PIN5_bm; 
   PORTA.PIN5CTRL |=PORT_PULLUPEN_bm; /* Enable the internal pullup */
+  VPORTA.OUT |=  PIN5_bm;
   
 #elif defined(__arm__) && defined(__STM32F1__)
 
