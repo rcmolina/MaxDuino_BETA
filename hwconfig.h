@@ -1,19 +1,11 @@
 #ifdef __AVR_ATmega2560__
   #define outputPin           23 
-#elif defined(__arm__) && defined(__STM32F1__)
-  #define outputPin     PA9    // this pin is 5V tolerant and PWM output capable  
-#else
-  //#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
-  #define outputPin           9
-#endif
-
-#ifdef __AVR_ATmega2560__
-
-  #define INIT_OUTPORT         DDRA |=  _BV(1)         // El pin23 es el bit1 del PORTA
+  #define INIT_OUTPORT        DDRA |=  _BV(1)         // El pin23 es el bit1 del PORTA
   #define WRITE_LOW           PORTA &= ~_BV(1)         // El pin23 es el bit1 del PORTA
   #define WRITE_HIGH          PORTA |=  _BV(1)         // El pin23 es el bit1 del PORTA
 
 #elif defined(__AVR_ATmega4809__)
+  #define outputPin           9
   //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
   #define INIT_OUTPORT         VPORTB.DIR |=  _BV(0)         // El pin9 es PB0
@@ -25,6 +17,7 @@
   #define WRITE_HIGH          VPORTB.OUT |=  _BV(0)         // El pin9 es PB0
 
 #elif defined(__AVR_ATmega4808__)
+  #define outputPin           9
   //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
   #define INIT_OUTPORT         VPORTA.DIR |=  _BV(7)         // El pin9 es PA7
   //#define WRITE_LOW             digitalWrite(outputPin,LOW)
@@ -33,11 +26,14 @@
   #define WRITE_HIGH          VPORTA.OUT |=  _BV(7)         // El pin9 es PA7
 
 #elif defined(__arm__) && defined(__STM32F1__)
+  #define outputPin     PA9    // this pin is 5V tolerant and PWM output capable 
   #define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
   #define WRITE_LOW             digitalWrite(outputPin,LOW)
   #define WRITE_HIGH            digitalWrite(outputPin,HIGH)
       
 #else  //__AVR_ATmega328P__
+  //#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
+  #define outputPin           9
   #ifdef MINIDUINO_AMPLI
     #define INIT_OUTPORT         DDRB |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB 
     #define WRITE_LOW           (PORTB &= B11111101) |= B00000001               // pin8+ pin9 , bit0- bit1 del PORTB
@@ -69,13 +65,15 @@
 #endif 
 
 #if defined(__AVR_ATmega4809__) || defined (__AVR_ATmega4808__)
+                          //
+                          // PATCH PROCERURE NEEDED FOR NANO EVERY AND THINARY TO SWAP TIMERS AND AVOID HANGING
                           // In C:\Users\Rafael\AppData\Local\Arduino15\packages\arduino\hardware\megaavr\1.8.4
                           // change .\variants\nona4809\timers.h , .\variants\nona4809\variant.c , .\cores\arduino\wiring.c
                           //
                           // In C:\Users\Rafael\AppData\Local\Arduino15\packages\thinary\hardware\avr\1.0.0
                           // change .\variants\nona4808\timers.h , .\variants\nona4808\variant.c , .\cores\arduino\wiring.c
                           //
-  #define SDFat           // Needs 2 patches, check your version:
+                          // Needs 2 patches, check your version:
                           //
                           // SDFat 20150201 (old and very slow):
                           // 1. In SdFatConfig.h change line 84 #define SD_SPI_CONFIGURATION 0
@@ -90,7 +88,7 @@
                           // 2. In SpiDriver/SdSpiDriver.h change line 374 #ifdef __AVR__
                           //    with: #if defined(__AVR__) && not defined(__AVR_ATmega4809__)&& not defined(__AVR_ATmega4808__)
                          
-
+  #define SDFat 
   //#define TimerOne 
 #elif defined(__arm__) && defined(__STM32F1__)
   #define SDFat
