@@ -846,10 +846,29 @@ void TZXProcess() {
 
         case ID21:
           //Process ID21 - Group Start
+              #if defined(BLOCKID_INTO_MEM) && defined(BLOCKID21_IN)
+                blockOffset[block%maxblock] = bytesRead;
+                blockID[block%maxblock] = currentID;
+                if (block < maxblock) block++;
+                else block = 0; 
+              #endif
+              #if defined(BLOCK_EEPROM_PUT) && defined(BLOCKID21_IN)
+                #if defined(__AVR__)
+                  EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
+                #elif defined(__arm__) && defined(__STM32F1__)
+                  EEPROM_put(BLOCK_EEPROM_START+5*block, bytesRead);
+                  EEPROM_put(BLOCK_EEPROM_START+4+5*block, currentID); 
+                #endif
+                if (block < 99) block++;
+                else block = 0;                  
+              #endif
+          
           if(r=ReadByte(bytesRead)==1) {
             bytesRead += outByte;
           }
           currentTask = GETID;
+          
         break;
 
         case ID22:
@@ -1103,11 +1122,11 @@ void TZXProcess() {
           //Pure Tap file block
           switch(currentBlockTask) {
             case READPARAM:
-              #ifdef BLOCKID_INTO_MEM
+              #if defined(BLOCKID_INTO_MEM) && defined(BLOCKTAP_IN)
                 blockOffset[block%maxblock] = bytesRead;
                 blockID[block%maxblock] = currentID;
               #endif
-              #ifdef BLOCK_EEPROM_PUT
+              #if defined(BLOCK_EEPROM_PUT) && defined(BLOCKTAP_IN)
                 #if defined(__AVR__)
                   EEPROM.put(BLOCK_EEPROM_START+5*block, bytesRead);
                   EEPROM.put(BLOCK_EEPROM_START+4+5*block, currentID);
@@ -1146,11 +1165,11 @@ void TZXProcess() {
                       #endif
                     #endif                    
               #endif     
-              #ifdef BLOCKID_INTO_MEM
+              #if defined(BLOCKID_INTO_MEM) && defined(BLOCKTAP_IN)
                 if (block < maxblock) block++;
                 else block = 0; 
               #endif
-              #ifdef BLOCK_EEPROM_PUT       
+              #if defined(BLOCK_EEPROM_PUT) && defined(BLOCKTAP_IN)       
                 if (block < 99) block++;
                 else block = 0; 
               #endif   
