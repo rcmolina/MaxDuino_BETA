@@ -89,7 +89,7 @@ byte skip2A = 1;                        // Pause on for BLK:2A
 #define BLOCKID_INTO_MEM              // enable for blockid recording and later rewinding if EEPROM_PUT is disabled.
 #define maxblock 99                   // maxblock if not using EEPROM
 #define BLOCKID21_IN
-//#define BLOCKTAP_IN 
+//#define BLOCKTAP_IN
 #define BLOCK_EEPROM_START 512
 #define LOAD_EEPROM_SETTINGS
 #define EEPROM_CONFIG_BYTEPOS  1023     // Byte position to save configuration
