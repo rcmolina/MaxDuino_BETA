@@ -26,10 +26,15 @@
   #define WRITE_HIGH           VPORTA.OUT |=  PIN7_bm         // El pin9 es PA7
 
 #elif defined(__arm__) && defined(__STM32F1__)
-  #define outputPin     PA9    // this pin is 5V tolerant and PWM output capable 
-  #define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
-  #define WRITE_LOW             digitalWrite(outputPin,LOW)
-  #define WRITE_HIGH            digitalWrite(outputPin,HIGH)
+  #define outputPin           PA9    // this pin is 5V tolerant and PWM output capable
+  #define INIT_OUTPORT            pinMode(outputPin,OUTPUT)
+  //#define INIT_OUTPORT            pinMode(outputPin,OUTPUT); GPIOA->regs->CRH |=  0x00000030  
+  //#define WRITE_LOW               digitalWrite(outputPin,LOW)
+  //#define WRITE_LOW               GPIOA->regs->ODR &= ~0b0000001000000000
+  #define WRITE_LOW               gpio_write_bit(GPIOA, 9, LOW)
+  //#define WRITE_HIGH              digitalWrite(outputPin,HIGH)
+  //#define WRITE_HIGH              GPIOA->regs->ODR |=  0b0000001000000000
+  #define WRITE_HIGH              gpio_write_bit(GPIOA, 9, HIGH)
       
 #else  //__AVR_ATmega328P__
   //#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design

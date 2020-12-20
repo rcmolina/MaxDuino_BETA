@@ -2201,6 +2201,41 @@ void wave2() {
   byte pauseFlipBit = false;
   unsigned long newTime=1;
   intError = false;
+/*  
+      if (bitRead(workingPeriod, 14)== 0) {
+        pinState = !pinState;
+        if (pinState == LOW)     WRITE_LOW;    
+        else  WRITE_HIGH;
+      } else {
+        if (bitRead(workingPeriod, 13) == 0)     WRITE_LOW;    
+        else  {WRITE_HIGH; bitClear(workingPeriod,13);}     
+        bitClear(workingPeriod,14);         //Clear ID15 flag
+        workingPeriod = SampleLength;            
+      } 
+        newTime = workingPeriod;
+        pos += 2;
+        if(pos > buffsize)                  //Swap buffer pages if we've reached the end
+        {
+          pos = 0;
+          workingBuffer^=1;
+          morebuff = HIGH;                  //Request more data to fill inactive page
+        }
+        timer.setPeriod(newTime+4);
+*/ 
+/*
+        pinState = !pinState;
+        if (pinState == LOW)     WRITE_LOW;    
+        else  WRITE_HIGH;
+        newTime = workingPeriod;
+        pos += 2;
+        if(pos > buffsize)                  //Swap buffer pages if we've reached the end
+        {
+          pos = 0;
+          workingBuffer^=1;
+          morebuff = HIGH;                  //Request more data to fill inactive page
+        }
+        timer.setPeriod(newTime+4);
+*/        
  
   if(isStopped==0 && workingPeriod >= 1)
   {
@@ -2215,13 +2250,13 @@ void wave2() {
         pauseFlipBit = true;
         wasPauseBlock = true;
       } else {
-        /*
-        if(workingPeriod >= 1 && wasPauseBlock==false) {
+        
+       // if(workingPeriod >= 1 && wasPauseBlock==false) {
           //pinState = !pinState;
-        } else if (wasPauseBlock==true && isPauseBlock==false) {
-          wasPauseBlock=false;
-        }
-        */
+       // } else if (wasPauseBlock==true && isPauseBlock==false) {
+       //   wasPauseBlock=false;
+       // }
+        
             if (wasPauseBlock==true && isPauseBlock==false) wasPauseBlock=false;        
       }
       #ifdef DIRECT_RECORDING
@@ -2243,12 +2278,12 @@ void wave2() {
       if(pauseFlipBit==true) {
         newTime = 1500;                     //Set 1.5ms initial pause block
         
-      /*  #ifdef rpolarity
-          pinState = LOW;                     //Set next pinstate LOW
-        #endif
-        #ifndef rpolarity
-          pinState = HIGH;                     //Set next pinstate HIGH
-        #endif */
+      //  #ifdef rpolarity
+      //    pinState = LOW;                     //Set next pinstate LOW
+      //  #endif
+      //  #ifndef rpolarity
+      //    pinState = HIGH;                     //Set next pinstate HIGH
+      //  #endif
 
  //       if (TSXCONTROLzxpolarityUEFSWITCHPARITY) pinState = LOW;         //Set next pinstate LOW
  //       else pinState = HIGH;                     //Set next pinstate HIGH
@@ -2295,14 +2330,15 @@ void wave2() {
   //newTime += 12;
   //fudgeTime = micros() - fudgeTime;         //Compensate for stupidly long ISR
   //Timer1.setPeriod(newTime - fudgeTime);    //Finally set the next pulse length
+  
   #if defined(__AVR__)
     Timer1.setPeriod(newTime +4);    //Finally set the next pulse length
   #elif defined(__arm__) && defined(__STM32F1__)
-    timer.setPeriod(newTime + 4);
-  #endif  
+    timer.setPeriod(newTime +4);
+    timer.refresh();
+  #endif
+
 }
-
-
 
 void writeHeader2() {
   //Convert byte from HDR Vector String into string of pulses and calculate checksum. One pulse per pass
