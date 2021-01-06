@@ -90,8 +90,8 @@ byte lineaxy=2;
 //#define BLOCK_EEPROM_PUT            // must be disabled if loading many turbo short blocks, as in Amstrad cpc demo Breaking Baud
 #define BLOCKID_INTO_MEM              // enable for blockid recording and later rewinding if EEPROM_PUT is disabled.
 #define maxblock 19                   // maxblock if not using EEPROM
-#define BLOCKID21_IN
-//#define BLOCKTAP_IN
+//#define BLOCKID21_IN
+#define BLOCKTAP_IN
 //#define OLEDPRINTBLOCK 
 #define BLOCK_EEPROM_START 512
 #define LOAD_EEPROM_SETTINGS
