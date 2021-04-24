@@ -1213,7 +1213,7 @@ void TZXProcess() {
             case PAUSE:
               currentPeriod = PAUSELENGTH;
               bitSet(currentPeriod, 15);
-              currentBlockTask=PILOT;
+              currentBlockTask=DATA;
             break; 
             
             case DATA:
