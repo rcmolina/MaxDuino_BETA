@@ -47,6 +47,13 @@
                          
   //#define TimerOne 
 #elif defined(__arm__) && defined(__STM32F1__)
+  #ifdef Use_SoftI2CMaster
+    #undef Use_SoftI2CMaster
+  #endif
+  #ifdef Use_SoftWire
+    #undef Use_SoftWire
+  #endif
+     
   #define SDFat
   //#define TimerOne  
 #else  //__AVR_ATmega328P__
