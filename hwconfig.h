@@ -63,12 +63,7 @@
 
 #ifdef TimerOne
   #include <TimerOne.h>
-#elif defined(__arm__) && defined(__STM32F1__)
-  #ifdef Use_SoftWire
-    #undef Use_SoftWire
-    //#error This chip does not support Softwire. Please undefine Use_SoftWire
-  #endif
-  
+#elif defined(__arm__) && defined(__STM32F1__) 
   //HardwareTimer timer(2); // channel 2
   #include "TimerCounter.h"
  
