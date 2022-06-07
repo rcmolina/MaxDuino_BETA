@@ -1,4 +1,4 @@
-#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
+//#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
 #define outputPin           9
 
 #ifdef MINIDUINO_AMPLI
@@ -37,8 +37,9 @@
 
 //#define buffsize            219
 //#define dragonBuff          4
-#define buffsize            208  // Impar para CoCo
-#define dragonBuff          1     // Ajuste para que wbuffer sea divisible entre 8: (208+1-1)/8
+/* Buffer overflow detected by David Hooper, tzx buffer must be with even positions */
+#define buffsize            207  // Impar para CoCo
+#define dragonBuff          0     // Ajuste para que wbuffer sea divisible entre 8: (207+1-0)/8
 
 
 
