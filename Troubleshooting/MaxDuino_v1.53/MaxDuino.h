@@ -1,19 +1,7 @@
-#ifdef __AVR_ATmega2560__
-  #define outputPin           23 
-#elif defined(__arm__) && defined(__STM32F1__)
-  #define outputPin     PA9    // this pin is 5V tolerant and PWM output capable  
-#else
-  //#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
-  #define outputPin           9
-#endif
+//#define MINIDUINO_AMPLI     // For A.Villena's Miniduino new design
+#define outputPin           9
 
-#ifdef __AVR_ATmega2560__
-
-  #define INIT_OUTPORT         DDRA |=  _BV(1)         // El pin23 es el bit1 del PORTA
-  #define WRITE_LOW           PORTA &= ~_BV(1)         // El pin23 es el bit1 del PORTA
-  #define WRITE_HIGH          PORTA |=  _BV(1)         // El pin23 es el bit1 del PORTA
-
-#elif __AVR_ATmega4809__
+#ifdef __AVR_ATmega4809__
   //#define INIT_OUTPORT         DDRB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   //#define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
   #define INIT_OUTPORT         VPORTB.DIR |=  _BV(0)         // El pin9 es PB0
@@ -23,12 +11,6 @@
   //#define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   //#define WRITE_HIGH            digitalWrite(outputPin,HIGH)
   #define WRITE_HIGH          VPORTB.OUT |=  _BV(0)         // El pin9 es PB0
-
-#elif defined(__arm__) && defined(__STM32F1__)
-  #define INIT_OUTPORT          pinMode(outputPin,OUTPUT)  
-  #define WRITE_LOW             digitalWrite(outputPin,LOW)
-  #define WRITE_HIGH            digitalWrite(outputPin,HIGH)
-      
 #else  //__AVR_ATmega328P__
   #ifdef MINIDUINO_AMPLI
     #define INIT_OUTPORT         DDRB |= B00000011                              // pin8+ pin9 es el bit0-bit1 del PORTB 
@@ -41,6 +23,7 @@
     #define WRITE_LOW           PORTB &= ~_BV(1)         // El pin9 es el bit1 del PORTB
     #define WRITE_HIGH          PORTB |=  _BV(1)         // El pin9 es el bit1 del PORTB
   #endif
+#endif 
 
 // pin 0-7 PortD0-7, pin 8-13 PortB0-5, pin 14-19 PortC0-5
 
@@ -58,8 +41,6 @@
 #endif
 */
 
-#endif 
-
 #define SHORT_SILENCE       122
 #define LONG_SILENCE        SHORT_SILENCE*2
 
@@ -68,8 +49,9 @@
 
 //#define buffsize            219
 //#define dragonBuff          4
-#define buffsize            208  // Impar para CoCo
-#define dragonBuff          1     // Ajuste para que wbuffer sea divisible entre 8: (208+1-1)/8
+/* Buffer overflow detected by David Hooper, tzx buffer must be with even positions */
+#define buffsize            207  // Impar para CoCo
+#define dragonBuff          0     // Ajuste para que wbuffer sea divisible entre 8: (207+1-0)/8
 
 
 
@@ -151,7 +133,7 @@ word currentPeriod=1;
 #define ID14                0x14    //Pure data block
 #define ID15                0x15    //Direct recording block -- TBD - curious to load OTLA files using direct recording (22KHz)
 //#define ID18                0x18    //CSW recording block
-#define ID19                0x19    //Generalized data block hacked for zx81
+//#define ID19                0x19    //Generalized data block
 #define ID20                0x20    //Pause (silence) or 'Stop the tape' command
 #define ID21                0x21    //Group start
 #define ID22                0x22    //Group end
@@ -169,9 +151,8 @@ word currentPeriod=1;
 #define ID33                0x33    //Hardware type
 #define ID35                0x35    //Custom info block
 #define ID4B                0x4B    //Kansas City block (MSX/BBC/Acorn/...)
-#define IDPAUSE             0x59    //Custom Pause processing
+#define IDPAUSE              0x59    //Custom Pause processing
 #define ID5A                0x5A    //Glue block (90 dec, ASCII Letter 'Z')
-#define ORIC                0xFA    //Oric Tap File
 #define AYO                 0xFB    //AY file
 #define ZXO                 0xFC    //ZX80 O file
 #define ZXP                 0xFD    //ZX81 P File
@@ -191,12 +172,6 @@ word currentPeriod=1;
 #define SYNC2                 3
 #define DATA                  4
 #define PAUSE                 5
-#define NEWPARAM              6
-#define NAME                  7
-#define GAP                   8
-#define SYNCLAST              9
-#define NAMELAST              10
-
 
 //Spectrum Standards
 #define PILOTLENGTH           619
@@ -210,12 +185,7 @@ word currentPeriod=1;
 
 //ZX81 Standards
 #define ZX80PULSE                 160
-//#define ZX80TURBOPULSE            150
-#define ZX80TURBOPULSE            120
-
 #define ZX80BITGAP                1442
-//#define ZX80TURBOBITGAP           1340
-#define ZX80TURBOBITGAP           500
 
 //ZX81 Pulse Patterns - Zero Bit  - HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, GAP
 //                    - One Bit   - HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, LOW, HIGH, GAP
@@ -252,8 +222,6 @@ word sync1Length=0;
 word sync2Length=0;
 word zeroPulse=0;
 word onePulse=0;
-byte passforZero=2;
-byte passforOne=4;
 
 byte oneBitPulses = 4;
 byte zeroBitPulses = 2;
@@ -274,7 +242,6 @@ word loopCount=0;
 byte seqPulses=0;
 word temppause=0;
 byte forcePause0=0;
-byte firstBlockPause = false;
 unsigned long loopStart=0;
 volatile byte currentChar=0;
 volatile byte currentByte=0;
@@ -298,7 +265,6 @@ PROGMEM const char UEFFile[9] = {'U','E','F',' ','F','i','l','e','!'};
 #define ID0112              0x0112 // Integer gap: cycles = (this.baud/1000)*2*n
 #define ID0114              0x0114 // Security Cycles replaced with carrier tone
 #define ID0116              0x0116 // floating point gap: cycles = floatGap * this.baud
-#define ID0117              0x0117 // data encoding format change for 300 bauds
 #define IDCHUNKEOF          0xffff
 
 //TZX File Tasks for UEF
@@ -347,19 +313,3 @@ word chunkID = 0;
 byte uefTurboMode=0;
 float outFloat;
 byte UEFPASS = 0;
-
-//#define ORICZEROPULSE     416
-#define ORICZEROLOWPULSE  208
-#define ORICZEROHIGHPULSE 416
-#define ORICONEPULSE      208
-//#define ORICONELOWPULSE   208
-//#define ORICONEHIGHPULSE  208
-
-//#define ORICTURBOZEROPULSE     416
-#define ORICTURBOZEROLOWPULSE  60
-#define ORICTURBOZEROHIGHPULSE 470
-#define ORICTURBOONEPULSE      60
-//#define ORICTURBOONELOWPULSE   208
-//#define ORICTURBOONEHIGHPULSE  208
-
-
