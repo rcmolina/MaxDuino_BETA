@@ -8,8 +8,9 @@
 
 //#define buffsize            219
 //#define buffsize            208
-#define buffsize            177
-#define dragonBuff          2     // Ajuste para que wbuffer sea divisible entre 8: (177+1-2)/8
+/* Buffer overflow detected by David Hooper, tzx buffer must be with even positions */
+#define buffsize            207  // Impar para CoCo
+#define dragonBuff          0     // Ajuste para que wbuffer sea divisible entre 8: (207+1-0)/8
 
 int BAUDRATE = 1200;
 int scale = 1;
