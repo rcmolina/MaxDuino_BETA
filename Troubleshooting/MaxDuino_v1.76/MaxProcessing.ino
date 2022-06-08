@@ -37,11 +37,14 @@ void UniPlay(char *filename){
   currentBit=0;                               // fallo reproducción de .tap tras .tzx
   bytesRead=0;                                //start of file
   currentTask=GETFILEHEADER;                  //First task: search for header
-  char x =0;
-  while (*(filename+x) && (*(filename+x) != '.')) x++;
-  checkForEXT (filename+x);
+  //char x =0;
+  //while (*(filename+x) && (*(filename+x) != '.')) x++;
+  //checkForEXT (filename+x);
+  char *lastdotptr= strrchr(filename,'.');
+  checkForEXT (lastdotptr);
  #ifdef ID11CDTspeedup  
-  if (!strcasecmp_P(filename + x, PSTR(".cdt"))) AMScdt = 1;
+  //if (!strcasecmp_P(filename + x, PSTR(".cdt"))) AMScdt = 1;
+  if (!strcasecmp_P(lastdotptr, PSTR(".cdt"))) AMScdt = 1;  
   else  AMScdt = 0;
  #endif   
  #ifdef Use_CAS 
@@ -2694,7 +2697,7 @@ void ReadTZXHeader() {
   if(entry.seekSet(0)) {
     i = entry.read(tzxHeader,10);
     if(memcmp_P(tzxHeader,TZXTape,7)!=0) {
-      printtextF(PSTR("Not TZXTape"),0);
+      printtextF(PSTR("NOT RECOGNISED"),0);
       delay(300);     
       TZXStop();
     }
