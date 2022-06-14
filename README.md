@@ -2,6 +2,12 @@
 # maxduino
 
 https://github.com/rcmolina/MaxDuino_BETA/tree/master/Troubleshooting
+
+14/06/2022 SdFat much improved, now userconfig7.h with all options activated, and also until 10 subdirs and max filelength 256. David is your hero!
+11/06/2022: ZX:inject the real filename into the fake ay header + Refixed inversion for zx polarity loading.
+zx81:Removed initial pause from zx81 loading to avoid inversion problems.
+
+No more version Numbers due to collaborative new contributions for the project, so ROLLING VERSION now.
 * V1.76 New option to trace ID15 blocks #BLOCKID15_IN. Support variable baudrate on the fly for Amstrad CPC ID11 blocks (like TSXControl).
 A bunch of bugs solved: At last solved memory corruption problem when reconfiguring options due to wrong buffer overflow , also reoptimized size to free more space. Changed also logic for searching extension when reading file (thanks to David Hooper alias stripwax).
 Double font i2c_start syntax error (@alferboy).
