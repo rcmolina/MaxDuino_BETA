@@ -103,7 +103,7 @@ byte lineaxy=2;
 #define BLOCKTAP_IN
 #define OLEDPRINTBLOCK 
 #define BLOCK_EEPROM_START 512
-//#define LOAD_EEPROM_SETTINGS
+#define LOAD_EEPROM_SETTINGS
 #define EEPROM_CONFIG_BYTEPOS  1023     // Byte position to save configuration
 #define OSTATUSLINE
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
