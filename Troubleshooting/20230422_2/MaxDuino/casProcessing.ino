@@ -114,7 +114,7 @@ void process()
   }
   if(currentTask==lookHeader || currentTask==wData)
   {
-    if((readfile(8,bytesRead))==8) 
+    if(readfile(8,bytesRead))
     {
       if(!memcmp_P(filebuffer, HEADER,8)) {
         if(fileStage==0) 
