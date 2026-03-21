@@ -7,12 +7,12 @@
 #include "isr.h"
 #include "pinSetup.h"
 #include "processing_state.h"
+#include "current_settings.h"
 
 #ifdef Use_c64
 namespace {
 
-const uint32_t C64_PAL_CLOCK_HZ = 985248UL;
-//const uint32_t C64_PAL_CLOCK_HZ = 983248UL;  //*0,998
+const uint32_t C64_PAL_CLOCK_HZ = 985248UL; // testing: *0,998=983248UL;
 const uint32_t C64_NTSC_CLOCK_HZ = 1022727UL;
 const uint32_t C64_UNIT_CYCLES = 8UL;
 const uint16_t C64_HEADER_SIZE = 20;
@@ -33,7 +33,8 @@ uint32_t cycles_to_us(uint32_t cycles) {
     return 1;
   }
 
-  uint32_t usec = ((cycles * 1000000UL) + (c64tapClockHz / 2UL)) / c64tapClockHz;
+  //uint32_t usec = ((cycles * 1000000UL) + (c64tapClockHz / 2UL)) / c64tapClockHz;
+  uint32_t usec = ((cycles * 2000000UL +c64tapClockHz)>>1)/c64tapClockHz;
   if (usec == 0) {
     usec = 1;
   }
@@ -116,12 +117,7 @@ bool c64tap_is_valid() {
 void c64tap_init() {
   readfile(C64_HEADER_SIZE, 0);
   c64tapVersion = filebuffer[C64_VERSION_OFFSET];
-/*
-#ifdef C64_FORCE_V1
-  // Force legacy whole-wave playback with V1-style extended pulse handling.
-  c64tapVersion = 1;
-#endif
-*/
+
   c64tapClockHz = (filebuffer[C64_VIDEO_OFFSET] == 1) ? C64_NTSC_CLOCK_HZ : C64_PAL_CLOCK_HZ;
   c64tapWholeWave = (c64tapVersion != 2);
   c64tapPendingPulseUs = 0;
@@ -133,15 +129,6 @@ void c64tap_init() {
   currentBlockTask = BLOCKTASK::TDATA;
   EndOfFile = false;
 
-/*
-#ifdef c64_invert
-  pinState = HIGH;
-  WRITE_HIGH;
-#else
-  pinState = LOW;
-  WRITE_LOW;
-#endif
-*/
 }
 
 void tzx_process_blockid_c64tap() {
@@ -166,6 +153,10 @@ void tzx_process_blockid_c64tap() {
   }
 
   uint32_t totalUs = cycles_to_us(cycles);
+  if ((!skip2A) && cycles>=C64_DEFAULT_OVERFLOW_CYCLES){
+    ForcePauseAfter0();
+    return;
+  }
   if (c64tapWholeWave) {
     queue_whole_wave(totalUs);
   } else {
